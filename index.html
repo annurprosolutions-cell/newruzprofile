@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ms" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Diri - Web App</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Light Theme */
+            --bg-color: #f0f4f8; 
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --icon-color: #1e3a8a;
+            
+            --shadow-dark: rgba(163, 177, 198, 0.5);
+            --shadow-light: rgba(255, 255, 255, 1);
+            --dot-color: #60a5fa;
+            --card-border: transparent;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-color: #1a202c; 
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #60a5fa;
+            --icon-color: #60a5fa;
+            
+            --shadow-dark: rgba(15, 20, 25, 0.9);
+            --shadow-light: rgba(45, 55, 72, 0.6);
+            --dot-color: #3b82f6;
+            --card-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow: hidden; /* Prevent scrolling during transition */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Gaya SVG Buttons */
+        .arc-border {
+            stroke: var(--card-border);
+            transition: stroke 0.4s ease;
+        }
+
+        .arc-main {
+            stroke: var(--bg-color);
+            transition: stroke 0.4s ease, filter 0.3s ease;
+            filter: drop-shadow(6px 6px 10px var(--shadow-dark)) drop-shadow(-6px -6px 10px var(--shadow-light));
+        }
+
+        .menu-item {
+            cursor: pointer;
+            outline: none;
+        }
+
+        .btn-scale-wrap {
+            transform-origin: 0 0;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-item:hover .btn-scale-wrap {
+            transform: scale(1.02);
+        }
+
+        .menu-item:active .btn-scale-wrap {
+            transform: scale(0.96);
+            filter: drop-shadow(2px 2px 5px var(--shadow-dark)) drop-shadow(-2px -2px 5px var(--shadow-light));
+        }
+
+        /* Gaya Teks SVG Melengkung */
+        .svg-text {
+            fill: var(--icon-color);
+            transition: fill 0.3s ease;
+        }
+        
+        .menu-item:hover + g .svg-text, /* Optional hover tie */
+        .svg-text.hover-active {
+            fill: var(--primary);
+        }
+
+        /* Gaya Ikon HTML di atas */
+        .html-overlay-icon i {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--icon-color);
+        }
+
+        .html-overlay-icon.hover-active i {
+            color: var(--primary);
+            transform: scale(1.15);
+        }
+
+        /* Center Bulatan */
+        .center-circle {
+            background-color: var(--bg-color);
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            transition: all 0.4s ease;
+        }
+        
+        .center-circle-inset {
+            background-color: var(--bg-color);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        }
+
+        /* View Transitions (Main vs Sub Menu) */
+        .view-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .view-active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .view-hidden-down {
+            opacity: 0;
+            transform: translateY(150px) scale(0.85);
+            pointer-events: none;
+        }
+        
+        .view-hidden-up {
+            opacity: 0;
+            transform: translateY(-150px) scale(0.85);
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Butang Toggle Tema -->
+    <button id="themeToggle" class="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center text-xl cursor-pointer z-50 center-circle hover:scale-105 active:scale-95">
+        <i class="ph ph-moon text-[var(--icon-color)]" id="themeIcon"></i>
+    </button>
+
+    <!-- KAWASAN KESELURUHAN MENU (WRAPPER) -->
+    <div class="relative w-[340px] h-[340px] sm:w-[480px] sm:h-[480px] flex-shrink-0">
+        
+        <!-- ========================================== -->
+        <!-- LAYER 1: MAIN MENU (4 Cabang)              -->
+        <!-- ========================================== -->
+        <div id="main-menu" class="view-layer view-active z-10">
+            <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
+                <defs>
+                    <path id="arc-shape" d="M -70 -121.2 A 140 140 0 0 1 70 -121.2" stroke-linecap="round" fill="none" />
+                    <!-- Tambahan arc-shape untuk pecahan 3 cabang (120 darjah) -->
+                    <path id="arc-shape-3" d="M -99 -99 A 140 140 0 0 1 99 -99" stroke-linecap="round" fill="none" />
+                    
+                    <path id="tp-top" d="M -106 -106 A 150 150 0 0 1 106 -106" fill="none" />
+                    <path id="tp-right" d="M 106 -106 A 150 150 0 0 1 106 106" fill="none" />
+                    <path id="tp-bottom" d="M -106 106 A 150 150 0 0 0 106 106" fill="none" />
+                    <path id="tp-left" d="M -106 106 A 150 150 0 0 1 -106 -106" fill="none" />
+                    <filter id="dot-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
+
+                <!-- DOTS -->
+                <circle cx="99" cy="-99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
+                <circle cx="99" cy="99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
+                <circle cx="-99" cy="99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
+                <circle cx="-99" cy="-99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
+
+                <!-- BUTTONS -->
+                <g class="menu-item main-item" data-target="learning" onclick="openSubMenu('learning')">
+                    <g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item main-item" data-target="experience" onclick="openSubMenu('experience')" transform="rotate(90)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item main-item" data-target="coaching" onclick="openSubMenu('coaching')" transform="rotate(180)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item main-item" data-target="about" onclick="openSubMenu('about')" transform="rotate(270)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g>
+                </g>
+
+                <!-- TEKS MAIN MENU -->
+                <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.5px;">
+                    <text class="svg-text svg-text-main-learning"><textPath href="#tp-top" startOffset="50%" text-anchor="middle">Self Learning</textPath></text>
+                    <text class="svg-text svg-text-main-experience"><textPath href="#tp-right" startOffset="50%" text-anchor="middle">Exp & Project</textPath></text>
+                    <text class="svg-text svg-text-main-coaching"><textPath href="#tp-bottom" startOffset="50%" text-anchor="middle" dy="9">Personal Coaching</textPath></text>
+                    <text class="svg-text svg-text-main-about"><textPath href="#tp-left" startOffset="50%" text-anchor="middle">About Me</textPath></text>
+                </g>
+            </svg>
+
+            <!-- ICON HTML (Menggunakan formula math putaran untuk susunan sempurna) -->
+            <div class="absolute inset-0 pointer-events-none z-10">
+                <div id="icon-main-learning" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);">
+                    <i class="ph ph-graduation-cap text-[26px] sm:text-[32px]"></i>
+                </div>
+                <div id="icon-main-experience" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(90deg) translateY(-140px) rotate(-90deg);">
+                    <i class="ph ph-briefcase text-[26px] sm:text-[32px]"></i>
+                </div>
+                <div id="icon-main-coaching" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(180deg) translateY(-140px) rotate(-180deg);">
+                    <i class="ph ph-headset text-[26px] sm:text-[32px]"></i>
+                </div>
+                <div id="icon-main-about" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(270deg) translateY(-140px) rotate(-270deg);">
+                    <i class="ph ph-user text-[26px] sm:text-[32px]"></i>
+                </div>
+            </div>
+
+            <!-- LOGO TENGAH -->
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20">
+                <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex items-center justify-center relative overflow-hidden">
+                    <span class="absolute text-5xl sm:text-6xl font-black z-10" style="color: var(--primary-hover);">P</span>
+                    <span class="absolute text-5xl sm:text-6xl font-black translate-x-2 translate-y-2 opacity-50 z-0" style="color: var(--dot-color);">R</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- LAYER 2: SUB MENU - SELF LEARNING (5 Cabang) -->
+        <!-- ========================================== -->
+        <div id="submenu-learning" class="view-layer view-hidden-down z-20">
+            <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
+                <defs>
+                    <!-- Lengkungan sama (60 darjah), tapi kita putar 5 kali dengan jarak 72 darjah -->
+                    <path id="arc-shape-5" d="M -70 -121.2 A 140 140 0 0 1 70 -121.2" stroke-linecap="round" fill="none" />
+                    
+                    <!-- Base path untuk teks melengkung sempurna atas dan bawah -->
+                    <path id="tp-top-5" d="M -96.4 -114.9 A 150 150 0 0 1 96.4 -114.9" fill="none" />
+                    <path id="tp-bottom-5" d="M -96.4 114.9 A 150 150 0 0 0 96.4 114.9" fill="none" />
+                </defs>
+
+                <!-- DOTS (5 Biji) -->
+                <g fill="var(--dot-color)" filter="url(#dot-glow)">
+                    <circle cx="0" cy="-140" transform="rotate(36)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(108)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(252)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(324)" r="4.5" />
+                </g>
+
+                <!-- BUTTONS (5 Cabang: 0, 72, 144, 216, 288) -->
+                <g class="menu-item sub-item" data-target="canva" transform="rotate(0)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item sub-item" data-target="gemini" transform="rotate(72)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item sub-item" data-target="looker" transform="rotate(144)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item sub-item" data-target="edu" transform="rotate(216)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item sub-item" data-target="bundle" transform="rotate(288)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
+                </g>
+
+                <!-- TEKS SUB MENU -->
+                <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 1.2px;">
+                    <!-- Top -->
+                    <g>
+                        <text class="svg-text svg-text-sub-canva"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Canva Ai</textPath></text>
+                    </g>
+                    <!-- Kanan Atas -->
+                    <g transform="rotate(72)">
+                        <text class="svg-text svg-text-sub-gemini"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Gemini Ai</textPath></text>
+                    </g>
+                    <!-- Kanan Bawah (Guna path bawah pusing sikit supaya teks tak terbalik) -->
+                    <g transform="rotate(-36)">
+                        <text class="svg-text svg-text-sub-looker"><textPath href="#tp-bottom-5" startOffset="50%" text-anchor="middle" dy="4">Looker Studio</textPath></text>
+                    </g>
+                    <!-- Kiri Bawah -->
+                    <g transform="rotate(36)">
+                        <text class="svg-text svg-text-sub-edu"><textPath href="#tp-bottom-5" startOffset="50%" text-anchor="middle" dy="4">Edu Content</textPath></text>
+                    </g>
+                    <!-- Kiri Atas -->
+                    <g transform="rotate(-72)">
+                        <text class="svg-text svg-text-sub-bundle"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Bundle Pack</textPath></text>
+                    </g>
+                </g>
+            </svg>
+
+            <!-- ICON HTML SUB MENU -->
+            <div class="absolute inset-0 pointer-events-none z-10">
+                <div id="icon-sub-canva" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);">
+                    <i class="ph ph-palette text-[24px]"></i>
+                </div>
+                <div id="icon-sub-gemini" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(72deg) translateY(-140px) rotate(-72deg);">
+                    <i class="ph ph-sparkle text-[24px]"></i>
+                </div>
+                <div id="icon-sub-looker" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(144deg) translateY(-140px) rotate(-144deg);">
+                    <i class="ph ph-chart-bar text-[24px]"></i>
+                </div>
+                <div id="icon-sub-edu" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(216deg) translateY(-140px) rotate(-216deg);">
+                    <i class="ph ph-book-open text-[24px]"></i>
+                </div>
+                <div id="icon-sub-bundle" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(288deg) translateY(-140px) rotate(-288deg);">
+                    <i class="ph ph-package text-[24px]"></i>
+                </div>
+            </div>
+
+            <!-- BUTANG KEMBALI (BACK) DI TENGAH -->
+            <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
+                <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
+                    <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
+                    <span class="text-[9px] sm:text-[10px] font-bold text-[var(--text-muted)] group-hover:text-[var(--primary)] uppercase tracking-wider transition-colors">Kembali</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- LAYER 3: SUB MENU - ABOUT ME (3 Cabang)    -->
+        <!-- ========================================== -->
+        <div id="submenu-about" class="view-layer view-hidden-down z-20">
+            <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
+                <defs>
+                    <path id="tp-top-about" d="M -106 -106 A 150 150 0 0 1 106 -106" fill="none" />
+                    <path id="tp-bottom-about" d="M -106 106 A 150 150 0 0 0 106 106" fill="none" />
+                </defs>
+                <!-- DOTS (3 Biji) -->
+                <g fill="var(--dot-color)" filter="url(#dot-glow)">
+                    <circle cx="0" cy="-140" transform="rotate(60)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(300)" r="4.5" />
+                </g>
+                <!-- BUTTONS -->
+                <g class="menu-item sub-item" data-target="about-edu" transform="rotate(0)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item sub-item" data-target="about-occ" transform="rotate(120)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item sub-item" data-target="about-res" transform="rotate(240)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <!-- TEKS SUB MENU -->
+                <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.2px;">
+                    <g><text class="svg-text svg-text-sub-about-edu"><textPath href="#tp-top-about" startOffset="50%" text-anchor="middle">Education</textPath></text></g>
+                    <g transform="rotate(-60)"><text class="svg-text svg-text-sub-about-occ"><textPath href="#tp-bottom-about" startOffset="50%" text-anchor="middle" dy="4">Occupation</textPath></text></g>
+                    <g transform="rotate(60)"><text class="svg-text svg-text-sub-about-res"><textPath href="#tp-bottom-about" startOffset="50%" text-anchor="middle" dy="4">Resume</textPath></text></g>
+                </g>
+            </svg>
+            <!-- ICON HTML -->
+            <div class="absolute inset-0 pointer-events-none z-10">
+                <div id="icon-sub-about-edu" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);"><i class="ph ph-student text-[24px]"></i></div>
+                <div id="icon-sub-about-occ" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(120deg) translateY(-140px) rotate(-120deg);"><i class="ph ph-buildings text-[24px]"></i></div>
+                <div id="icon-sub-about-res" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(240deg) translateY(-140px) rotate(-240deg);"><i class="ph ph-file-text text-[24px]"></i></div>
+            </div>
+            <!-- BUTANG KEMBALI -->
+            <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
+                <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
+                    <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
+                    <span class="text-[9px] sm:text-[10px] font-bold text-[var(--text-muted)] group-hover:text-[var(--primary)] uppercase tracking-wider transition-colors">Kembali</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- LAYER 4: SUB MENU - COACHING (3 Cabang)    -->
+        <!-- ========================================== -->
+        <div id="submenu-coaching" class="view-layer view-hidden-down z-20">
+            <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
+                <defs>
+                    <path id="tp-top-coach" d="M -106 -106 A 150 150 0 0 1 106 -106" fill="none" />
+                    <path id="tp-bottom-coach" d="M -106 106 A 150 150 0 0 0 106 106" fill="none" />
+                </defs>
+                <g fill="var(--dot-color)" filter="url(#dot-glow)">
+                    <circle cx="0" cy="-140" transform="rotate(60)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(300)" r="4.5" />
+                </g>
+                <g class="menu-item sub-item" data-target="coach-1" transform="rotate(0)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item sub-item" data-target="coach-3" transform="rotate(120)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item sub-item" data-target="coach-c" transform="rotate(240)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 9px; letter-spacing: 0.8px;">
+                    <g><text class="svg-text svg-text-sub-coach-1"><textPath href="#tp-top-coach" startOffset="50%" text-anchor="middle">1 to 1 - RM189</textPath></text></g>
+                    <g transform="rotate(-60)"><text class="svg-text svg-text-sub-coach-3"><textPath href="#tp-bottom-coach" startOffset="50%" text-anchor="middle" dy="4">3 to 1 - RM350</textPath></text></g>
+                    <g transform="rotate(60)"><text class="svg-text svg-text-sub-coach-c" style="font-size: 11px;"><textPath href="#tp-bottom-coach" startOffset="50%" text-anchor="middle" dy="4">Custom</textPath></text></g>
+                </g>
+            </svg>
+            <div class="absolute inset-0 pointer-events-none z-10">
+                <div id="icon-sub-coach-1" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);"><i class="ph ph-user text-[24px]"></i></div>
+                <div id="icon-sub-coach-3" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(120deg) translateY(-140px) rotate(-120deg);"><i class="ph ph-users text-[24px]"></i></div>
+                <div id="icon-sub-coach-c" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(240deg) translateY(-140px) rotate(-240deg);"><i class="ph ph-sliders-horizontal text-[24px]"></i></div>
+            </div>
+            <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
+                <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
+                    <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
+                    <span class="text-[9px] sm:text-[10px] font-bold text-[var(--text-muted)] group-hover:text-[var(--primary)] uppercase tracking-wider transition-colors">Kembali</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- LAYER 5: SUB MENU - EXPERIENCE (3 Cabang)  -->
+        <!-- ========================================== -->
+        <div id="submenu-experience" class="view-layer view-hidden-down z-20">
+            <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
+                <defs>
+                    <path id="tp-top-exp" d="M -106 -106 A 150 150 0 0 1 106 -106" fill="none" />
+                    <path id="tp-bottom-exp" d="M -106 106 A 150 150 0 0 0 106 106" fill="none" />
+                </defs>
+                <g fill="var(--dot-color)" filter="url(#dot-glow)">
+                    <circle cx="0" cy="-140" transform="rotate(60)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(300)" r="4.5" />
+                </g>
+                <g class="menu-item sub-item" data-target="exp-git" transform="rotate(0)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item sub-item" data-target="exp-proj" transform="rotate(120)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="menu-item sub-item" data-target="exp-test" transform="rotate(240)">
+                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
+                </g>
+                <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.2px;">
+                    <g><text class="svg-text svg-text-sub-exp-git"><textPath href="#tp-top-exp" startOffset="50%" text-anchor="middle">Github</textPath></text></g>
+                    <g transform="rotate(-60)"><text class="svg-text svg-text-sub-exp-proj"><textPath href="#tp-bottom-exp" startOffset="50%" text-anchor="middle" dy="4">Project Done</textPath></text></g>
+                    <g transform="rotate(60)"><text class="svg-text svg-text-sub-exp-test"><textPath href="#tp-bottom-exp" startOffset="50%" text-anchor="middle" dy="4">Testimonial</textPath></text></g>
+                </g>
+            </svg>
+            <div class="absolute inset-0 pointer-events-none z-10">
+                <div id="icon-sub-exp-git" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);"><i class="ph ph-github-logo text-[24px]"></i></div>
+                <div id="icon-sub-exp-proj" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(120deg) translateY(-140px) rotate(-120deg);"><i class="ph ph-check-circle text-[24px]"></i></div>
+                <div id="icon-sub-exp-test" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(240deg) translateY(-140px) rotate(-240deg);"><i class="ph ph-star text-[24px]"></i></div>
+            </div>
+            <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
+                <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
+                    <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
+                    <span class="text-[9px] sm:text-[10px] font-bold text-[var(--text-muted)] group-hover:text-[var(--primary)] uppercase tracking-wider transition-colors">Kembali</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- LOGIK JAVASCRIPT -->
+    <script>
+        // Logik Buka Menu Sub (Self Learning)
+        function openSubMenu(menuId) {
+            const mainMenu = document.getElementById('main-menu');
+            const subMenu = document.getElementById(`submenu-${menuId}`);
+            
+            if(!subMenu) return;
+
+            // Main menu turun & hilang
+            mainMenu.classList.remove('view-active');
+            mainMenu.classList.add('view-hidden-down');
+
+            // Sub menu naik & muncul
+            subMenu.classList.remove('view-hidden-down', 'view-hidden-up'); // just in case
+            // Sedikit delay untuk efek yang lebih semulajadi
+            setTimeout(() => {
+                subMenu.classList.add('view-active');
+            }, 100);
+        }
+
+        // Logik Kembali ke Menu Utama
+        function goBack() {
+            const mainMenu = document.getElementById('main-menu');
+            
+            // Cari sub menu yang sedang aktif
+            const activeSubMenu = document.querySelector('.view-layer:not(#main-menu).view-active');
+            
+            if(activeSubMenu) {
+                // Sub menu turun & hilang
+                activeSubMenu.classList.remove('view-active');
+                activeSubMenu.classList.add('view-hidden-down');
+            }
+
+            // Main menu naik semula
+            setTimeout(() => {
+                mainMenu.classList.remove('view-hidden-down', 'view-hidden-up');
+                mainMenu.classList.add('view-active');
+            }, 100);
+        }
+
+        // Logik Toggle Tema (Dark/Light Mode)
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            let switchTo = theme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', switchTo);
+            localStorage.setItem('theme', switchTo);
+            updateThemeIcon(switchTo);
+        });
+
+        function updateThemeIcon(theme) {
+            if(theme === 'dark') {
+                themeIcon.classList.remove('ph-moon');
+                themeIcon.classList.add('ph-sun');
+            } else {
+                themeIcon.classList.remove('ph-sun');
+                themeIcon.classList.add('ph-moon');
+            }
+        }
+
+        // Logik Hover Highlight
+        function attachHover(itemsClass, prefix) {
+            document.querySelectorAll(itemsClass).forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    const targetId = item.getAttribute('data-target');
+                    document.querySelector(`.svg-text-${prefix}-${targetId}`)?.classList.add('hover-active');
+                    document.getElementById(`icon-${prefix}-${targetId}`)?.classList.add('hover-active');
+                });
+                item.addEventListener('mouseleave', () => {
+                    const targetId = item.getAttribute('data-target');
+                    document.querySelector(`.svg-text-${prefix}-${targetId}`)?.classList.remove('hover-active');
+                    document.getElementById(`icon-${prefix}-${targetId}`)?.classList.remove('hover-active');
+                });
+            });
+        }
+
+        attachHover('.main-item', 'main');
+        attachHover('.sub-item', 'sub');
+    </script>
+</body>
+</html>
