@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Diri - Web App</title>
+    <title>RuzPrompt - Profile</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -165,7 +165,6 @@
             <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
                 <defs>
                     <path id="arc-shape" d="M -70 -121.2 A 140 140 0 0 1 70 -121.2" stroke-linecap="round" fill="none" />
-                    <!-- Tambahan arc-shape untuk pecahan 3 cabang (120 darjah) -->
                     <path id="arc-shape-3" d="M -99 -99 A 140 140 0 0 1 99 -99" stroke-linecap="round" fill="none" />
                     
                     <path id="tp-top" d="M -106 -106 A 150 150 0 0 1 106 -106" fill="none" />
@@ -207,18 +206,18 @@
                 </g>
             </svg>
 
-            <!-- ICON HTML (Menggunakan formula math putaran untuk susunan sempurna) -->
+            <!-- ICON HTML (Menggunakan peratusan tepat supaya 100% responsif) -->
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-main-learning" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);">
+                <div id="icon-main-learning" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);">
                     <i class="ph ph-graduation-cap text-[26px] sm:text-[32px]"></i>
                 </div>
-                <div id="icon-main-experience" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(90deg) translateY(-140px) rotate(-90deg);">
+                <div id="icon-main-experience" class="html-overlay-icon absolute" style="top: 50%; left: 81.5%; transform: translate(-50%, -50%);">
                     <i class="ph ph-briefcase text-[26px] sm:text-[32px]"></i>
                 </div>
-                <div id="icon-main-coaching" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(180deg) translateY(-140px) rotate(-180deg);">
+                <div id="icon-main-coaching" class="html-overlay-icon absolute" style="top: 81.5%; left: 50%; transform: translate(-50%, -50%);">
                     <i class="ph ph-headset text-[26px] sm:text-[32px]"></i>
                 </div>
-                <div id="icon-main-about" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(270deg) translateY(-140px) rotate(-270deg);">
+                <div id="icon-main-about" class="html-overlay-icon absolute" style="top: 50%; left: 18.5%; transform: translate(-50%, -50%);">
                     <i class="ph ph-user text-[26px] sm:text-[32px]"></i>
                 </div>
             </div>
@@ -238,15 +237,11 @@
         <div id="submenu-learning" class="view-layer view-hidden-down z-20">
             <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
                 <defs>
-                    <!-- Lengkungan sama (60 darjah), tapi kita putar 5 kali dengan jarak 72 darjah -->
                     <path id="arc-shape-5" d="M -70 -121.2 A 140 140 0 0 1 70 -121.2" stroke-linecap="round" fill="none" />
-                    
-                    <!-- Base path untuk teks melengkung sempurna atas dan bawah -->
                     <path id="tp-top-5" d="M -96.4 -114.9 A 150 150 0 0 1 96.4 -114.9" fill="none" />
                     <path id="tp-bottom-5" d="M -96.4 114.9 A 150 150 0 0 0 96.4 114.9" fill="none" />
                 </defs>
 
-                <!-- DOTS (5 Biji) -->
                 <g fill="var(--dot-color)" filter="url(#dot-glow)">
                     <circle cx="0" cy="-140" transform="rotate(36)" r="4.5" />
                     <circle cx="0" cy="-140" transform="rotate(108)" r="4.5" />
@@ -255,7 +250,6 @@
                     <circle cx="0" cy="-140" transform="rotate(324)" r="4.5" />
                 </g>
 
-                <!-- BUTTONS (5 Cabang: 0, 72, 144, 216, 288) -->
                 <g class="menu-item sub-item" data-target="canva" transform="rotate(0)">
                     <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
                 </g>
@@ -272,51 +266,34 @@
                     <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
                 </g>
 
-                <!-- TEKS SUB MENU -->
                 <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 1.2px;">
-                    <!-- Top -->
-                    <g>
-                        <text class="svg-text svg-text-sub-canva"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Canva Ai</textPath></text>
-                    </g>
-                    <!-- Kanan Atas -->
-                    <g transform="rotate(72)">
-                        <text class="svg-text svg-text-sub-gemini"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Gemini Ai</textPath></text>
-                    </g>
-                    <!-- Kanan Bawah (Guna path bawah pusing sikit supaya teks tak terbalik) -->
-                    <g transform="rotate(-36)">
-                        <text class="svg-text svg-text-sub-looker"><textPath href="#tp-bottom-5" startOffset="50%" text-anchor="middle" dy="4">Looker Studio</textPath></text>
-                    </g>
-                    <!-- Kiri Bawah -->
-                    <g transform="rotate(36)">
-                        <text class="svg-text svg-text-sub-edu"><textPath href="#tp-bottom-5" startOffset="50%" text-anchor="middle" dy="4">Edu Content</textPath></text>
-                    </g>
-                    <!-- Kiri Atas -->
-                    <g transform="rotate(-72)">
-                        <text class="svg-text svg-text-sub-bundle"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Bundle Pack</textPath></text>
-                    </g>
+                    <g><text class="svg-text svg-text-sub-canva"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Canva Ai</textPath></text></g>
+                    <g transform="rotate(72)"><text class="svg-text svg-text-sub-gemini"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Gemini Ai</textPath></text></g>
+                    <g transform="rotate(-36)"><text class="svg-text svg-text-sub-looker"><textPath href="#tp-bottom-5" startOffset="50%" text-anchor="middle" dy="4">Looker Studio</textPath></text></g>
+                    <g transform="rotate(36)"><text class="svg-text svg-text-sub-edu"><textPath href="#tp-bottom-5" startOffset="50%" text-anchor="middle" dy="4">Edu Content</textPath></text></g>
+                    <g transform="rotate(-72)"><text class="svg-text svg-text-sub-bundle"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Bundle Pack</textPath></text></g>
                 </g>
             </svg>
 
             <!-- ICON HTML SUB MENU -->
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-sub-canva" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);">
+                <div id="icon-sub-canva" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);">
                     <i class="ph ph-palette text-[24px]"></i>
                 </div>
-                <div id="icon-sub-gemini" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(72deg) translateY(-140px) rotate(-72deg);">
+                <div id="icon-sub-gemini" class="html-overlay-icon absolute" style="top: 40.27%; left: 79.96%; transform: translate(-50%, -50%);">
                     <i class="ph ph-sparkle text-[24px]"></i>
                 </div>
-                <div id="icon-sub-looker" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(144deg) translateY(-140px) rotate(-144deg);">
+                <div id="icon-sub-looker" class="html-overlay-icon absolute" style="top: 75.48%; left: 68.52%; transform: translate(-50%, -50%);">
                     <i class="ph ph-chart-bar text-[24px]"></i>
                 </div>
-                <div id="icon-sub-edu" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(216deg) translateY(-140px) rotate(-216deg);">
+                <div id="icon-sub-edu" class="html-overlay-icon absolute" style="top: 75.48%; left: 31.48%; transform: translate(-50%, -50%);">
                     <i class="ph ph-book-open text-[24px]"></i>
                 </div>
-                <div id="icon-sub-bundle" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(288deg) translateY(-140px) rotate(-288deg);">
+                <div id="icon-sub-bundle" class="html-overlay-icon absolute" style="top: 40.27%; left: 20.04%; transform: translate(-50%, -50%);">
                     <i class="ph ph-package text-[24px]"></i>
                 </div>
             </div>
 
-            <!-- BUTANG KEMBALI (BACK) DI TENGAH -->
             <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
                 <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
                     <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
@@ -334,13 +311,11 @@
                     <path id="tp-top-about" d="M -106 -106 A 150 150 0 0 1 106 -106" fill="none" />
                     <path id="tp-bottom-about" d="M -106 106 A 150 150 0 0 0 106 106" fill="none" />
                 </defs>
-                <!-- DOTS (3 Biji) -->
                 <g fill="var(--dot-color)" filter="url(#dot-glow)">
                     <circle cx="0" cy="-140" transform="rotate(60)" r="4.5" />
                     <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
                     <circle cx="0" cy="-140" transform="rotate(300)" r="4.5" />
                 </g>
-                <!-- BUTTONS -->
                 <g class="menu-item sub-item" data-target="about-edu" transform="rotate(0)">
                     <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
                 </g>
@@ -350,20 +325,23 @@
                 <g class="menu-item sub-item" data-target="about-res" transform="rotate(240)">
                     <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
                 </g>
-                <!-- TEKS SUB MENU -->
                 <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.2px;">
                     <g><text class="svg-text svg-text-sub-about-edu"><textPath href="#tp-top-about" startOffset="50%" text-anchor="middle">Education</textPath></text></g>
                     <g transform="rotate(-60)"><text class="svg-text svg-text-sub-about-occ"><textPath href="#tp-bottom-about" startOffset="50%" text-anchor="middle" dy="4">Occupation</textPath></text></g>
                     <g transform="rotate(60)"><text class="svg-text svg-text-sub-about-res"><textPath href="#tp-bottom-about" startOffset="50%" text-anchor="middle" dy="4">Resume</textPath></text></g>
                 </g>
             </svg>
-            <!-- ICON HTML -->
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-sub-about-edu" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);"><i class="ph ph-student text-[24px]"></i></div>
-                <div id="icon-sub-about-occ" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(120deg) translateY(-140px) rotate(-120deg);"><i class="ph ph-buildings text-[24px]"></i></div>
-                <div id="icon-sub-about-res" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(240deg) translateY(-140px) rotate(-240deg);"><i class="ph ph-file-text text-[24px]"></i></div>
+                <div id="icon-sub-about-edu" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);">
+                    <i class="ph ph-student text-[24px]"></i>
+                </div>
+                <div id="icon-sub-about-occ" class="html-overlay-icon absolute" style="top: 65.75%; left: 77.28%; transform: translate(-50%, -50%);">
+                    <i class="ph ph-buildings text-[24px]"></i>
+                </div>
+                <div id="icon-sub-about-res" class="html-overlay-icon absolute" style="top: 65.75%; left: 22.72%; transform: translate(-50%, -50%);">
+                    <i class="ph ph-file-text text-[24px]"></i>
+                </div>
             </div>
-            <!-- BUTANG KEMBALI -->
             <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
                 <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
                     <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
@@ -402,9 +380,15 @@
                 </g>
             </svg>
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-sub-coach-1" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);"><i class="ph ph-user text-[24px]"></i></div>
-                <div id="icon-sub-coach-3" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(120deg) translateY(-140px) rotate(-120deg);"><i class="ph ph-users text-[24px]"></i></div>
-                <div id="icon-sub-coach-c" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(240deg) translateY(-140px) rotate(-240deg);"><i class="ph ph-sliders-horizontal text-[24px]"></i></div>
+                <div id="icon-sub-coach-1" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);">
+                    <i class="ph ph-user text-[24px]"></i>
+                </div>
+                <div id="icon-sub-coach-3" class="html-overlay-icon absolute" style="top: 65.75%; left: 77.28%; transform: translate(-50%, -50%);">
+                    <i class="ph ph-users text-[24px]"></i>
+                </div>
+                <div id="icon-sub-coach-c" class="html-overlay-icon absolute" style="top: 65.75%; left: 22.72%; transform: translate(-50%, -50%);">
+                    <i class="ph ph-sliders-horizontal text-[24px]"></i>
+                </div>
             </div>
             <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
                 <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
@@ -444,9 +428,15 @@
                 </g>
             </svg>
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-sub-exp-git" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-140px) rotate(0deg);"><i class="ph ph-github-logo text-[24px]"></i></div>
-                <div id="icon-sub-exp-proj" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(120deg) translateY(-140px) rotate(-120deg);"><i class="ph ph-check-circle text-[24px]"></i></div>
-                <div id="icon-sub-exp-test" class="html-overlay-icon absolute top-1/2 left-1/2" style="transform: translate(-50%, -50%) rotate(240deg) translateY(-140px) rotate(-240deg);"><i class="ph ph-star text-[24px]"></i></div>
+                <div id="icon-sub-exp-git" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);">
+                    <i class="ph ph-github-logo text-[24px]"></i>
+                </div>
+                <div id="icon-sub-exp-proj" class="html-overlay-icon absolute" style="top: 65.75%; left: 77.28%; transform: translate(-50%, -50%);">
+                    <i class="ph ph-check-circle text-[24px]"></i>
+                </div>
+                <div id="icon-sub-exp-test" class="html-overlay-icon absolute" style="top: 65.75%; left: 22.72%; transform: translate(-50%, -50%);">
+                    <i class="ph ph-star text-[24px]"></i>
+                </div>
             </div>
             <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
                 <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
