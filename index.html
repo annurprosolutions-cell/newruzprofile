@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RuzPrompt - Profile</title>
+    <title>Profil Diri - Web App</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,22 +16,22 @@
 
     <style>
         :root {
-            /* Light Theme - Contrast yang lebih baik */
-            --bg-color: #e0e5ec; /* Kelabu lembut klasik neumorphism */
-            --text-main: #2d3748; /* Kelabu gelap yang jelas */
+            /* Light Theme - Classic Neumorphism */
+            --bg-color: #e0e5ec;
+            --text-main: #2d3748;
             --text-muted: #718096;
-            --primary: #3b82f6; /* Biru terang untuk pop */
+            --primary: #3b82f6;
             --primary-hover: #2563eb;
-            --icon-color: #4a5568; /* Ikon lebih gelap sikit dari bg supaya nampak */
+            --icon-color: #4a5568;
             
-            --shadow-dark: #a3b1c6; /* Bayang gelap yang lebih pekat */
-            --shadow-light: #ffffff; /* Highlight putih tulen untuk timbulkan butang */
+            --shadow-dark: #a3b1c6;
+            --shadow-light: #ffffff;
             --dot-color: #3b82f6;
             --card-border: transparent;
         }
 
         [data-theme="dark"] {
-            /* Dark Theme - Dinaikkan sikit kecerahan bg supaya bayang nampak */
+            /* Dark Theme */
             --bg-color: #2d3238; 
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -39,10 +39,10 @@
             --primary-hover: #93c5fd;
             --icon-color: #cbd5e1;
             
-            --shadow-dark: #1a1d21; /* Bayang gelap */
-            --shadow-light: #404750; /* Cahaya kelabu cerah untuk efek timbul */
+            --shadow-dark: #1a1d21;
+            --shadow-light: #404750;
             --dot-color: #60a5fa;
-            --card-border: rgba(255, 255, 255, 0.05); /* Border nipis */
+            --card-border: rgba(255, 255, 255, 0.05);
         }
 
         body {
@@ -50,11 +50,10 @@
             color: var(--text-main);
             font-family: 'Poppins', sans-serif;
             transition: background-color 0.4s ease, color 0.4s ease;
-            overflow: hidden; /* Prevent scrolling during transition */
+            overflow: hidden; 
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Gaya SVG Buttons */
         .arc-border {
             stroke: var(--card-border);
             transition: stroke 0.4s ease;
@@ -85,18 +84,16 @@
             filter: drop-shadow(2px 2px 5px var(--shadow-dark)) drop-shadow(-2px -2px 5px var(--shadow-light));
         }
 
-        /* Gaya Teks SVG Melengkung */
         .svg-text {
             fill: var(--icon-color);
             transition: fill 0.3s ease;
         }
         
-        .menu-item:hover + g .svg-text, /* Optional hover tie */
+        .menu-item:hover + g .svg-text,
         .svg-text.hover-active {
             fill: var(--primary);
         }
 
-        /* Gaya Ikon HTML di atas */
         .html-overlay-icon i {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--icon-color);
@@ -107,7 +104,6 @@
             transform: scale(1.15);
         }
 
-        /* Center Bulatan */
         .center-circle {
             background-color: var(--bg-color);
             box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
@@ -119,7 +115,6 @@
             box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
         }
 
-        /* View Transitions (Main vs Sub Menu) */
         .view-layer {
             position: absolute;
             inset: 0;
@@ -146,11 +141,10 @@
             pointer-events: none;
         }
 
-        /* Gaya Modal Popup (Baru) */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background-color: rgba(0, 0, 0, 0.4); /* Kabur gelap */
+            background-color: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(5px);
             z-index: 100;
             display: flex;
@@ -176,6 +170,9 @@
             padding: 28px;
             transform: scale(0.9);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+            scrollbar-width: none; /* Hide scrollbar for cleaner look */
         }
 
         .modal-overlay.show .modal-card {
@@ -187,6 +184,11 @@
             box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
             transition: all 0.2s ease;
             color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
         }
         .btn-modal:active {
             box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
@@ -194,30 +196,87 @@
         }
         .btn-modal.primary {
             color: var(--primary);
-            font-weight: 600;
         }
 
+        .neu-input {
+            background-color: var(--bg-color);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            border: 1px solid transparent;
+            color: var(--text-main);
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        .neu-input:focus {
+            border-color: var(--primary);
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+        .calendar-day:hover:not(.empty) {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 2px 2px 5px var(--shadow-dark);
+        }
+        .calendar-day.selected {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+        }
+        .calendar-day.empty {
+            cursor: default;
+        }
+
+        .slot-btn {
+            background-color: var(--bg-color);
+            box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 11px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+        .slot-btn:active {
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+        }
+
+        /* Timeline Animation */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col items-center justify-center p-4">
 
-    <!-- Butang Toggle Tema -->
     <button id="themeToggle" class="absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center text-xl cursor-pointer z-50 center-circle hover:scale-105 active:scale-95">
         <i class="ph ph-moon text-[var(--icon-color)]" id="themeIcon"></i>
     </button>
 
-    <!-- KAWASAN KESELURUHAN MENU (WRAPPER) -->
     <div class="relative w-[340px] h-[340px] sm:w-[480px] sm:h-[480px] flex-shrink-0">
         
-        <!-- ========================================== -->
-        <!-- LAYER 1: MAIN MENU (4 Cabang)              -->
-        <!-- ========================================== -->
+        <!-- LAYER 1: MAIN MENU (4 Cabang) -->
         <div id="main-menu" class="view-layer view-active z-10">
             <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
                 <defs>
                     <path id="arc-shape" d="M -70 -121.2 A 140 140 0 0 1 70 -121.2" stroke-linecap="round" fill="none" />
                     <path id="arc-shape-3" d="M -99 -99 A 140 140 0 0 1 99 -99" stroke-linecap="round" fill="none" />
-                    
                     <path id="tp-top" d="M -106 -106 A 150 150 0 0 1 106 -106" fill="none" />
                     <path id="tp-right" d="M 106 -106 A 150 150 0 0 1 106 106" fill="none" />
                     <path id="tp-bottom" d="M -106 106 A 150 150 0 0 0 106 106" fill="none" />
@@ -234,7 +293,7 @@
                 <circle cx="-99" cy="99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
                 <circle cx="-99" cy="-99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
 
-                <!-- BUTTONS -->
+                <!-- BUTTONS MAIN MENU -->
                 <g class="menu-item main-item" data-target="learning" onclick="openSubMenu('learning')">
                     <g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g>
                 </g>
@@ -257,20 +316,12 @@
                 </g>
             </svg>
 
-            <!-- ICON HTML (Menggunakan peratusan tepat supaya 100% responsif) -->
+            <!-- ICON HTML -->
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-main-learning" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-graduation-cap text-[26px] sm:text-[32px]"></i>
-                </div>
-                <div id="icon-main-experience" class="html-overlay-icon absolute" style="top: 50%; left: 81.5%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-briefcase text-[26px] sm:text-[32px]"></i>
-                </div>
-                <div id="icon-main-coaching" class="html-overlay-icon absolute" style="top: 81.5%; left: 50%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-headset text-[26px] sm:text-[32px]"></i>
-                </div>
-                <div id="icon-main-about" class="html-overlay-icon absolute" style="top: 50%; left: 18.5%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-user text-[26px] sm:text-[32px]"></i>
-                </div>
+                <div id="icon-main-learning" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-graduation-cap text-[26px] sm:text-[32px]"></i></div>
+                <div id="icon-main-experience" class="html-overlay-icon absolute" style="top: 50%; left: 81.5%; transform: translate(-50%, -50%);"><i class="ph ph-briefcase text-[26px] sm:text-[32px]"></i></div>
+                <div id="icon-main-coaching" class="html-overlay-icon absolute" style="top: 81.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-headset text-[26px] sm:text-[32px]"></i></div>
+                <div id="icon-main-about" class="html-overlay-icon absolute" style="top: 50%; left: 18.5%; transform: translate(-50%, -50%);"><i class="ph ph-user text-[26px] sm:text-[32px]"></i></div>
             </div>
 
             <!-- LOGO TENGAH -->
@@ -282,9 +333,7 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- LAYER 2: SUB MENU - SELF LEARNING (5 Cabang) -->
-        <!-- ========================================== -->
+        <!-- LAYER 2: SUB MENU - SELF LEARNING -->
         <div id="submenu-learning" class="view-layer view-hidden-down z-20">
             <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
                 <defs>
@@ -292,7 +341,6 @@
                     <path id="tp-top-5" d="M -96.4 -114.9 A 150 150 0 0 1 96.4 -114.9" fill="none" />
                     <path id="tp-bottom-5" d="M -96.4 114.9 A 150 150 0 0 0 96.4 114.9" fill="none" />
                 </defs>
-
                 <g fill="var(--dot-color)" filter="url(#dot-glow)">
                     <circle cx="0" cy="-140" transform="rotate(36)" r="4.5" />
                     <circle cx="0" cy="-140" transform="rotate(108)" r="4.5" />
@@ -300,23 +348,11 @@
                     <circle cx="0" cy="-140" transform="rotate(252)" r="4.5" />
                     <circle cx="0" cy="-140" transform="rotate(324)" r="4.5" />
                 </g>
-
-                <!-- BUTTONS SELF LEARNING: Ditambah fungsi onclick="openPopup('id')" -->
-                <g class="menu-item sub-item" data-target="canva" transform="rotate(0)" onclick="openPopup('canva')">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item sub-item" data-target="gemini" transform="rotate(72)" onclick="openPopup('gemini')">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item sub-item" data-target="looker" transform="rotate(144)" onclick="openPopup('looker')">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item sub-item" data-target="edu" transform="rotate(216)" onclick="openPopup('edu')">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item sub-item" data-target="bundle" transform="rotate(288)" onclick="openPopup('bundle')">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
-                </g>
+                <g class="menu-item sub-item" data-target="canva" transform="rotate(0)" onclick="openPopup('canva')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="gemini" transform="rotate(72)" onclick="openPopup('gemini')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="looker" transform="rotate(144)" onclick="openPopup('looker')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="edu" transform="rotate(216)" onclick="openPopup('edu')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="bundle" transform="rotate(288)" onclick="openPopup('bundle')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
 
                 <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 1.2px;">
                     <g><text class="svg-text svg-text-sub-canva"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Canva Ai</textPath></text></g>
@@ -326,26 +362,14 @@
                     <g transform="rotate(-72)"><text class="svg-text svg-text-sub-bundle"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Bundle Pack</textPath></text></g>
                 </g>
             </svg>
-
-            <!-- ICON HTML SUB MENU -->
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-sub-canva" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-palette text-[24px]"></i>
-                </div>
-                <div id="icon-sub-gemini" class="html-overlay-icon absolute" style="top: 40.27%; left: 79.96%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-sparkle text-[24px]"></i>
-                </div>
-                <div id="icon-sub-looker" class="html-overlay-icon absolute" style="top: 75.48%; left: 68.52%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-chart-bar text-[24px]"></i>
-                </div>
-                <div id="icon-sub-edu" class="html-overlay-icon absolute" style="top: 75.48%; left: 31.48%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-book-open text-[24px]"></i>
-                </div>
-                <div id="icon-sub-bundle" class="html-overlay-icon absolute" style="top: 40.27%; left: 20.04%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-package text-[24px]"></i>
-                </div>
+                <div id="icon-sub-canva" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-palette text-[24px]"></i></div>
+                <div id="icon-sub-gemini" class="html-overlay-icon absolute" style="top: 40.27%; left: 79.96%; transform: translate(-50%, -50%);"><i class="ph ph-sparkle text-[24px]"></i></div>
+                <div id="icon-sub-looker" class="html-overlay-icon absolute" style="top: 75.48%; left: 68.52%; transform: translate(-50%, -50%);"><i class="ph ph-chart-bar text-[24px]"></i></div>
+                <div id="icon-sub-edu" class="html-overlay-icon absolute" style="top: 75.48%; left: 31.48%; transform: translate(-50%, -50%);"><i class="ph ph-book-open text-[24px]"></i></div>
+                <div id="icon-sub-bundle" class="html-overlay-icon absolute" style="top: 40.27%; left: 20.04%; transform: translate(-50%, -50%);"><i class="ph ph-package text-[24px]"></i></div>
             </div>
-
+            <!-- Back Button -->
             <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
                 <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
                     <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
@@ -354,9 +378,7 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- LAYER 3: SUB MENU - ABOUT ME (3 Cabang)    -->
-        <!-- ========================================== -->
+        <!-- LAYER 3: SUB MENU - ABOUT ME (3 Cabang) -->
         <div id="submenu-about" class="view-layer view-hidden-down z-20">
             <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
                 <defs>
@@ -368,15 +390,10 @@
                     <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
                     <circle cx="0" cy="-140" transform="rotate(300)" r="4.5" />
                 </g>
-                <g class="menu-item sub-item" data-target="about-edu" transform="rotate(0)" onclick="openPopup('aboutEdu')">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item sub-item" data-target="about-occ" transform="rotate(120)" onclick="openPopup('aboutOcc')">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item sub-item" data-target="about-res" transform="rotate(240)" onclick="openPopup('aboutRes')">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
-                </g>
+                <g class="menu-item sub-item" data-target="about-edu" transform="rotate(0)" onclick="openPopup('aboutEdu')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="about-occ" transform="rotate(120)" onclick="openPopup('aboutOcc')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="about-res" transform="rotate(240)" onclick="openPopup('aboutRes')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
+                
                 <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.2px;">
                     <g><text class="svg-text svg-text-sub-about-edu"><textPath href="#tp-top-about" startOffset="50%" text-anchor="middle">Education</textPath></text></g>
                     <g transform="rotate(-60)"><text class="svg-text svg-text-sub-about-occ"><textPath href="#tp-bottom-about" startOffset="50%" text-anchor="middle" dy="4">Occupation</textPath></text></g>
@@ -384,16 +401,11 @@
                 </g>
             </svg>
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-sub-about-edu" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-student text-[24px]"></i>
-                </div>
-                <div id="icon-sub-about-occ" class="html-overlay-icon absolute" style="top: 65.75%; left: 77.28%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-buildings text-[24px]"></i>
-                </div>
-                <div id="icon-sub-about-res" class="html-overlay-icon absolute" style="top: 65.75%; left: 22.72%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-file-text text-[24px]"></i>
-                </div>
+                <div id="icon-sub-about-edu" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-student text-[24px]"></i></div>
+                <div id="icon-sub-about-occ" class="html-overlay-icon absolute" style="top: 65.75%; left: 77.28%; transform: translate(-50%, -50%);"><i class="ph ph-buildings text-[24px]"></i></div>
+                <div id="icon-sub-about-res" class="html-overlay-icon absolute" style="top: 65.75%; left: 22.72%; transform: translate(-50%, -50%);"><i class="ph ph-file-text text-[24px]"></i></div>
             </div>
+            <!-- Back Button -->
             <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
                 <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
                     <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
@@ -402,9 +414,7 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- LAYER 4: SUB MENU - COACHING (3 Cabang)    -->
-        <!-- ========================================== -->
+        <!-- LAYER 4: SUB MENU - COACHING (3 Cabang) -->
         <div id="submenu-coaching" class="view-layer view-hidden-down z-20">
             <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
                 <defs>
@@ -416,15 +426,10 @@
                     <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
                     <circle cx="0" cy="-140" transform="rotate(300)" r="4.5" />
                 </g>
-                <g class="menu-item sub-item" data-target="coach-1" transform="rotate(0)">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item sub-item" data-target="coach-3" transform="rotate(120)">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item sub-item" data-target="coach-c" transform="rotate(240)">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
-                </g>
+                <g class="menu-item sub-item" data-target="coach-1" transform="rotate(0)" onclick="openBooking('1to1')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="coach-3" transform="rotate(120)" onclick="openBooking('3to1')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="coach-c" transform="rotate(240)" onclick="openBooking('custom')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
+                
                 <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 9px; letter-spacing: 0.8px;">
                     <g><text class="svg-text svg-text-sub-coach-1"><textPath href="#tp-top-coach" startOffset="50%" text-anchor="middle">1 to 1 - RM189</textPath></text></g>
                     <g transform="rotate(-60)"><text class="svg-text svg-text-sub-coach-3"><textPath href="#tp-bottom-coach" startOffset="50%" text-anchor="middle" dy="4">3 to 1 - RM350</textPath></text></g>
@@ -432,16 +437,11 @@
                 </g>
             </svg>
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-sub-coach-1" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-user text-[24px]"></i>
-                </div>
-                <div id="icon-sub-coach-3" class="html-overlay-icon absolute" style="top: 65.75%; left: 77.28%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-users text-[24px]"></i>
-                </div>
-                <div id="icon-sub-coach-c" class="html-overlay-icon absolute" style="top: 65.75%; left: 22.72%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-sliders-horizontal text-[24px]"></i>
-                </div>
+                <div id="icon-sub-coach-1" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-user text-[24px]"></i></div>
+                <div id="icon-sub-coach-3" class="html-overlay-icon absolute" style="top: 65.75%; left: 77.28%; transform: translate(-50%, -50%);"><i class="ph ph-users text-[24px]"></i></div>
+                <div id="icon-sub-coach-c" class="html-overlay-icon absolute" style="top: 65.75%; left: 22.72%; transform: translate(-50%, -50%);"><i class="ph ph-sliders-horizontal text-[24px]"></i></div>
             </div>
+            <!-- Back Button -->
             <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
                 <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
                     <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
@@ -450,9 +450,7 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- LAYER 5: SUB MENU - EXPERIENCE (3 Cabang)  -->
-        <!-- ========================================== -->
+        <!-- LAYER 5: SUB MENU - EXPERIENCE (3 Cabang) -->
         <div id="submenu-experience" class="view-layer view-hidden-down z-20">
             <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
                 <defs>
@@ -464,15 +462,10 @@
                     <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
                     <circle cx="0" cy="-140" transform="rotate(300)" r="4.5" />
                 </g>
-                <g class="menu-item sub-item" data-target="exp-git" transform="rotate(0)">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item sub-item" data-target="exp-proj" transform="rotate(120)">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item sub-item" data-target="exp-test" transform="rotate(240)">
-                    <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
-                </g>
+                <g class="menu-item sub-item" data-target="exp-git" transform="rotate(0)" onclick="openPopup('expGit')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="exp-proj" transform="rotate(120)" onclick="openPopup('expProj')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="exp-test" transform="rotate(240)" onclick="openPopup('expTest')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
+                
                 <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.2px;">
                     <g><text class="svg-text svg-text-sub-exp-git"><textPath href="#tp-top-exp" startOffset="50%" text-anchor="middle">Github</textPath></text></g>
                     <g transform="rotate(-60)"><text class="svg-text svg-text-sub-exp-proj"><textPath href="#tp-bottom-exp" startOffset="50%" text-anchor="middle" dy="4">Project Done</textPath></text></g>
@@ -480,16 +473,11 @@
                 </g>
             </svg>
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-sub-exp-git" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-github-logo text-[24px]"></i>
-                </div>
-                <div id="icon-sub-exp-proj" class="html-overlay-icon absolute" style="top: 65.75%; left: 77.28%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-check-circle text-[24px]"></i>
-                </div>
-                <div id="icon-sub-exp-test" class="html-overlay-icon absolute" style="top: 65.75%; left: 22.72%; transform: translate(-50%, -50%);">
-                    <i class="ph ph-star text-[24px]"></i>
-                </div>
+                <div id="icon-sub-exp-git" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-github-logo text-[24px]"></i></div>
+                <div id="icon-sub-exp-proj" class="html-overlay-icon absolute" style="top: 65.75%; left: 77.28%; transform: translate(-50%, -50%);"><i class="ph ph-check-circle text-[24px]"></i></div>
+                <div id="icon-sub-exp-test" class="html-overlay-icon absolute" style="top: 65.75%; left: 22.72%; transform: translate(-50%, -50%);"><i class="ph ph-star text-[24px]"></i></div>
             </div>
+            <!-- Back Button -->
             <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
                 <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
                     <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
@@ -497,38 +485,29 @@
                 </div>
             </div>
         </div>
-        
     </div>
 
-    <!-- STRUKTUR MODAL POPUP (Diselitkan sebelum tag script bawah sekali) -->
-    <div id="itemModal" class="modal-overlay">
-        <div class="modal-card flex flex-col relative">
-            <!-- Butang Close (X) -->
-            <button onclick="closePopup()" class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center btn-modal text-lg">
+    <!-- STRUKTUR MODAL PERTAMA (INFO / TIMELINE) -->
+    <div id="itemModal" class="modal-overlay" style="z-index: 100;">
+        <div class="modal-card relative">
+            <button onclick="closePopup()" class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center btn-modal text-lg z-20">
                 <i class="ph ph-x text-[var(--icon-color)]"></i>
             </button>
-            
-            <div class="flex items-center gap-4 mb-5 mt-2">
-                <div class="w-14 h-14 rounded-full center-circle flex items-center justify-center flex-shrink-0">
-                    <i id="popupIcon" class="ph text-3xl text-[var(--primary)]"></i>
+            <div class="flex items-center gap-4 mb-4 relative z-10 pr-6">
+                <div class="w-12 h-12 rounded-full center-circle flex items-center justify-center flex-shrink-0">
+                    <i id="popupIcon" class="ph text-2xl text-[var(--primary)]"></i>
                 </div>
-                <h3 id="popupTitle" class="text-xl sm:text-2xl font-bold uppercase tracking-wide text-[var(--text-main)]">Tajuk</h3>
+                <h2 id="popupTitle" class="text-lg sm:text-xl font-bold uppercase tracking-wide text-[var(--text-main)]">Tajuk</h2>
             </div>
-            
-            <!-- Ditukar dari <p> ke <div> supaya boleh terima elemen Timeline -->
-            <div id="popupDesc" class="text-sm leading-relaxed text-[var(--text-muted)] mb-8 text-justify w-full">
-                Penerangan akan masuk di sini.
+            <div id="popupDesc" class="text-sm leading-relaxed text-[var(--text-muted)] text-justify mb-6 min-h-[60px]">
+                <!-- Penerangan / Timeline -->
             </div>
-            
-            <div class="flex flex-col gap-4">
-                <!-- Tukar <a> kepada <button> supaya tidak reload page -->
-                <button id="popupBtn1" class="btn-modal w-full py-3.5 px-4 rounded-xl flex items-center justify-center gap-3 text-sm font-medium">
-                    <i class="ph ph-image text-xl text-[var(--icon-color)]"></i>
-                    <span id="popupBtn1Text">List Silibus</span>
+            <div class="flex flex-col gap-3">
+                <button id="popupBtn1" class="btn-modal py-3 rounded-xl w-full hidden">
+                    <i id="popupBtn1Icon" class="ph"></i> <span id="popupBtn1Text" class="text-sm"></span>
                 </button>
-                <button id="popupBtn2" class="btn-modal primary w-full py-3.5 px-4 rounded-xl flex items-center justify-center gap-3 text-sm">
-                    <i class="ph ph-shopping-cart text-xl"></i>
-                    <span id="popupBtn2Text">Link Belian</span>
+                <button id="popupBtn2" class="btn-modal primary py-3 rounded-xl w-full hidden bg-[var(--primary)]/10">
+                    <i id="popupBtn2Icon" class="ph text-[var(--primary)]"></i> <span id="popupBtn2Text" class="text-sm text-[var(--primary)]"></span>
                 </button>
             </div>
         </div>
@@ -536,322 +515,462 @@
 
     <!-- STRUKTUR MODAL KEDUA (MEDIA - GAMBAR/IFRAME) -->
     <div id="mediaModal" class="modal-overlay" style="z-index: 110;">
-        <div class="modal-card w-[95%] max-w-3xl h-[80vh] flex flex-col relative p-4 sm:p-6" style="border-radius: 24px;">
-            <!-- Butang Close -->
+        <div class="modal-card w-[95%] max-w-3xl h-[80vh] flex flex-col relative p-4 sm:p-6" style="border-radius: 24px; max-height: 80vh;">
             <button onclick="closeMediaModal()" class="absolute -top-4 -right-4 w-10 h-10 rounded-full flex items-center justify-center btn-modal text-xl z-20" style="background: var(--bg-color);">
                 <i class="ph ph-x text-[var(--primary)]"></i>
             </button>
-            
-            <!-- Loading Spinner untuk Iframe -->
             <div id="mediaLoading" class="absolute inset-0 flex items-center justify-center pointer-events-none hidden">
                 <i class="ph ph-spinner-gap animate-spin text-4xl text-[var(--primary)]"></i>
             </div>
-
-            <!-- Tempat letak Content (Gambar/Iframe) -->
             <div id="mediaContainer" class="w-full h-full overflow-hidden rounded-xl bg-white/5 relative z-10 flex items-center justify-center">
-                <!-- Content dijana melalui JS -->
             </div>
         </div>
     </div>
 
-    <!-- LOGIK JAVASCRIPT -->
+    <!-- STRUKTUR MODAL KETIGA (TEMPAHAN COACHING - CALENDAR & FORM) -->
+    <div id="bookingModal" class="modal-overlay" style="z-index: 120;">
+        <div class="modal-card w-[95%] max-w-md max-h-[90vh] flex flex-col relative overflow-y-auto" style="border-radius: 24px;">
+            <button onclick="closeBooking()" class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center btn-modal text-lg z-20">
+                <i class="ph ph-x text-[var(--icon-color)]"></i>
+            </button>
+            
+            <div class="flex items-center gap-3 mb-6 mt-2 pr-6">
+                <div class="w-12 h-12 rounded-full center-circle flex items-center justify-center flex-shrink-0">
+                    <i class="ph ph-calendar-plus text-2xl text-[var(--primary)]"></i>
+                </div>
+                <div>
+                    <h3 id="bookingTitle" class="text-lg font-bold uppercase tracking-wide text-[var(--text-main)]">Tempahan</h3>
+                    <p id="bookingPrice" class="text-xs font-medium text-[var(--primary)]"></p>
+                </div>
+            </div>
+
+            <!-- STEP 1: PILIH TARIKH & MASA -->
+            <div id="step1Calendar" class="flex flex-col gap-4">
+                <div class="flex justify-between items-center mb-2 px-2">
+                    <button onclick="changeMonth(-1)" class="w-8 h-8 rounded-full btn-modal flex items-center justify-center"><i class="ph ph-caret-left"></i></button>
+                    <span id="monthYearDisplay" class="font-semibold text-sm uppercase tracking-wider"></span>
+                    <button onclick="changeMonth(1)" class="w-8 h-8 rounded-full btn-modal flex items-center justify-center"><i class="ph ph-caret-right"></i></button>
+                </div>
+                
+                <div class="grid grid-cols-7 gap-1 text-center mb-2">
+                    <div class="text-[10px] font-bold text-gray-400">AHA</div>
+                    <div class="text-[10px] font-bold text-gray-400">ISN</div>
+                    <div class="text-[10px] font-bold text-gray-400">SEL</div>
+                    <div class="text-[10px] font-bold text-gray-400">RAB</div>
+                    <div class="text-[10px] font-bold text-gray-400">KHA</div>
+                    <div class="text-[10px] font-bold text-gray-400">JUM</div>
+                    <div class="text-[10px] font-bold text-gray-400">SAB</div>
+                </div>
+                <div id="calendarDays" class="grid grid-cols-7 gap-1 sm:gap-2 mb-4">
+                    <!-- Javascript generated -->
+                </div>
+
+                <div id="timeSlotContainer" class="hidden flex-col gap-3 p-4 rounded-2xl bg-black/5 border border-white/10">
+                    <p class="text-xs font-semibold text-center uppercase tracking-wide">Slot Kekosongan:</p>
+                    <div id="timeSlotsGrid" class="grid grid-cols-2 gap-3">
+                        <!-- Javascript generated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: BORANG MAKLUMAT -->
+            <div id="step2Form" class="hidden flex-col gap-4">
+                <div class="p-3 rounded-xl bg-[var(--primary)]/10 border border-[var(--primary)]/20 mb-2 text-center">
+                    <p class="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-wider mb-1">Slot Dipilih:</p>
+                    <p id="selectedDateTimeDisplay" class="text-sm font-bold text-[var(--primary)]"></p>
+                </div>
+
+                <form id="coachingForm" onsubmit="submitCoaching(event)" class="flex flex-col gap-4">
+                    <div><input type="text" id="c_name" required placeholder="Nama Penuh" class="neu-input"></div>
+                    <div><input type="tel" id="c_phone" required placeholder="No. Telefon (WhatsApp)" class="neu-input"></div>
+
+                    <!-- Kawasan Dinamik mengikut pakej -->
+                    <div id="dynamicFormFields" class="flex flex-col gap-4"></div>
+
+                    <div><textarea id="c_remark" rows="2" placeholder="Cabaran / Fokus anda..." class="neu-input resize-none"></textarea></div>
+
+                    <div class="flex gap-3 mt-2">
+                        <button type="button" onclick="backToCalendar()" class="btn-modal w-1/3 py-3 rounded-xl text-xs font-medium">Kembali</button>
+                        <button type="submit" class="btn-modal primary w-2/3 py-3 rounded-xl flex items-center justify-center gap-2 text-xs font-bold hover:bg-[var(--primary)] hover:text-white transition-colors">
+                            Hantar <i class="ph ph-paper-plane-right text-lg"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // --- DATA UNTUK POPUP SELF LEARNING ---
-        const popupData = {
-            canva: {
-                title: "Canva Ai",
-                icon: "ph-palette",
-                desc: "Canva Ai akan diajar bagaimana membina sistem yang pelbagai menggunakan keupayaan Canva Ai secara efektif dan mudah.",
-                btn1Text: "List Silibus",
-                btn1Link: "https://i.postimg.cc/fT51QtGz/Chat-GPT-Image-Jul-10-2026-09-32-39-PM.png",
-                btn1Type: "image", // Nyatakan jenis link
-                btn2Text: "Link Belian",
-                btn2Link: "https://annurprosolutions1.bcl.my/form/canva-ai-sistem",
-                btn2Type: "iframe" // Nyatakan jenis link
-            },
-            gemini: {
-                title: "Gemini Ai",
-                icon: "ph-sparkle",
-                desc: "Gemini Ai akan di ajar bagaimana bina sistem yang pelbagai menggunakan Gemini Ai.",
-                btn1Text: "List Silibus",
-                btn1Link: "https://i.postimg.cc/SNy1NQ4d/Chat-GPT-Image-Jul-10-2026-09-37-27-PM.png",
-                btn1Type: "image",
-                btn2Text: "Link Belian",
-                btn2Link: "https://annurprosolutions1.bcl.my/form/gemini-ai-sistem",
-                btn2Type: "iframe"
-            },
-            looker: {
-                title: "Looker Studio",
-                icon: "ph-chart-bar",
-                desc: "Pelajari teknik membina dashboard interaktif dan visualisasi data yang profesional. Modul ini direka khas untuk membantu anda menganalisis dan mempersembahkan data dengan lebih efektif menggunakan Looker Studio.",
-                btn1Text: "List Silibus",
-                btn1Link: "https://i.postimg.cc/pXhhjzP2/Chat-GPT-Image-Jul-10-2026-09-39-55-PM.png",
-                btn1Type: "image",
-                btn2Text: "Link Belian",
-                btn2Link: "https://annurprosolutions1.bcl.my/form/looker-studio",
-                btn2Type: "iframe"
-            },
-            edu: {
-                title: "Edu Content",
-                icon: "ph-book-open",
-                desc: "Kuasai seni penghasilan kandungan pendidikan (Edu Content) yang berkualiti. Anda akan diajar strategi, teknik penyampaian, dan cara mencipta bahan pembelajaran yang menarik minat serta memberi impak.",
-                btn1Text: "List Silibus",
-                btn1Link: "https://i.postimg.cc/D0WZq3kH/Chat-GPT-Image-Jul-10-2026-09-42-54-PM.png",
-                btn1Type: "image",
-                btn2Text: "Link Belian",
-                btn2Link: "https://annurprosolutions1.bcl.my/form/educontent",
-                btn2Type: "iframe"
-            },
-            bundle: {
-                title: "Bundle Pack",
-                icon: "ph-package",
-                desc: "Jimat lebih besar dengan Pakej Bundle! Dapatkan akses penuh kepada kesemua modul komprehensif kami (Canva AI, Gemini AI, Looker Studio & Edu Content) dalam satu tawaran harga istimewa. Pelaburan paling berbaloi untuk kuasai semua kemahiran serentak.",
-                btn1Text: "List Silibus",
-                btn1Link: "https://i.postimg.cc/0y5NfSsK/image.png",
-                btn1Type: "image",
-                btn2Text: "Link Belian",
-                btn2Link: "https://annurprosolutions1.bcl.my/form/bundle",
-                btn2Type: "iframe"
-            },
-            
-            // --- DATA UNTUK ABOUT ME (TIMELINE) ---
-            aboutEdu: {
-                title: "Education",
-                icon: "ph-student",
-                desc: `
-                <div class="flex flex-col gap-4 mt-2">
-                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.1s;">
-                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
-                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2026 - PRESENT</div>
-                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">PhD Candidate</div>
-                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">Renewable Energy • UTEM</div>
-                    </div>
-                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.2s;">
-                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
-                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2019 - 2021</div>
-                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Master in Data Science & Analytic</div>
-                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">USM</div>
-                    </div>
-                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.3s;">
-                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
-                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2016 - 2018</div>
-                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Bachelor in Actuarial Science</div>
-                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">UiTM</div>
-                    </div>
-                </div>`
-                // Tiada butang 1 & 2 untuk Education
-            },
-            
-            aboutOcc: {
-                title: "Occupation",
-                icon: "ph-buildings",
-                desc: `
-                <div class="flex flex-col gap-4 mt-2 max-h-[40vh] overflow-y-auto pr-3" style="scrollbar-width: thin;">
-                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.1s;">
-                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
-                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2025 - PRESENT</div>
-                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Founder</div>
-                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">AnnurPro Solutions</div>
-                    </div>
-                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.2s;">
-                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
-                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2023 - PRESENT</div>
-                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Strategic Planner</div>
-                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">Voltake Energy Services</div>
-                    </div>
-                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.3s;">
-                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
-                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2023 - 2025</div>
-                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Marketing Executive</div>
-                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">Prima First Auto Sdn Bhd</div>
-                    </div>
-                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.4s;">
-                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
-                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2019 - 2022</div>
-                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Media Executive</div>
-                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">Bahrul Ulum</div>
-                    </div>
-                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.5s;">
-                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
-                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2018</div>
-                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Human Resource Executive</div>
-                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">SIRIM</div>
-                    </div>
-                </div>`
-            },
-            
-            aboutRes: {
-                title: "Resume",
-                icon: "ph-file-text",
-                desc: "Sila klik butang di bawah untuk melihat dan memuat turun resume penuh saya (Format PDF).",
-                btn2Text: "Lihat Resume Penuh",
-                btn2Icon: "ph-file-pdf", // Tukar Ikon kepada PDF
-                btn2Link: "https://drive.google.com/file/d/1k-W4qzXDHzBjEQ1MyAYC6RE7kaKheVKc/preview", // Gunakan /preview untuk elak error pada iframe
-                btn2Type: "iframe"
-            }
+        // Pembolehubah Global diletakkan di atas sekali supaya tidak berlaku ReferenceError
+        let currentCoachingType = '';
+        let currentDate = new Date();
+        let selectedDate = null;
+        let selectedTime = '';
+
+        const coachingDetails = {
+            '1to1': { title: '1 to 1 Coaching', price: 'RM 189.00 / Sesi (2 Jam)', isOnline: true },
+            '3to1': { title: '3 to 1 Coaching', price: 'RM 350.00 / Sesi (2 Jam)', isOnline: true },
+            'custom': { title: 'Custom Coaching', price: 'Sebut Harga (Quotation)', isOnline: false }
         };
 
-        // --- FUNGSI BUKA POPUP UTAMA (Diperbaharui) ---
-        function openPopup(id) {
-            const data = popupData[id];
-            if(!data) return;
-
-            document.getElementById('popupTitle').innerText = data.title;
-            document.getElementById('popupIcon').className = `ph ${data.icon} text-3xl text-[var(--primary)]`;
+        const popupData = {
+            // SELF LEARNING
+            canva: {
+                title: "Canva Ai", icon: "ph-palette",
+                desc: "Canva Ai akan diajar bagaimana membina sistem yang pelbagai menggunakan keupayaan Canva Ai secara efektif dan mudah.",
+                btn1Text: "List Silibus", btn1Icon: "ph-image", btn1Link: "https://i.postimg.cc/fT51QtGz/Chat-GPT-Image-Jul-10-2026-09-32-39-PM.png", btn1Type: "image",
+                btn2Text: "Link Belian", btn2Icon: "ph-shopping-cart", btn2Link: "https://annurprosolutions1.bcl.my/form/canva-ai-sistem", btn2Type: "iframe"
+            },
+            gemini: {
+                title: "Gemini Ai", icon: "ph-sparkle",
+                desc: "Gemini Ai akan di ajar bagaimana bina sistem yang pelbagai menggunakan keupayaan Gemini Ai yang termaju.",
+                btn1Text: "List Silibus", btn1Icon: "ph-image", btn1Link: "https://i.postimg.cc/SNy1NQ4d/Chat-GPT-Image-Jul-10-2026-09-37-27-PM.png", btn1Type: "image",
+                btn2Text: "Link Belian", btn2Icon: "ph-shopping-cart", btn2Link: "https://annurprosolutions1.bcl.my/form/gemini-ai-sistem", btn2Type: "iframe"
+            },
+            looker: {
+                title: "Looker Studio", icon: "ph-chart-bar",
+                desc: "Pelajari teknik membina dashboard interaktif dan visualisasi data yang profesional menggunakan Looker Studio.",
+                btn1Text: "List Silibus", btn1Icon: "ph-image", btn1Link: "https://i.postimg.cc/pXhhjzP2/Chat-GPT-Image-Jul-10-2026-09-39-55-PM.png", btn1Type: "image",
+                btn2Text: "Link Belian", btn2Icon: "ph-shopping-cart", btn2Link: "https://annurprosolutions1.bcl.my/form/looker-studio", btn2Type: "iframe"
+            },
+            edu: {
+                title: "Edu Content", icon: "ph-book-open",
+                desc: "Kuasai seni penghasilan kandungan pendidikan (Edu Content) yang berkualiti dan berimpak tinggi.",
+                btn1Text: "List Silibus", btn1Icon: "ph-image", btn1Link: "https://i.postimg.cc/D0WZq3kH/Chat-GPT-Image-Jul-10-2026-09-42-54-PM.png", btn1Type: "image",
+                btn2Text: "Link Belian", btn2Icon: "ph-shopping-cart", btn2Link: "https://annurprosolutions1.bcl.my/form/educontent", btn2Type: "iframe"
+            },
+            bundle: {
+                title: "Bundle Pack", icon: "ph-package",
+                desc: "Jimat lebih besar! Dapatkan akses kepada Canva AI, Gemini AI, Looker Studio & Edu Content dalam satu tawaran istimewa.",
+                btn1Text: "List Silibus", btn1Icon: "ph-image", btn1Link: "https://i.postimg.cc/0y5NfSsK/image.png", btn1Type: "image",
+                btn2Text: "Link Belian", btn2Icon: "ph-shopping-cart", btn2Link: "https://annurprosolutions1.bcl.my/form/bundle", btn2Type: "iframe"
+            },
             
-            // Menggunakan innerHTML supaya gaya HTML bersusur (Timeline) terpakai
-            document.getElementById('popupDesc').innerHTML = data.desc; 
+            // ABOUT ME
+            aboutEdu: {
+                title: "Education", icon: "ph-student",
+                desc: `
+                <div class="flex flex-col gap-4 mt-2">
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="animation: fadeUp 0.5s forwards;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7.5px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2026 - PRESENT</div>
+                        <div class="text-[14px] font-bold text-[var(--text-main)] mt-0.5">PhD Candidate</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)]">Renewable Energy (UTEM)</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; animation: fadeUp 0.5s forwards 0.2s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7.5px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2019 - 2021</div>
+                        <div class="text-[14px] font-bold text-[var(--text-main)] mt-0.5">Master in Data Science</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)]">Analytic (USM)</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; animation: fadeUp 0.5s forwards 0.4s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7.5px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2016 - 2018</div>
+                        <div class="text-[14px] font-bold text-[var(--text-main)] mt-0.5">Bachelor in Actuarial Science</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)]">(UiTM)</div>
+                    </div>
+                </div>`
+            },
+            aboutOcc: {
+                title: "Occupation", icon: "ph-buildings",
+                desc: `
+                <div class="flex flex-col gap-4 mt-2">
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="animation: fadeUp 0.5s forwards;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7.5px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2025 - PRESENT</div>
+                        <div class="text-[14px] font-bold text-[var(--text-main)] mt-0.5">Founder</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)]">AnnurPro Solutions</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; animation: fadeUp 0.5s forwards 0.15s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7.5px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2023 - PRESENT</div>
+                        <div class="text-[14px] font-bold text-[var(--text-main)] mt-0.5">Strategic Planner</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)]">Voltake Energy Services</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; animation: fadeUp 0.5s forwards 0.3s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7.5px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2023 - 2025</div>
+                        <div class="text-[14px] font-bold text-[var(--text-main)] mt-0.5">Marketing Executive</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)]">Prima First Auto Sdn Bhd</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; animation: fadeUp 0.5s forwards 0.45s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7.5px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2019 - 2022</div>
+                        <div class="text-[14px] font-bold text-[var(--text-main)] mt-0.5">Media Executive</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)]">Bahrul Ulum</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; animation: fadeUp 0.5s forwards 0.6s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7.5px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2018</div>
+                        <div class="text-[14px] font-bold text-[var(--text-main)] mt-0.5">Human Resource Exec</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)]">SIRIM</div>
+                    </div>
+                </div>`
+            },
+            aboutRes: {
+                title: "Resume", icon: "ph-file-text",
+                desc: "Sila klik butang di bawah untuk melihat dan memuat turun resume penuh saya secara terus tanpa meninggalkan laman ini.",
+                btn2Text: "Lihat Resume Penuh", btn2Icon: "ph-file-pdf", btn2Link: "https://drive.google.com/file/d/1k-W4qzXDHzBjEQ1MyAYC6RE7kaKheVKc/preview", btn2Type: "iframe"
+            },
             
-            const btn1 = document.getElementById('popupBtn1');
-            if (data.btn1Text) {
-                btn1.style.display = 'flex';
-                document.getElementById('popupBtn1Text').innerText = data.btn1Text;
-                btn1.querySelector('i').className = `ph ${data.btn1Icon || 'ph-image'} text-xl text-[var(--icon-color)]`;
-                btn1.onclick = () => openMediaModal(data.btn1Link, data.btn1Type);
-            } else {
-                btn1.style.display = 'none'; // Sembunyikan butang jika data tiada
-            }
-            
-            const btn2 = document.getElementById('popupBtn2');
-            if (data.btn2Text) {
-                btn2.style.display = 'flex';
-                document.getElementById('popupBtn2Text').innerText = data.btn2Text;
-                btn2.querySelector('i').className = `ph ${data.btn2Icon || 'ph-shopping-cart'} text-xl`;
-                btn2.onclick = () => openMediaModal(data.btn2Link, data.btn2Type);
-            } else {
-                btn2.style.display = 'none'; // Sembunyikan butang jika data tiada
-            }
+            // EXPERIENCE
+            expGit: { title: "Github", icon: "ph-github-logo", desc: "Repositori Github sedang dikemaskini. Nantikan perkongsian kod dan projek terbaru!" },
+            expProj: { title: "Project Done", icon: "ph-check-circle", desc: "Senarai projek berjaya disiapkan sedang disusun untuk rujukan anda kelak." },
+            expTest: { title: "Testimonial", icon: "ph-star", desc: "Maklum balas dan testimoni pelanggan akan dipaparkan di sini dalam masa terdekat." }
+        };
 
-            document.getElementById('itemModal').classList.add('show');
-        }
-
-        // --- FUNGSI BUKA POPUP MEDIA (GAMBAR/IFRAME) ---
-        function openMediaModal(url, type) {
-            if(!url || url === '#') return; // Abaikan jika link belum ada
-            
-            const container = document.getElementById('mediaContainer');
-            const loading = document.getElementById('mediaLoading');
-            
-            container.innerHTML = ''; // Kosongkan content lama
-            
-            if(type === 'image') {
-                loading.style.display = 'none';
-                container.innerHTML = `<img src="${url}" class="w-full h-full object-contain rounded-xl" alt="Media" />`;
-            } else if (type === 'iframe') {
-                loading.style.display = 'flex'; // Tunjuk loading
-                // Bila iframe dah siap load, kita sorokkan loading
-                container.innerHTML = `<iframe src="${url}" class="w-full h-full border-0 rounded-xl bg-white" onload="document.getElementById('mediaLoading').style.display='none'"></iframe>`;
-            }
-
-            document.getElementById('mediaModal').classList.add('show');
-        }
-
-        // --- FUNGSI TUTUP POPUP ---
-        function closePopup() {
-            document.getElementById('itemModal').classList.remove('show');
-        }
-
-        function closeMediaModal() {
-            document.getElementById('mediaModal').classList.remove('show');
-            // Lepas animasi tutup habis (300ms), kosongkan memori iframe
-            setTimeout(() => {
-                document.getElementById('mediaContainer').innerHTML = '';
-            }, 300);
-        }
-
-        // Tutup jika user klik di kawasan luar/kabur (overlay)
-        document.getElementById('itemModal').addEventListener('click', function(e) {
-            if (e.target === this) closePopup();
-        });
-
-        document.getElementById('mediaModal').addEventListener('click', function(e) {
-            if (e.target === this) closeMediaModal();
-        });
-
-        // Logik Buka Menu Sub (Self Learning)
         function openSubMenu(menuId) {
             const mainMenu = document.getElementById('main-menu');
             const subMenu = document.getElementById(`submenu-${menuId}`);
-            
             if(!subMenu) return;
-
-            // Main menu turun & hilang
             mainMenu.classList.remove('view-active');
             mainMenu.classList.add('view-hidden-down');
-
-            // Sub menu naik & muncul
-            subMenu.classList.remove('view-hidden-down', 'view-hidden-up'); // just in case
-            // Sedikit delay untuk efek yang lebih semulajadi
-            setTimeout(() => {
-                subMenu.classList.add('view-active');
-            }, 100);
+            subMenu.classList.remove('view-hidden-down', 'view-hidden-up');
+            setTimeout(() => { subMenu.classList.add('view-active'); }, 100);
         }
 
-        // Logik Kembali ke Menu Utama
         function goBack() {
             const mainMenu = document.getElementById('main-menu');
-            
-            // Cari sub menu yang sedang aktif
             const activeSubMenu = document.querySelector('.view-layer:not(#main-menu).view-active');
-            
             if(activeSubMenu) {
-                // Sub menu turun & hilang
                 activeSubMenu.classList.remove('view-active');
                 activeSubMenu.classList.add('view-hidden-down');
             }
-
-            // Main menu naik semula
             setTimeout(() => {
                 mainMenu.classList.remove('view-hidden-down', 'view-hidden-up');
                 mainMenu.classList.add('view-active');
             }, 100);
         }
 
-        // Logik Toggle Tema (Dark/Light Mode)
+        function openPopup(id) {
+            const data = popupData[id];
+            if(!data) return;
+
+            document.getElementById('popupTitle').innerText = data.title;
+            document.getElementById('popupIcon').className = `ph ${data.icon} text-2xl text-[var(--primary)]`;
+            document.getElementById('popupDesc').innerHTML = data.desc; 
+            
+            const btn1 = document.getElementById('popupBtn1');
+            if (data.btn1Text) {
+                btn1.style.display = 'flex';
+                document.getElementById('popupBtn1Text').innerText = data.btn1Text;
+                document.getElementById('popupBtn1Icon').className = `ph ${data.btn1Icon || 'ph-image'} text-xl text-[var(--icon-color)]`;
+                btn1.onclick = () => openMediaModal(data.btn1Link, data.btn1Type);
+            } else { btn1.style.display = 'none'; }
+            
+            const btn2 = document.getElementById('popupBtn2');
+            if (data.btn2Text) {
+                btn2.style.display = 'flex';
+                document.getElementById('popupBtn2Text').innerText = data.btn2Text;
+                document.getElementById('popupBtn2Icon').className = `ph ${data.btn2Icon || 'ph-shopping-cart'} text-xl text-[var(--primary)]`;
+                btn2.onclick = () => openMediaModal(data.btn2Link, data.btn2Type);
+            } else { btn2.style.display = 'none'; }
+
+            document.getElementById('itemModal').classList.add('show');
+        }
+
+        function closePopup() { document.getElementById('itemModal').classList.remove('show'); }
+
+        function openMediaModal(url, type) {
+            if(!url || url === '#') return;
+            const container = document.getElementById('mediaContainer');
+            const loading = document.getElementById('mediaLoading');
+            container.innerHTML = ''; 
+            
+            if(type === 'image') {
+                loading.style.display = 'none';
+                container.innerHTML = `<img src="${url}" class="w-full h-full object-contain rounded-xl" alt="Silibus" />`;
+            } else if (type === 'iframe') {
+                loading.style.display = 'flex';
+                container.innerHTML = `<iframe src="${url}" class="w-full h-full border-0 rounded-xl bg-white" onload="document.getElementById('mediaLoading').style.display='none'"></iframe>`;
+            }
+            document.getElementById('mediaModal').classList.add('show');
+        }
+
+        function closeMediaModal() {
+            document.getElementById('mediaModal').classList.remove('show');
+            setTimeout(() => { document.getElementById('mediaContainer').innerHTML = ''; }, 300);
+        }
+
+        function openBooking(type) {
+            currentCoachingType = type;
+            const details = coachingDetails[type];
+            document.getElementById('bookingTitle').innerText = details.title;
+            document.getElementById('bookingPrice').innerText = details.price;
+            
+            selectedDate = null; selectedTime = '';
+            document.getElementById('timeSlotContainer').classList.add('hidden');
+            document.getElementById('step1Calendar').style.display = 'flex';
+            document.getElementById('step2Form').style.display = 'none';
+            
+            renderCalendar();
+            document.getElementById('bookingModal').classList.add('show');
+        }
+
+        function closeBooking() { document.getElementById('bookingModal').classList.remove('show'); }
+
+        function changeMonth(dir) {
+            currentDate.setMonth(currentDate.getMonth() + dir);
+            renderCalendar();
+            document.getElementById('timeSlotContainer').classList.add('hidden');
+        }
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const monthNames = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
+            document.getElementById('monthYearDisplay').innerText = `${monthNames[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+            
+            for (let i = 0; i < firstDay; i++) { calendarDays.innerHTML += `<div class="calendar-day empty"></div>`; }
+            
+            const today = new Date();
+            today.setHours(0,0,0,0); // reset masa untuk perbandingan tepat
+            
+            for (let i = 1; i <= daysInMonth; i++) {
+                const iterDate = new Date(year, month, i);
+                if(iterDate < today) {
+                    calendarDays.innerHTML += `<div class="calendar-day empty opacity-30">${i}</div>`;
+                } else {
+                    calendarDays.innerHTML += `<div class="calendar-day" onclick="selectDate(${year}, ${month}, ${i}, this)">${i}</div>`;
+                }
+            }
+        }
+
+        function selectDate(year, month, day, element) {
+            document.querySelectorAll('.calendar-day').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedDate = new Date(year, month, day);
+            renderTimeSlots(selectedDate.getDay());
+        }
+
+        function renderTimeSlots(dayOfWeek) {
+            const container = document.getElementById('timeSlotContainer');
+            const grid = document.getElementById('timeSlotsGrid');
+            grid.innerHTML = ''; container.classList.remove('hidden');
+            let slots = [];
+            
+            if (dayOfWeek === 0) { // Ahad
+                slots = ['08:00 AM - 10:00 AM', '11:00 AM - 01:00 PM', '02:00 PM - 04:00 PM', '05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM'];
+            } else if (dayOfWeek === 6) { // Sabtu
+                slots = ['05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM'];
+            } else { // Isnin - Jumaat
+                slots = ['09:00 PM - 11:00 PM'];
+            }
+
+            slots.forEach(time => {
+                grid.innerHTML += `<div class="slot-btn" onclick="proceedToForm('${time}')">${time}</div>`;
+            });
+            // Auto scroll ke slot
+            setTimeout(() => { container.scrollIntoView({behavior: 'smooth', block: 'nearest'}); }, 100);
+        }
+
+        function proceedToForm(time) {
+            selectedTime = time;
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = selectedDate.toLocaleDateString('ms-MY', options);
+            document.getElementById('selectedDateTimeDisplay').innerHTML = `${dateStr} <br/> <span class="text-[var(--text-main)] text-xs font-semibold mt-1 block">${selectedTime}</span>`;
+            
+            const dynamicFields = document.getElementById('dynamicFormFields');
+            dynamicFields.innerHTML = ''; 
+            
+            if (currentCoachingType === '1to1' || currentCoachingType === '3to1') {
+                let html = `
+                    <select id="c_focus" required class="neu-input">
+                        <option value="" disabled selected>Pilih Fokus Pembelajaran</option>
+                        <option value="Canva Ai">Canva Ai</option>
+                        <option value="Gemini Ai">Gemini Ai</option>
+                        <option value="Looker Studio">Looker Studio</option>
+                        <option value="Website">Website</option>
+                    </select>`;
+                if (currentCoachingType === '3to1') {
+                    html += `<textarea id="c_participants" required rows="2" placeholder="Senarai Nama Peserta (3 Orang)..." class="neu-input resize-none"></textarea>`;
+                }
+                dynamicFields.innerHTML = html;
+            } else if (currentCoachingType === 'custom') {
+                dynamicFields.innerHTML = `
+                    <select id="c_goal" required class="neu-input">
+                        <option value="" disabled selected>Tujuan Coaching</option>
+                        <option value="Bina Sistem">Bina Sistem / Syarikat</option>
+                        <option value="Kelas Ramai">Kelas Berkumpulan (Ramai)</option>
+                    </select>
+                    <input type="number" id="c_budget" required placeholder="Anggaran Bajet (RM)" class="neu-input">
+                    <select id="c_mode" required class="neu-input">
+                        <option value="" disabled selected>Mod Kelas</option>
+                        <option value="Online">Online (Google Meet/Zoom)</option>
+                        <option value="Fizikal">Bersemuka (Fizikal)</option>
+                    </select>`;
+            }
+
+            document.getElementById('step1Calendar').style.display = 'none';
+            document.getElementById('step2Form').style.display = 'flex';
+        }
+
+        function backToCalendar() {
+            document.getElementById('step1Calendar').style.display = 'flex';
+            document.getElementById('step2Form').style.display = 'none';
+        }
+
+        function submitCoaching(e) {
+            e.preventDefault();
+            const name = document.getElementById('c_name').value;
+            const phone = document.getElementById('c_phone').value;
+            const remark = document.getElementById('c_remark').value || "Tiada catatan tambahan.";
+            const dateStr = selectedDate.toLocaleDateString('ms-MY');
+            
+            let message = `*TEMPAHAN COACHING BARU*%0A%0A`;
+            message += `*Pakej:* ${coachingDetails[currentCoachingType].title}%0A`;
+            message += `*Tarikh:* ${dateStr}%0A`;
+            message += `*Masa:* ${selectedTime}%0A`;
+            message += `*Nama:* ${name}%0A`;
+            message += `*No Tel:* ${phone}%0A%0A`;
+            
+            if (currentCoachingType === '1to1') {
+                message += `*Fokus:* ${document.getElementById('c_focus').value}%0A`;
+            } else if (currentCoachingType === '3to1') {
+                message += `*Fokus:* ${document.getElementById('c_focus').value}%0A`;
+                message += `*Senarai Peserta:* %0A${document.getElementById('c_participants').value}%0A`;
+            } else if (currentCoachingType === 'custom') {
+                message += `*Tujuan:* ${document.getElementById('c_goal').value}%0A`;
+                message += `*Bajet:* RM ${document.getElementById('c_budget').value}%0A`;
+                message += `*Mod Kelas:* ${document.getElementById('c_mode').value}%0A`;
+            }
+
+            message += `%0A*Cabaran/Nota:* %0A${remark}`;
+
+            // === TUKAR NOMBOR TELEFON ANDA DI SINI ===
+            const whatsappNumber = "60111111111"; // <<-- Ganti dengan nombor anda
+            window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+            closeBooking();
+        }
+
+        document.getElementById('itemModal').addEventListener('click', function(e) { if (e.target === this) closePopup(); });
+        document.getElementById('mediaModal').addEventListener('click', function(e) { if (e.target === this) closeMediaModal(); });
+        document.getElementById('bookingModal').addEventListener('click', function(e) { if (e.target === this) closeBooking(); });
+
         const themeToggleBtn = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
-        
         const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
         document.documentElement.setAttribute('data-theme', currentTheme);
         updateThemeIcon(currentTheme);
 
         themeToggleBtn.addEventListener('click', () => {
             let theme = document.documentElement.getAttribute('data-theme');
             let switchTo = theme === 'dark' ? 'light' : 'dark';
-            
             document.documentElement.setAttribute('data-theme', switchTo);
             localStorage.setItem('theme', switchTo);
             updateThemeIcon(switchTo);
         });
 
         function updateThemeIcon(theme) {
-            if(theme === 'dark') {
-                themeIcon.classList.remove('ph-moon');
-                themeIcon.classList.add('ph-sun');
-            } else {
-                themeIcon.classList.remove('ph-sun');
-                themeIcon.classList.add('ph-moon');
-            }
+            if(theme === 'dark') { themeIcon.classList.replace('ph-moon', 'ph-sun'); } 
+            else { themeIcon.classList.replace('ph-sun', 'ph-moon'); }
         }
-
-        // Logik Hover Highlight
-        function attachHover(itemsClass, prefix) {
-            document.querySelectorAll(itemsClass).forEach(item => {
-                item.addEventListener('mouseenter', () => {
-                    const targetId = item.getAttribute('data-target');
-                    document.querySelector(`.svg-text-${prefix}-${targetId}`)?.classList.add('hover-active');
-                    document.getElementById(`icon-${prefix}-${targetId}`)?.classList.add('hover-active');
-                });
-                item.addEventListener('mouseleave', () => {
-                    const targetId = item.getAttribute('data-target');
-                    document.querySelector(`.svg-text-${prefix}-${targetId}`)?.classList.remove('hover-active');
-                    document.getElementById(`icon-${prefix}-${targetId}`)?.classList.remove('hover-active');
-                });
-            });
-        }
-
-        attachHover('.main-item', 'main');
-        attachHover('.sub-item', 'sub');
     </script>
 </body>
 </html>
