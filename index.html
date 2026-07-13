@@ -368,13 +368,13 @@
                     <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
                     <circle cx="0" cy="-140" transform="rotate(300)" r="4.5" />
                 </g>
-                <g class="menu-item sub-item" data-target="about-edu" transform="rotate(0)">
+                <g class="menu-item sub-item" data-target="about-edu" transform="rotate(0)" onclick="openPopup('aboutEdu')">
                     <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
                 </g>
-                <g class="menu-item sub-item" data-target="about-occ" transform="rotate(120)">
+                <g class="menu-item sub-item" data-target="about-occ" transform="rotate(120)" onclick="openPopup('aboutOcc')">
                     <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
                 </g>
-                <g class="menu-item sub-item" data-target="about-res" transform="rotate(240)">
+                <g class="menu-item sub-item" data-target="about-res" transform="rotate(240)" onclick="openPopup('aboutRes')">
                     <g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g>
                 </g>
                 <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.2px;">
@@ -515,9 +515,10 @@
                 <h3 id="popupTitle" class="text-xl sm:text-2xl font-bold uppercase tracking-wide text-[var(--text-main)]">Tajuk</h3>
             </div>
             
-            <p id="popupDesc" class="text-sm leading-relaxed text-[var(--text-muted)] mb-8 text-justify">
+            <!-- Ditukar dari <p> ke <div> supaya boleh terima elemen Timeline -->
+            <div id="popupDesc" class="text-sm leading-relaxed text-[var(--text-muted)] mb-8 text-justify w-full">
                 Penerangan akan masuk di sini.
-            </p>
+            </div>
             
             <div class="flex flex-col gap-4">
                 <!-- Tukar <a> kepada <button> supaya tidak reload page -->
@@ -611,25 +612,115 @@
                 btn2Text: "Link Belian",
                 btn2Link: "https://annurprosolutions1.bcl.my/form/bundle",
                 btn2Type: "iframe"
+            },
+            
+            // --- DATA UNTUK ABOUT ME (TIMELINE) ---
+            aboutEdu: {
+                title: "Education",
+                icon: "ph-student",
+                desc: `
+                <div class="flex flex-col gap-4 mt-2">
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.1s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2026 - PRESENT</div>
+                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">PhD Candidate</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">Renewable Energy • UTEM</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.2s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2019 - 2021</div>
+                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Master in Data Science & Analytic</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">USM</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.3s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2016 - 2018</div>
+                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Bachelor in Actuarial Science</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">UiTM</div>
+                    </div>
+                </div>`
+                // Tiada butang 1 & 2 untuk Education
+            },
+            
+            aboutOcc: {
+                title: "Occupation",
+                icon: "ph-buildings",
+                desc: `
+                <div class="flex flex-col gap-4 mt-2 max-h-[40vh] overflow-y-auto pr-3" style="scrollbar-width: thin;">
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.1s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2025 - PRESENT</div>
+                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Founder</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">AnnurPro Solutions</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.2s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2023 - PRESENT</div>
+                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Strategic Planner</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">Voltake Energy Services</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.3s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2023 - 2025</div>
+                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Marketing Executive</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">Prima First Auto Sdn Bhd</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.4s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2019 - 2022</div>
+                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Media Executive</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">Bahrul Ulum</div>
+                    </div>
+                    <div class="relative pl-6 border-l-2 border-[var(--primary)]" style="opacity:0; transform:translateY(15px); animation: fadeUp 0.5s forwards; animation-delay: 0.5s;">
+                        <div class="absolute w-3 h-3 bg-[var(--bg-color)] border-2 border-[var(--primary)] rounded-full -left-[7px] top-1"></div>
+                        <div class="text-[11px] font-bold text-[var(--primary)] tracking-wider">2018</div>
+                        <div class="text-[15px] font-bold text-[var(--text-main)] mt-0.5">Human Resource Executive</div>
+                        <div class="text-xs font-medium text-[var(--text-muted)] mt-1">SIRIM</div>
+                    </div>
+                </div>`
+            },
+            
+            aboutRes: {
+                title: "Resume",
+                icon: "ph-file-text",
+                desc: "Sila klik butang di bawah untuk melihat dan memuat turun resume penuh saya (Format PDF).",
+                btn2Text: "Lihat Resume Penuh",
+                btn2Icon: "ph-file-pdf", // Tukar Ikon kepada PDF
+                btn2Link: "https://drive.google.com/file/d/1k-W4qzXDHzBjEQ1MyAYC6RE7kaKheVKc/preview", // Gunakan /preview untuk elak error pada iframe
+                btn2Type: "iframe"
             }
         };
 
-        // --- FUNGSI BUKA POPUP UTAMA ---
+        // --- FUNGSI BUKA POPUP UTAMA (Diperbaharui) ---
         function openPopup(id) {
             const data = popupData[id];
             if(!data) return;
 
             document.getElementById('popupTitle').innerText = data.title;
             document.getElementById('popupIcon').className = `ph ${data.icon} text-3xl text-[var(--primary)]`;
-            document.getElementById('popupDesc').innerText = data.desc;
+            
+            // Menggunakan innerHTML supaya gaya HTML bersusur (Timeline) terpakai
+            document.getElementById('popupDesc').innerHTML = data.desc; 
             
             const btn1 = document.getElementById('popupBtn1');
-            document.getElementById('popupBtn1Text').innerText = data.btn1Text;
-            btn1.onclick = () => openMediaModal(data.btn1Link, data.btn1Type);
+            if (data.btn1Text) {
+                btn1.style.display = 'flex';
+                document.getElementById('popupBtn1Text').innerText = data.btn1Text;
+                btn1.querySelector('i').className = `ph ${data.btn1Icon || 'ph-image'} text-xl text-[var(--icon-color)]`;
+                btn1.onclick = () => openMediaModal(data.btn1Link, data.btn1Type);
+            } else {
+                btn1.style.display = 'none'; // Sembunyikan butang jika data tiada
+            }
             
             const btn2 = document.getElementById('popupBtn2');
-            document.getElementById('popupBtn2Text').innerText = data.btn2Text;
-            btn2.onclick = () => openMediaModal(data.btn2Link, data.btn2Type);
+            if (data.btn2Text) {
+                btn2.style.display = 'flex';
+                document.getElementById('popupBtn2Text').innerText = data.btn2Text;
+                btn2.querySelector('i').className = `ph ${data.btn2Icon || 'ph-shopping-cart'} text-xl`;
+                btn2.onclick = () => openMediaModal(data.btn2Link, data.btn2Type);
+            } else {
+                btn2.style.display = 'none'; // Sembunyikan butang jika data tiada
+            }
 
             document.getElementById('itemModal').classList.add('show');
         }
