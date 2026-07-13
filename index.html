@@ -146,6 +146,57 @@
             pointer-events: none;
         }
 
+        /* Gaya Modal Popup (Baru) */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.4); /* Kabur gelap */
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background-color: var(--bg-color);
+            border: 1px solid var(--card-border);
+            box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            padding: 28px;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-overlay.show .modal-card {
+            transform: scale(1);
+        }
+
+        .btn-modal {
+            background-color: var(--bg-color);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+            transition: all 0.2s ease;
+            color: var(--text-main);
+        }
+        .btn-modal:active {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            transform: scale(0.96);
+        }
+        .btn-modal.primary {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col items-center justify-center p-4">
@@ -250,19 +301,20 @@
                     <circle cx="0" cy="-140" transform="rotate(324)" r="4.5" />
                 </g>
 
-                <g class="menu-item sub-item" data-target="canva" transform="rotate(0)">
+                <!-- BUTTONS SELF LEARNING: Ditambah fungsi onclick="openPopup('id')" -->
+                <g class="menu-item sub-item" data-target="canva" transform="rotate(0)" onclick="openPopup('canva')">
                     <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
                 </g>
-                <g class="menu-item sub-item" data-target="gemini" transform="rotate(72)">
+                <g class="menu-item sub-item" data-target="gemini" transform="rotate(72)" onclick="openPopup('gemini')">
                     <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
                 </g>
-                <g class="menu-item sub-item" data-target="looker" transform="rotate(144)">
+                <g class="menu-item sub-item" data-target="looker" transform="rotate(144)" onclick="openPopup('looker')">
                     <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
                 </g>
-                <g class="menu-item sub-item" data-target="edu" transform="rotate(216)">
+                <g class="menu-item sub-item" data-target="edu" transform="rotate(216)" onclick="openPopup('edu')">
                     <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
                 </g>
-                <g class="menu-item sub-item" data-target="bundle" transform="rotate(288)">
+                <g class="menu-item sub-item" data-target="bundle" transform="rotate(288)" onclick="openPopup('bundle')">
                     <g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g>
                 </g>
 
@@ -448,8 +500,175 @@
         
     </div>
 
+    <!-- STRUKTUR MODAL POPUP (Diselitkan sebelum tag script bawah sekali) -->
+    <div id="itemModal" class="modal-overlay">
+        <div class="modal-card flex flex-col relative">
+            <!-- Butang Close (X) -->
+            <button onclick="closePopup()" class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center btn-modal text-lg">
+                <i class="ph ph-x text-[var(--icon-color)]"></i>
+            </button>
+            
+            <div class="flex items-center gap-4 mb-5 mt-2">
+                <div class="w-14 h-14 rounded-full center-circle flex items-center justify-center flex-shrink-0">
+                    <i id="popupIcon" class="ph text-3xl text-[var(--primary)]"></i>
+                </div>
+                <h3 id="popupTitle" class="text-xl sm:text-2xl font-bold uppercase tracking-wide text-[var(--text-main)]">Tajuk</h3>
+            </div>
+            
+            <p id="popupDesc" class="text-sm leading-relaxed text-[var(--text-muted)] mb-8 text-justify">
+                Penerangan akan masuk di sini.
+            </p>
+            
+            <div class="flex flex-col gap-4">
+                <!-- Tukar <a> kepada <button> supaya tidak reload page -->
+                <button id="popupBtn1" class="btn-modal w-full py-3.5 px-4 rounded-xl flex items-center justify-center gap-3 text-sm font-medium">
+                    <i class="ph ph-image text-xl text-[var(--icon-color)]"></i>
+                    <span id="popupBtn1Text">List Silibus</span>
+                </button>
+                <button id="popupBtn2" class="btn-modal primary w-full py-3.5 px-4 rounded-xl flex items-center justify-center gap-3 text-sm">
+                    <i class="ph ph-shopping-cart text-xl"></i>
+                    <span id="popupBtn2Text">Link Belian</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STRUKTUR MODAL KEDUA (MEDIA - GAMBAR/IFRAME) -->
+    <div id="mediaModal" class="modal-overlay" style="z-index: 110;">
+        <div class="modal-card w-[95%] max-w-3xl h-[80vh] flex flex-col relative p-4 sm:p-6" style="border-radius: 24px;">
+            <!-- Butang Close -->
+            <button onclick="closeMediaModal()" class="absolute -top-4 -right-4 w-10 h-10 rounded-full flex items-center justify-center btn-modal text-xl z-20" style="background: var(--bg-color);">
+                <i class="ph ph-x text-[var(--primary)]"></i>
+            </button>
+            
+            <!-- Loading Spinner untuk Iframe -->
+            <div id="mediaLoading" class="absolute inset-0 flex items-center justify-center pointer-events-none hidden">
+                <i class="ph ph-spinner-gap animate-spin text-4xl text-[var(--primary)]"></i>
+            </div>
+
+            <!-- Tempat letak Content (Gambar/Iframe) -->
+            <div id="mediaContainer" class="w-full h-full overflow-hidden rounded-xl bg-white/5 relative z-10 flex items-center justify-center">
+                <!-- Content dijana melalui JS -->
+            </div>
+        </div>
+    </div>
+
     <!-- LOGIK JAVASCRIPT -->
     <script>
+        // --- DATA UNTUK POPUP SELF LEARNING ---
+        const popupData = {
+            canva: {
+                title: "Canva Ai",
+                icon: "ph-palette",
+                desc: "Canva Ai akan diajar bagaimana membina sistem yang pelbagai menggunakan keupayaan Canva Ai secara efektif dan mudah.",
+                btn1Text: "List Silibus",
+                btn1Link: "https://i.postimg.cc/fT51QtGz/Chat-GPT-Image-Jul-10-2026-09-32-39-PM.png",
+                btn1Type: "image", // Nyatakan jenis link
+                btn2Text: "Link Belian",
+                btn2Link: "https://annurprosolutions1.bcl.my/form/canva-ai-sistem",
+                btn2Type: "iframe" // Nyatakan jenis link
+            },
+            gemini: {
+                title: "Gemini Ai",
+                icon: "ph-sparkle",
+                desc: "Kandungan untuk kelas/panduan Gemini Ai sedang dalam proses dikemaskini. Nantikan kelangsungannya!",
+                btn1Text: "List Silibus",
+                btn1Link: "#",
+                btn2Text: "Link Belian",
+                btn2Link: "#"
+            },
+            looker: {
+                title: "Looker Studio",
+                icon: "ph-chart-bar",
+                desc: "Modul Looker Studio untuk pembinaan dashboard interaktif sedang disediakan.",
+                btn1Text: "List Silibus",
+                btn1Link: "#",
+                btn2Text: "Link Belian",
+                btn2Link: "#"
+            },
+            edu: {
+                title: "Edu Content",
+                icon: "ph-book-open",
+                desc: "Pendidikan berterusan tentang pembinaan konten akan dimuat naik tidak lama lagi.",
+                btn1Text: "List Silibus",
+                btn1Link: "#",
+                btn2Text: "Link Belian",
+                btn2Link: "#"
+            },
+            bundle: {
+                title: "Bundle Pack",
+                icon: "ph-package",
+                desc: "Dapatkan akses kesemua ilmu dan kelebihan dalam satu tawaran harga pukal (Bundle Pack). Akan datang!",
+                btn1Text: "Senarai Pakej",
+                btn1Link: "#",
+                btn2Text: "Dapatkan Pakej",
+                btn2Link: "#"
+            }
+        };
+
+        // --- FUNGSI BUKA POPUP UTAMA ---
+        function openPopup(id) {
+            const data = popupData[id];
+            if(!data) return;
+
+            document.getElementById('popupTitle').innerText = data.title;
+            document.getElementById('popupIcon').className = `ph ${data.icon} text-3xl text-[var(--primary)]`;
+            document.getElementById('popupDesc').innerText = data.desc;
+            
+            const btn1 = document.getElementById('popupBtn1');
+            document.getElementById('popupBtn1Text').innerText = data.btn1Text;
+            btn1.onclick = () => openMediaModal(data.btn1Link, data.btn1Type);
+            
+            const btn2 = document.getElementById('popupBtn2');
+            document.getElementById('popupBtn2Text').innerText = data.btn2Text;
+            btn2.onclick = () => openMediaModal(data.btn2Link, data.btn2Type);
+
+            document.getElementById('itemModal').classList.add('show');
+        }
+
+        // --- FUNGSI BUKA POPUP MEDIA (GAMBAR/IFRAME) ---
+        function openMediaModal(url, type) {
+            if(!url || url === '#') return; // Abaikan jika link belum ada
+            
+            const container = document.getElementById('mediaContainer');
+            const loading = document.getElementById('mediaLoading');
+            
+            container.innerHTML = ''; // Kosongkan content lama
+            
+            if(type === 'image') {
+                loading.style.display = 'none';
+                container.innerHTML = `<img src="${url}" class="w-full h-full object-contain rounded-xl" alt="Media" />`;
+            } else if (type === 'iframe') {
+                loading.style.display = 'flex'; // Tunjuk loading
+                // Bila iframe dah siap load, kita sorokkan loading
+                container.innerHTML = `<iframe src="${url}" class="w-full h-full border-0 rounded-xl bg-white" onload="document.getElementById('mediaLoading').style.display='none'"></iframe>`;
+            }
+
+            document.getElementById('mediaModal').classList.add('show');
+        }
+
+        // --- FUNGSI TUTUP POPUP ---
+        function closePopup() {
+            document.getElementById('itemModal').classList.remove('show');
+        }
+
+        function closeMediaModal() {
+            document.getElementById('mediaModal').classList.remove('show');
+            // Lepas animasi tutup habis (300ms), kosongkan memori iframe
+            setTimeout(() => {
+                document.getElementById('mediaContainer').innerHTML = '';
+            }, 300);
+        }
+
+        // Tutup jika user klik di kawasan luar/kabur (overlay)
+        document.getElementById('itemModal').addEventListener('click', function(e) {
+            if (e.target === this) closePopup();
+        });
+
+        document.getElementById('mediaModal').addEventListener('click', function(e) {
+            if (e.target === this) closeMediaModal();
+        });
+
         // Logik Buka Menu Sub (Self Learning)
         function openSubMenu(menuId) {
             const mainMenu = document.getElementById('main-menu');
