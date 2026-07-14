@@ -716,7 +716,41 @@
             // EXPERIENCE
             expGit: { title: "Github", icon: "ph-github-logo", desc: "Repositori Github sedang dikemaskini. Nantikan perkongsian kod dan projek terbaru!" },
             expProj: { title: "Project Done", icon: "ph-check-circle", desc: "Senarai projek berjaya disiapkan sedang disusun untuk rujukan anda kelak." },
-            expTest: { title: "Testimonial", icon: "ph-star", desc: "Maklum balas dan testimoni pelanggan akan dipaparkan di sini dalam masa terdekat." }
+            
+            expTest: { 
+                title: "Testimonial", 
+                icon: "ph-star", 
+                desc: `
+                <style>
+                    /* Menyembunyikan scrollbar tapi kekalkan fungsi scroll */
+                    .hide-scroll::-webkit-scrollbar { display: none; }
+                    .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+                </style>
+                <div class="flex flex-col gap-4">
+                    <div class="text-sm leading-relaxed text-[var(--text-muted)] text-justify border-l-4 border-[var(--primary)] pl-3">
+                        <span class="font-bold text-[var(--text-main)] block mb-1">Bukti Nyata, Hasil Terbukti! 🔥</span>
+                        Ini adalah sebahagian daripada mereka yang telah berjaya mengubah corak kerja dan membina sistem berimpak tinggi selepas berkolaborasi bersama kami. Dari tiada asas kepada penguasaan automasi pintar, testimoni ini adalah jaminan kualiti modul kami.
+                    </div>
+                    
+                    <!-- Carousel Container -->
+                    <div class="flex overflow-x-auto gap-4 snap-x snap-mandatory hide-scroll py-2 px-1">
+                        <img src="https://lh3.googleusercontent.com/d/1IEaQrfDIY27N_jn9rs_f0mT-1UY12Bro" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 1">
+                        <img src="https://lh3.googleusercontent.com/d/17Tf3q0BVyJ8sX11SmNbaN8BGx2kZRlbC" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 2">
+                        <img src="https://lh3.googleusercontent.com/d/1RDKFzKr-l8ElIn2Ty3VpF22aiyvvBHQH" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 3">
+                        <img src="https://lh3.googleusercontent.com/d/10ePwzUFSWYgV_oOswdHGouIUkM5epPqm" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 4">
+                        <img src="https://lh3.googleusercontent.com/d/1Qmp8r5SzeKouroPPWQ4gbcvLbYD-ZlV-" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 5">
+                        <img src="https://lh3.googleusercontent.com/d/1bBGVZicUjzV2J-oHI8GgWLoag5jwa3j7" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 6">
+                        <img src="https://lh3.googleusercontent.com/d/1iz_f1ATspgOH2BPYS3u5LbCEex9g9kvj" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 7">
+                        <img src="https://lh3.googleusercontent.com/d/18x7JJMdqthyIyI8-J5scmAAtcEbrQQsG" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 8">
+                        <img src="https://lh3.googleusercontent.com/d/1nBpGqLV84hsHkrw-vcP3tFcIZcvRZcfA" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 9">
+                        <img src="https://lh3.googleusercontent.com/d/1blrTXcPiQfFBHFmIwBZgxOLZjYS4ew76" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 10">
+                    </div>
+                    
+                    <div class="text-[10px] text-center text-[var(--primary)] font-semibold uppercase tracking-wider animate-pulse flex items-center justify-center gap-2">
+                        <i class="ph ph-hand-swipe-left text-lg"></i> Leret untuk paparan seterusnya <i class="ph ph-hand-swipe-right text-lg"></i>
+                    </div>
+                </div>`
+            }
         };
 
         function openSubMenu(menuId) {
