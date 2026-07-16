@@ -192,9 +192,13 @@
             gap: 8px;
             font-weight: 600;
         }
-        .btn-modal:active {
+        .btn-modal:active:not(:disabled) {
             box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
             transform: scale(0.96);
+        }
+        .btn-modal:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         .btn-modal.primary {
             color: var(--primary);
@@ -612,6 +616,13 @@
         let selectedTime = '';
         
         let cachedPortfolioData = null; // Cache untuk data Google Sheet
+        let catChartInstance = null; // Instance Carta Kategori
+        let techChartInstance = null; // Instance Carta Teknologi
+        
+        // Pembolehubah Pagination Portfolio
+        let currentPortfolioPage = 1;
+        const portfolioItemsPerPage = 20;
+        let sortedPortfolioData = [];
 
         const coachingDetails = {
             '1to1': { title: '1 to 1 Coaching', price: 'RM 189.00 / Sesi (2 Jam)', isOnline: true },
@@ -722,7 +733,7 @@
             // EXPERIENCE
             expGit: { title: "Github", icon: "ph-github-logo", desc: "Repositori Github sedang dikemaskini. Nantikan perkongsian kod dan projek terbaru!" },
             
-            // PROJECT DONE (DENGAN REKABENTUK LEBIH LUAS DAN CARTA)
+            // PROJECT DONE (DENGAN 2 CARTA & PAGINATION)
             expProj: { 
                 title: "Project Portfolio", 
                 icon: "ph-check-circle", 
@@ -734,7 +745,7 @@
                 </div>
                 <div id="portfolio-content" class="hidden flex-col gap-6">
                     
-                    <!-- Dashboard Ringkas (Statistik & Carta) -->
+                    <!-- Dashboard Ringkas (Statistik) -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <div class="p-3 rounded-2xl bg-[var(--bg-color)] shadow-[inset_3px_3px_6px_var(--shadow-dark),inset_-3px_-3px_6px_var(--shadow-light)] text-center flex flex-col justify-center">
                             <span class="text-2xl font-black text-[var(--primary)]" id="tot-projects">0</span>
@@ -754,27 +765,52 @@
                         </div>
                     </div>
                     
-                    <div class="p-4 rounded-2xl bg-[var(--bg-color)] shadow-[inset_4px_4px_8px_var(--shadow-dark),inset_-4px_-4px_8px_var(--shadow-light)] flex flex-col items-center justify-center min-h-[140px]">
-                        <div class="w-full h-32 relative flex items-center justify-center"><canvas id="catChart"></canvas></div>
-                        <div id="chart-legend" class="flex flex-wrap gap-x-3 gap-y-1 justify-center mt-3"></div>
+                    <!-- Carta (Kategori & Teknologi) Bersebelahan -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Carta Kategori -->
+                        <div class="p-4 rounded-2xl bg-[var(--bg-color)] shadow-[inset_4px_4px_8px_var(--shadow-dark),inset_-4px_-4px_8px_var(--shadow-light)] flex flex-col items-center justify-center min-h-[140px]">
+                            <span class="text-[11px] font-bold uppercase tracking-wider mb-2 text-[var(--text-main)]">Kategori Sistem</span>
+                            <div class="w-full h-32 relative flex items-center justify-center"><canvas id="catChart"></canvas></div>
+                            <div id="cat-chart-legend" class="flex flex-wrap gap-x-2 gap-y-1 justify-center mt-3"></div>
+                        </div>
+                        
+                        <!-- Carta Teknologi -->
+                        <div class="p-4 rounded-2xl bg-[var(--bg-color)] shadow-[inset_4px_4px_8px_var(--shadow-dark),inset_-4px_-4px_8px_var(--shadow-light)] flex flex-col items-center justify-center min-h-[140px]">
+                            <span class="text-[11px] font-bold uppercase tracking-wider mb-2 text-[var(--text-main)]">Teknologi Utama</span>
+                            <div class="w-full h-32 relative flex items-center justify-center"><canvas id="techChart"></canvas></div>
+                            <div id="tech-chart-legend" class="flex flex-wrap gap-x-2 gap-y-1 justify-center mt-3"></div>
+                        </div>
                     </div>
                     
-                    <!-- Jadual (Table) Projek -->
-                    <div class="w-full overflow-x-auto hide-scroll rounded-xl shadow-[4px_4px_8px_var(--shadow-dark),-4px_-4px_8px_var(--shadow-light)] border border-[var(--card-border)] bg-[var(--bg-color)]">
-                        <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[500px]">
-                            <thead class="bg-[var(--primary)]/10 text-[var(--text-main)] border-b border-[var(--card-border)]">
-                                <tr>
-                                    <th class="p-4 font-bold text-center w-16">Tahun</th>
-                                    <th class="p-4 font-bold">Nama Sistem</th>
-                                    <th class="p-4 font-bold">Kategori</th>
-                                    <th class="p-4 font-bold">Teknologi</th>
-                                    <th class="p-4 font-bold text-center">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="portfolio-table-body" class="text-[var(--text-muted)]">
-                                <!-- Data akan dijana oleh Javascript -->
-                            </tbody>
-                        </table>
+                    <!-- Jadual (Table) Projek & Pagination -->
+                    <div>
+                        <div class="w-full overflow-x-auto hide-scroll rounded-xl shadow-[4px_4px_8px_var(--shadow-dark),-4px_-4px_8px_var(--shadow-light)] border border-[var(--card-border)] bg-[var(--bg-color)]">
+                            <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[500px]">
+                                <thead class="bg-[var(--primary)]/10 text-[var(--text-main)] border-b border-[var(--card-border)]">
+                                    <tr>
+                                        <th class="p-4 font-bold text-center w-16">Tahun</th>
+                                        <th class="p-4 font-bold">Nama Sistem</th>
+                                        <th class="p-4 font-bold">Kategori</th>
+                                        <th class="p-4 font-bold">Teknologi</th>
+                                        <th class="p-4 font-bold text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="portfolio-table-body" class="text-[var(--text-muted)]">
+                                    <!-- Data akan dijana oleh Javascript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination Controls -->
+                        <div id="pagination-controls" class="flex justify-between items-center mt-4 px-1">
+                            <button id="prev-page" class="btn-modal px-4 py-2 rounded-xl text-[10px] uppercase font-bold transition-opacity" onclick="changePortfolioPage(-1)">
+                                <i class="ph ph-caret-left text-sm"></i> Sebelum
+                            </button>
+                            <span id="page-info" class="text-xs font-bold text-[var(--text-muted)] tracking-wider">Muka 1 / 1</span>
+                            <button id="next-page" class="btn-modal px-4 py-2 rounded-xl text-[10px] uppercase font-bold transition-opacity" onclick="changePortfolioPage(1)">
+                                Seterusnya <i class="ph ph-caret-right text-sm"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 ` 
@@ -878,100 +914,135 @@
 
         function closePopup() { document.getElementById('itemModal').classList.remove('show'); }
 
-        // --- PORTFOLIO FETCH & RENDER LOGIC --- //
+        // --- PORTFOLIO FETCH, RENDER & PAGINATION LOGIC --- //
         function renderPortfolioUI(data) {
             const loadingEl = document.getElementById('portfolio-loading');
             const contentEl = document.getElementById('portfolio-content');
             if (!loadingEl || !contentEl) return;
 
-            // 1. Kemaskini Statistik Projek
+            // 1. Pembolehubah Statistik & Graf
             let countSiap = 0;
             let countProgress = 0;
             let totalPrice = 0;
             
             const categories = {};
+            const technologies = {};
             
             data.forEach(row => {
-                // Kira kategori carta
+                // Kira kekerapan Kategori
                 const cat = row['Kategori'] ? row['Kategori'].trim() : 'Lain-lain';
                 categories[cat] = (categories[cat] || 0) + 1;
+
+                // Kira kekerapan Teknologi
+                const tech = row['Teknologi'] ? row['Teknologi'].trim() : 'Lain-lain';
+                technologies[tech] = (technologies[tech] || 0) + 1;
                 
                 // Semak Status Projek
                 const statLower = (row['Status'] || '').toLowerCase();
                 if (statLower.includes('siap') || statLower.includes('done')) countSiap++;
                 else if (statLower.includes('progress') || statLower.includes('sedang')) countProgress++;
                 
-                // Kira Anggaran Harga (buang RM, koma, dsb sebelum ditambah)
+                // Kira Anggaran Harga
                 const priceStr = row['Anggaran Harga'] || '0';
                 const priceNum = parseFloat(priceStr.replace(/[^0-9.-]+/g, '')) || 0;
                 totalPrice += priceNum;
             });
 
-            // Papar dalam antaramuka pengguna
+            // Kemaskini Nombor Statistik UI
             document.getElementById('tot-projects').innerText = data.length;
             document.getElementById('tot-completed').innerText = countSiap;
             document.getElementById('tot-progress').innerText = countProgress;
             
-            // Format Harga Ringkas (Contoh: RM 15.5K , RM 1.2M)
             let displayPrice = totalPrice;
             if (totalPrice >= 1000000) displayPrice = (totalPrice / 1000000).toFixed(1) + 'M';
             else if (totalPrice >= 10000) displayPrice = (totalPrice / 1000).toFixed(1) + 'K';
             else displayPrice = totalPrice.toLocaleString('ms-MY');
-            
             document.getElementById('tot-price').innerText = 'RM ' + displayPrice;
 
-            // 2. Data Carta (Kategori)
-            const labels = Object.keys(categories);
-            const counts = Object.values(categories);
-            const bgColors = ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f43f5e'];
+            // Konfigurasi Warna untuk Carta
+            const bgColors = ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f43f5e', '#64748b', '#84cc16'];
 
-            // 3. Jana Legend Custom Untuk Carta
-            const legendContainer = document.getElementById('chart-legend');
-            legendContainer.innerHTML = labels.map((lbl, i) => `
-                <div class="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-semibold text-[var(--text-muted)]">
-                    <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${bgColors[i % bgColors.length]}"></span>
-                    ${lbl} (${counts[i]})
+            // ============================
+            // BINA CARTA 1 : KATEGORI
+            // ============================
+            const catLabels = Object.keys(categories);
+            const catCounts = Object.values(categories);
+
+            document.getElementById('cat-chart-legend').innerHTML = catLabels.map((lbl, i) => `
+                <div class="flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold text-[var(--text-muted)]">
+                    <span class="w-2 h-2 rounded-full" style="background-color: ${bgColors[i % bgColors.length]}"></span>
+                    ${lbl}
                 </div>
             `).join('');
 
-            // 4. Bina Carta menggunakan Chart.js
-            const ctx = document.getElementById('catChart').getContext('2d');
-            new Chart(ctx, {
+            if (catChartInstance) catChartInstance.destroy();
+            catChartInstance = new Chart(document.getElementById('catChart').getContext('2d'), {
                 type: 'doughnut',
                 data: {
-                    labels: labels,
-                    datasets: [{
-                        data: counts,
-                        backgroundColor: bgColors,
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
+                    labels: catLabels,
+                    datasets: [{ data: catCounts, backgroundColor: bgColors, borderWidth: 0, hoverOffset: 4 }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: { label: (context) => ' ' + context.label + ' : ' + context.raw + ' Projek' }
-                        }
-                    },
-                    cutout: '65%'
+                    responsive: true, maintainAspectRatio: false, cutout: '65%',
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => ' ' + c.label + ' : ' + c.raw + ' Projek' } } }
                 }
             });
 
-            // 5. Bina Jadual
+            // ============================
+            // BINA CARTA 2 : TEKNOLOGI
+            // ============================
+            const techLabels = Object.keys(technologies);
+            const techCounts = Object.values(technologies);
+            // Terbalikkan warna sedikit supaya nampak berbeza dengan carta kategori
+            const techColors = [...bgColors].reverse(); 
+
+            document.getElementById('tech-chart-legend').innerHTML = techLabels.map((lbl, i) => `
+                <div class="flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold text-[var(--text-muted)]">
+                    <span class="w-2 h-2 rounded-full" style="background-color: ${techColors[i % techColors.length]}"></span>
+                    ${lbl}
+                </div>
+            `).join('');
+
+            if (techChartInstance) techChartInstance.destroy();
+            techChartInstance = new Chart(document.getElementById('techChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: techLabels,
+                    datasets: [{ data: techCounts, backgroundColor: techColors, borderWidth: 0, hoverOffset: 4 }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, cutout: '65%',
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => ' ' + c.label + ' : ' + c.raw + ' Projek' } } }
+                }
+            });
+
+            // ============================
+            // SETUP DATA JADUAL & PAGINATION
+            // ============================
+            sortedPortfolioData = [...data].sort((a, b) => parseInt(b['Tahun'] || 0) - parseInt(a['Tahun'] || 0));
+            currentPortfolioPage = 1;
+            renderPortfolioTablePage();
+
+            // Selesai memuatkan
+            loadingEl.style.display = 'none';
+            contentEl.style.display = 'flex';
+        }
+
+        // Fungsi Render Muka Surat Jadual
+        function renderPortfolioTablePage() {
             const tbody = document.getElementById('portfolio-table-body');
+            if(!tbody) return;
             tbody.innerHTML = '';
             
-            // Susun data mengikut tahun (menurun)
-            const sortedData = [...data].sort((a, b) => parseInt(b['Tahun'] || 0) - parseInt(a['Tahun'] || 0));
+            const totalPages = Math.ceil(sortedPortfolioData.length / portfolioItemsPerPage) || 1;
+            const startIdx = (currentPortfolioPage - 1) * portfolioItemsPerPage;
+            const endIdx = startIdx + portfolioItemsPerPage;
+            const pageData = sortedPortfolioData.slice(startIdx, endIdx);
 
-            sortedData.forEach(row => {
-                const stat = row['Status'] ? row['Status'].trim() : '';
+            pageData.forEach(row => {
+                const stat = row['Status'] ? row['Status'].trim() : '-';
                 const statLower = stat.toLowerCase();
                 
-                // Pewarnaan status yang dinamik
                 let statusColor = 'text-gray-500 bg-gray-500/10';
                 if(statLower.includes('siap') || statLower.includes('done')) statusColor = 'text-green-500 bg-green-500/10';
                 else if(statLower.includes('progress') || statLower.includes('sedang')) statusColor = 'text-blue-500 bg-blue-500/10';
@@ -981,18 +1052,34 @@
                 tr.className = 'border-b border-[var(--card-border)] last:border-0 hover:bg-black/5 dark:hover:bg-white/5 transition-colors';
                 
                 tr.innerHTML = `
-                    <td class="p-4 text-center font-medium">${row['Tahun']}</td>
-                    <td class="p-4 font-bold text-[var(--text-main)]">${row['Nama Sistem']}</td>
-                    <td class="p-4">${row['Kategori']}</td>
-                    <td class="p-4"><span class="px-3 py-1 rounded-full text-[10px] font-semibold bg-[var(--bg-color)] shadow-[inset_2px_2px_4px_var(--shadow-dark),inset_-2px_-2px_4px_var(--shadow-light)]">${row['Teknologi']}</span></td>
+                    <td class="p-4 text-center font-medium">${row['Tahun'] || '-'}</td>
+                    <td class="p-4 font-bold text-[var(--text-main)]">${row['Nama Sistem'] || '-'}</td>
+                    <td class="p-4">${row['Kategori'] || '-'}</td>
+                    <td class="p-4"><span class="px-3 py-1 rounded-full text-[10px] font-semibold bg-[var(--bg-color)] shadow-[inset_2px_2px_4px_var(--shadow-dark),inset_-2px_-2px_4px_var(--shadow-light)]">${row['Teknologi'] || '-'}</span></td>
                     <td class="p-4 text-center"><span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${statusColor} whitespace-nowrap">${stat}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            // Selesai memuatkan
-            loadingEl.style.display = 'none';
-            contentEl.style.display = 'flex';
+            // Kemaskini Butang Pagination
+            document.getElementById('page-info').innerText = `Muka ${currentPortfolioPage} / ${totalPages}`;
+            
+            const btnPrev = document.getElementById('prev-page');
+            const btnNext = document.getElementById('next-page');
+            
+            btnPrev.disabled = currentPortfolioPage === 1;
+            btnNext.disabled = currentPortfolioPage === totalPages;
+        }
+
+        // Fungsi Menukar Muka Surat
+        function changePortfolioPage(direction) {
+            const totalPages = Math.ceil(sortedPortfolioData.length / portfolioItemsPerPage) || 1;
+            currentPortfolioPage += direction;
+            
+            if (currentPortfolioPage < 1) currentPortfolioPage = 1;
+            if (currentPortfolioPage > totalPages) currentPortfolioPage = totalPages;
+            
+            renderPortfolioTablePage();
         }
 
         function loadPortfolioData() {
