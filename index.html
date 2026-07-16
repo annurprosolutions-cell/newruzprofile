@@ -11,6 +11,10 @@
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
+    <!-- PapaParse (CSV Parser) & Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- Google Fonts: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -165,11 +169,9 @@
             border: 1px solid var(--card-border);
             box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
             border-radius: 24px;
-            width: 90%;
-            max-width: 400px;
             padding: 28px;
             transform: scale(0.9);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.3s ease, width 0.3s ease;
             max-height: 90vh;
             overflow-y: auto;
             scrollbar-width: none; /* Hide scrollbar for cleaner look */
@@ -256,11 +258,13 @@
             box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
         }
 
-        /* Timeline Animation */
+        /* Timeline & Table Scroll */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col items-center justify-center p-4">
@@ -487,9 +491,9 @@
         </div>
     </div>
 
-    <!-- STRUKTUR MODAL PERTAMA (INFO / TIMELINE) -->
+    <!-- STRUKTUR MODAL PERTAMA (INFO / TIMELINE / PORTFOLIO) -->
     <div id="itemModal" class="modal-overlay" style="z-index: 100;">
-        <div class="modal-card relative">
+        <div id="itemModalCard" class="modal-card w-[90%] max-w-[400px] relative transition-all duration-300">
             <button onclick="closePopup()" class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center btn-modal text-lg z-20">
                 <i class="ph ph-x text-[var(--icon-color)]"></i>
             </button>
@@ -601,11 +605,13 @@
     </div>
 
     <script>
-        // Pembolehubah Global diletakkan di atas sekali supaya tidak berlaku ReferenceError
+        // Pembolehubah Global
         let currentCoachingType = '';
         let currentDate = new Date();
         let selectedDate = null;
         let selectedTime = '';
+        
+        let cachedPortfolioData = null; // Cache untuk data Google Sheet
 
         const coachingDetails = {
             '1to1': { title: '1 to 1 Coaching', price: 'RM 189.00 / Sesi (2 Jam)', isOnline: true },
@@ -715,17 +721,69 @@
             
             // EXPERIENCE
             expGit: { title: "Github", icon: "ph-github-logo", desc: "Repositori Github sedang dikemaskini. Nantikan perkongsian kod dan projek terbaru!" },
-            expProj: { title: "Project Done", icon: "ph-check-circle", desc: "Senarai projek berjaya disiapkan sedang disusun untuk rujukan anda kelak." },
+            
+            // PROJECT DONE (DENGAN REKABENTUK LEBIH LUAS DAN CARTA)
+            expProj: { 
+                title: "Project Portfolio", 
+                icon: "ph-check-circle", 
+                isWide: true, // Custom flag to widen the modal card
+                desc: `
+                <div id="portfolio-loading" class="flex flex-col items-center justify-center py-10 gap-3 text-[var(--primary)]">
+                    <i class="ph ph-spinner-gap animate-spin text-4xl"></i>
+                    <span class="text-xs font-semibold animate-pulse tracking-wide uppercase">Memuatkan data projek...</span>
+                </div>
+                <div id="portfolio-content" class="hidden flex-col gap-6">
+                    
+                    <!-- Dashboard Ringkas (Statistik & Carta) -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="p-3 rounded-2xl bg-[var(--bg-color)] shadow-[inset_3px_3px_6px_var(--shadow-dark),inset_-3px_-3px_6px_var(--shadow-light)] text-center flex flex-col justify-center">
+                            <span class="text-2xl font-black text-[var(--primary)]" id="tot-projects">0</span>
+                            <span class="text-[9px] sm:text-[10px] uppercase font-bold text-[var(--text-muted)] mt-1">Total Projek</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-[var(--bg-color)] shadow-[inset_3px_3px_6px_var(--shadow-dark),inset_-3px_-3px_6px_var(--shadow-light)] text-center flex flex-col justify-center">
+                            <span class="text-2xl font-black text-green-500" id="tot-completed">0</span>
+                            <span class="text-[9px] sm:text-[10px] uppercase font-bold text-[var(--text-muted)] mt-1">Telah Siap</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-[var(--bg-color)] shadow-[inset_3px_3px_6px_var(--shadow-dark),inset_-3px_-3px_6px_var(--shadow-light)] text-center flex flex-col justify-center">
+                            <span class="text-2xl font-black text-blue-500" id="tot-progress">0</span>
+                            <span class="text-[9px] sm:text-[10px] uppercase font-bold text-[var(--text-muted)] mt-1">In Progress</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-[var(--bg-color)] shadow-[inset_3px_3px_6px_var(--shadow-dark),inset_-3px_-3px_6px_var(--shadow-light)] text-center flex flex-col justify-center">
+                            <span class="text-lg sm:text-xl font-black text-amber-500 leading-tight" id="tot-price">RM0</span>
+                            <span class="text-[9px] sm:text-[10px] uppercase font-bold text-[var(--text-muted)] mt-1">Nilai Projek</span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-2xl bg-[var(--bg-color)] shadow-[inset_4px_4px_8px_var(--shadow-dark),inset_-4px_-4px_8px_var(--shadow-light)] flex flex-col items-center justify-center min-h-[140px]">
+                        <div class="w-full h-32 relative flex items-center justify-center"><canvas id="catChart"></canvas></div>
+                        <div id="chart-legend" class="flex flex-wrap gap-x-3 gap-y-1 justify-center mt-3"></div>
+                    </div>
+                    
+                    <!-- Jadual (Table) Projek -->
+                    <div class="w-full overflow-x-auto hide-scroll rounded-xl shadow-[4px_4px_8px_var(--shadow-dark),-4px_-4px_8px_var(--shadow-light)] border border-[var(--card-border)] bg-[var(--bg-color)]">
+                        <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[500px]">
+                            <thead class="bg-[var(--primary)]/10 text-[var(--text-main)] border-b border-[var(--card-border)]">
+                                <tr>
+                                    <th class="p-4 font-bold text-center w-16">Tahun</th>
+                                    <th class="p-4 font-bold">Nama Sistem</th>
+                                    <th class="p-4 font-bold">Kategori</th>
+                                    <th class="p-4 font-bold">Teknologi</th>
+                                    <th class="p-4 font-bold text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="portfolio-table-body" class="text-[var(--text-muted)]">
+                                <!-- Data akan dijana oleh Javascript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                ` 
+            },
             
             expTest: { 
                 title: "Testimonial", 
                 icon: "ph-star", 
                 desc: `
-                <style>
-                    /* Menyembunyikan scrollbar tapi kekalkan fungsi scroll */
-                    .hide-scroll::-webkit-scrollbar { display: none; }
-                    .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-                </style>
                 <div class="flex flex-col gap-4">
                     <div class="text-sm leading-relaxed text-[var(--text-muted)] text-justify border-l-4 border-[var(--primary)] pl-3">
                         <span class="font-bold text-[var(--text-main)] block mb-1">Bukti Nyata, Hasil Terbukti! 🔥</span>
@@ -780,6 +838,16 @@
             const data = popupData[id];
             if(!data) return;
 
+            // Logik pelebaran modal card untuk portfolio
+            const card = document.getElementById('itemModalCard');
+            if (data.isWide) {
+                card.classList.replace('max-w-[400px]', 'max-w-[800px]');
+                card.classList.replace('w-[90%]', 'w-[95%]');
+            } else {
+                card.classList.replace('max-w-[800px]', 'max-w-[400px]');
+                card.classList.replace('w-[95%]', 'w-[90%]');
+            }
+
             document.getElementById('popupTitle').innerText = data.title;
             document.getElementById('popupIcon').className = `ph ${data.icon} text-2xl text-[var(--primary)]`;
             document.getElementById('popupDesc').innerHTML = data.desc; 
@@ -801,9 +869,156 @@
             } else { btn2.style.display = 'none'; }
 
             document.getElementById('itemModal').classList.add('show');
+
+            // Sekiranya ia adalah Portfolio, jalankan fungsi memuatkan CSV
+            if (id === 'expProj') {
+                loadPortfolioData();
+            }
         }
 
         function closePopup() { document.getElementById('itemModal').classList.remove('show'); }
+
+        // --- PORTFOLIO FETCH & RENDER LOGIC --- //
+        function renderPortfolioUI(data) {
+            const loadingEl = document.getElementById('portfolio-loading');
+            const contentEl = document.getElementById('portfolio-content');
+            if (!loadingEl || !contentEl) return;
+
+            // 1. Kemaskini Statistik Projek
+            let countSiap = 0;
+            let countProgress = 0;
+            let totalPrice = 0;
+            
+            const categories = {};
+            
+            data.forEach(row => {
+                // Kira kategori carta
+                const cat = row['Kategori'] ? row['Kategori'].trim() : 'Lain-lain';
+                categories[cat] = (categories[cat] || 0) + 1;
+                
+                // Semak Status Projek
+                const statLower = (row['Status'] || '').toLowerCase();
+                if (statLower.includes('siap') || statLower.includes('done')) countSiap++;
+                else if (statLower.includes('progress') || statLower.includes('sedang')) countProgress++;
+                
+                // Kira Anggaran Harga (buang RM, koma, dsb sebelum ditambah)
+                const priceStr = row['Anggaran Harga'] || '0';
+                const priceNum = parseFloat(priceStr.replace(/[^0-9.-]+/g, '')) || 0;
+                totalPrice += priceNum;
+            });
+
+            // Papar dalam antaramuka pengguna
+            document.getElementById('tot-projects').innerText = data.length;
+            document.getElementById('tot-completed').innerText = countSiap;
+            document.getElementById('tot-progress').innerText = countProgress;
+            
+            // Format Harga Ringkas (Contoh: RM 15.5K , RM 1.2M)
+            let displayPrice = totalPrice;
+            if (totalPrice >= 1000000) displayPrice = (totalPrice / 1000000).toFixed(1) + 'M';
+            else if (totalPrice >= 10000) displayPrice = (totalPrice / 1000).toFixed(1) + 'K';
+            else displayPrice = totalPrice.toLocaleString('ms-MY');
+            
+            document.getElementById('tot-price').innerText = 'RM ' + displayPrice;
+
+            // 2. Data Carta (Kategori)
+            const labels = Object.keys(categories);
+            const counts = Object.values(categories);
+            const bgColors = ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f43f5e'];
+
+            // 3. Jana Legend Custom Untuk Carta
+            const legendContainer = document.getElementById('chart-legend');
+            legendContainer.innerHTML = labels.map((lbl, i) => `
+                <div class="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-semibold text-[var(--text-muted)]">
+                    <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${bgColors[i % bgColors.length]}"></span>
+                    ${lbl} (${counts[i]})
+                </div>
+            `).join('');
+
+            // 4. Bina Carta menggunakan Chart.js
+            const ctx = document.getElementById('catChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: bgColors,
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: { label: (context) => ' ' + context.label + ' : ' + context.raw + ' Projek' }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            // 5. Bina Jadual
+            const tbody = document.getElementById('portfolio-table-body');
+            tbody.innerHTML = '';
+            
+            // Susun data mengikut tahun (menurun)
+            const sortedData = [...data].sort((a, b) => parseInt(b['Tahun'] || 0) - parseInt(a['Tahun'] || 0));
+
+            sortedData.forEach(row => {
+                const stat = row['Status'] ? row['Status'].trim() : '';
+                const statLower = stat.toLowerCase();
+                
+                // Pewarnaan status yang dinamik
+                let statusColor = 'text-gray-500 bg-gray-500/10';
+                if(statLower.includes('siap') || statLower.includes('done')) statusColor = 'text-green-500 bg-green-500/10';
+                else if(statLower.includes('progress') || statLower.includes('sedang')) statusColor = 'text-blue-500 bg-blue-500/10';
+                else if(statLower.includes('hold') || statLower.includes('tangguh')) statusColor = 'text-orange-500 bg-orange-500/10';
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-[var(--card-border)] last:border-0 hover:bg-black/5 dark:hover:bg-white/5 transition-colors';
+                
+                tr.innerHTML = `
+                    <td class="p-4 text-center font-medium">${row['Tahun']}</td>
+                    <td class="p-4 font-bold text-[var(--text-main)]">${row['Nama Sistem']}</td>
+                    <td class="p-4">${row['Kategori']}</td>
+                    <td class="p-4"><span class="px-3 py-1 rounded-full text-[10px] font-semibold bg-[var(--bg-color)] shadow-[inset_2px_2px_4px_var(--shadow-dark),inset_-2px_-2px_4px_var(--shadow-light)]">${row['Teknologi']}</span></td>
+                    <td class="p-4 text-center"><span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${statusColor} whitespace-nowrap">${stat}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Selesai memuatkan
+            loadingEl.style.display = 'none';
+            contentEl.style.display = 'flex';
+        }
+
+        function loadPortfolioData() {
+            // Jika data sudah di-cache, kita terus pamerkan tanpa panggil CSV lagi
+            if (cachedPortfolioData) {
+                setTimeout(() => renderPortfolioUI(cachedPortfolioData), 50);
+                return;
+            }
+
+            // Penggunaan PapaParse untuk tarik data secara automatik dari Google Sheets URL
+            Papa.parse("https://docs.google.com/spreadsheets/d/e/2PACX-1vSUwW-AXB3NV8OyPIRMO0Cd2ZebKJVZc-8OI9-8LXXSZwSCe4pSpG1gpr3gm0C-9GBpRJhghLteB944/pub?output=csv", {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    // Filter row yang mungkin kosong di bawah google sheets
+                    cachedPortfolioData = results.data.filter(row => row['Nama Sistem'] && row['Nama Sistem'].trim() !== '');
+                    renderPortfolioUI(cachedPortfolioData);
+                },
+                error: function(err) {
+                    const loadingEl = document.getElementById('portfolio-loading');
+                    if(loadingEl) loadingEl.innerHTML = '<span class="text-red-500 text-sm font-semibold"><i class="ph ph-warning"></i> Ralat memuatkan pangkalan data.</span>';
+                }
+            });
+        }
+        // ------------------------------------ //
+
 
         function openMediaModal(url, type) {
             if(!url || url === '#') return;
