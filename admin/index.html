@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Lock Tarikh - Admin</title>
+    
+    <!-- Tailwind & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #e0e5ec;
+            color: #2d3748;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+        }
+        
+        .neu-card {
+            background-color: #e0e5ec;
+            box-shadow: 10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff;
+            border-radius: 20px;
+        }
+        
+        .neu-inset {
+            background-color: #e0e5ec;
+            box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
+            border: none;
+            outline: none;
+        }
+        .neu-inset:focus {
+            border: 1px solid #3b82f6;
+        }
+        
+        .neu-btn {
+            background-color: #e0e5ec;
+            box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
+            transition: all 0.2s ease;
+        }
+        .neu-btn:active:not(:disabled) {
+            box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-start p-4 sm:p-8">
+
+    <div class="w-full max-w-2xl neu-card p-6 sm:p-8 relative">
+        <h1 class="text-xl sm:text-2xl font-bold uppercase tracking-wider text-[var(--primary)] flex items-center gap-3 border-b border-gray-300 pb-4 mb-6">
+            <i class="ph ph-lock-key text-3xl text-blue-500"></i> Admin Panel: Lock Tarikh
+        </h1>
+
+        <!-- Form Masukkan Lock Data -->
+        <form id="adminForm" class="flex flex-col gap-5 mb-10">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Tarikh Untuk Di-Lock</label>
+                    <input type="date" id="lockDate" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Pilihan Masa / Slot</label>
+                    <select id="lockTime" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                        <option value="" disabled selected>Sila Pilih Tarikh Dahulu...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-2">
+                <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Nota Peribadi (Pelanggan/Sebab)</label>
+                <input type="text" id="lockNote" placeholder="Cth: Tempahan dari Ali, 1 to 1 Coaching" class="neu-inset p-3 rounded-xl w-full text-sm">
+            </div>
+
+            <button type="submit" class="neu-btn bg-blue-500 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2" style="background-color: #3b82f6; box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;">
+                <i class="ph ph-plus-circle text-lg"></i> Lock Tarikh Ini
+            </button>
+        </form>
+
+        <!-- Senarai Permohonan Menunggu (Pending) -->
+        <div class="mb-8">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-orange-500 mb-4 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="ph ph-bell-ringing"></i> Permohonan Baru (Pending)</span>
+                <span id="pendingCount" class="bg-orange-500/10 text-orange-600 px-3 py-1 rounded-full text-[10px]">0 Request</span>
+            </h2>
+            
+            <div class="w-full overflow-x-auto neu-inset rounded-xl p-2 hidden" id="pendingContainer">
+                <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[600px]">
+                    <thead class="text-gray-500 border-b border-gray-300">
+                        <tr>
+                            <th class="p-3">Pelanggan</th>
+                            <th class="p-3">Pakej</th>
+                            <th class="p-3">Tarikh & Masa</th>
+                            <th class="p-3 text-center">Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingTableBody" class="text-gray-700 font-medium">
+                        <!-- Data live dari Firebase -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="noPendingData" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-6">
+                Tiada permohonan baru setakat ini.
+            </div>
+        </div>
+
+        <!-- Senarai Lock List -->
+        <div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="ph ph-calendar-check"></i> Senarai Tarikh Di-Lock (Approved)</span>
+                <span id="lockCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Aktif</span>
+            </h2>
+            
+            <!-- Table Container -->
+            <div class="w-full overflow-x-auto neu-inset rounded-xl p-2 hidden" id="tableContainer">
+                <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[500px]">
+                    <thead class="text-gray-500 border-b border-gray-300">
+                        <tr>
+                            <th class="p-3">Tarikh</th>
+                            <th class="p-3">Masa</th>
+                            <th class="p-3">Nota / Pelanggan</th>
+                            <th class="p-3 text-center">Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lockedTableBody" class="text-gray-700 font-medium">
+                        <!-- Data live dari Firebase -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="loadingData" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
+                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan Database...
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIK JAVASCRIPT UNTUK ADMIN -->
+    <script>
+        const lockDateInput = document.getElementById('lockDate');
+        const lockTimeSelect = document.getElementById('lockTime');
+
+        lockDateInput.addEventListener('change', (e) => {
+            const dateVal = e.target.value;
+            
+            // Kosongkan dan masukkan pilihan default
+            lockTimeSelect.innerHTML = `
+                <option value="" disabled selected>Pilih Slot...</option>
+                <option value="ALL_DAY" class="font-bold text-red-500">🛑 LOCK SEPENUH HARI</option>
+            `;
+            
+            if (!dateVal) return;
+
+            // Semak hari dalam minggu (0 = Ahad, 1-5 = Isnin-Jumaat, 6 = Sabtu)
+            const selectedDate = new Date(dateVal);
+            const dayOfWeek = selectedDate.getDay(); 
+
+            let slots = [];
+            if (dayOfWeek === 0) { // Ahad
+                slots = ['08:00 AM - 10:00 AM', '11:00 AM - 01:00 PM', '02:00 PM - 04:00 PM', '05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM'];
+            } else if (dayOfWeek === 6) { // Sabtu
+                slots = ['05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM'];
+            } else { // Isnin - Jumaat
+                slots = ['09:00 PM - 11:00 PM'];
+            }
+
+            // Tambah slot yang bersesuaian dengan hari yang dipilih sahaja
+            slots.forEach(slot => {
+                const opt = document.createElement('option');
+                opt.value = slot;
+                opt.innerText = slot;
+                lockTimeSelect.appendChild(opt);
+            });
+        });
+
+        // Tulis (Write) - Fungsi Add Lock (Manual oleh Admin)
+        document.getElementById('adminForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const dateVal = document.getElementById('lockDate').value;
+            const timeVal = document.getElementById('lockTime').value;
+            const noteVal = document.getElementById('lockNote').value || "-";
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> Menyimpan...`;
+            btn.disabled = true;
+
+            try {
+                if (window.adminAddLock) {
+                    await window.adminAddLock({
+                        type: 'MANUAL_LOCK',
+                        date: dateVal,
+                        time: timeVal,
+                        status: 'APPROVED',
+                        name: 'Admin',
+                        remark: noteVal,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+                e.target.reset(); // Clear Form
+                lockTimeSelect.innerHTML = `<option value="" disabled selected>Sila Pilih Tarikh Dahulu...</option>`;
+            } catch (err) {
+                console.error("Save failed:", err);
+            } finally {
+                btn.innerHTML = `<i class="ph ph-plus-circle text-lg"></i> Lock Tarikh Ini`;
+                btn.disabled = false;
+            }
+        });
+
+        // Approve Request (Oleh Firebase)
+        window.approveBooking = async (docId) => {
+            if(!confirm("Mengesahkan bayaran deposit dan LOCK slot ini secara rasmi?")) return;
+            if(window.adminApproveLock) await window.adminApproveLock(docId);
+        };
+
+        // Buang (Delete) - Fungsi Unlock atau Reject (Oleh Firebase)
+        window.deleteLock = async (docId, isPending = false) => {
+            const msg = isPending 
+                ? "Anda pasti mahu REJECT & PADAM permohonan ini?"
+                : "Anda pasti mahu UNLOCK / DELETE tarikh ini? Pelanggan lain akan boleh book semula slot ini.";
+            if(!confirm(msg)) return;
+            if(window.adminDeleteLock) await window.adminDeleteLock(docId);
+        };
+
+        // Render Antaramuka Jadual
+        function renderTables(list) {
+            document.getElementById('loadingData').classList.add('hidden');
+            
+            const pendingList = list.filter(item => item.status === 'PENDING').sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const approvedList = list.filter(item => item.status === 'APPROVED').sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            // ---- RENDER PENDING ----
+            const pendingContainer = document.getElementById('pendingContainer');
+            const pendingTbody = document.getElementById('pendingTableBody');
+            const noPendingData = document.getElementById('noPendingData');
+            
+            document.getElementById('pendingCount').innerText = `${pendingList.length} Request`;
+            
+            if (pendingList.length === 0) {
+                pendingContainer.classList.add('hidden');
+                noPendingData.classList.remove('hidden');
+            } else {
+                pendingContainer.classList.remove('hidden');
+                noPendingData.classList.add('hidden');
+                pendingTbody.innerHTML = '';
+                
+                pendingList.forEach(item => {
+                    const dParts = item.date.split('-');
+                    const dShow = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.date;
+                    
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-gray-300 last:border-0 hover:bg-orange-500/5";
+                    tr.innerHTML = `
+                        <td class="p-3">
+                            <div class="font-bold text-gray-800">${item.name || 'Unknown'}</div>
+                            <div class="text-[10px] text-gray-500"><i class="ph ph-phone"></i> ${item.phone || '-'}</div>
+                        </td>
+                        <td class="p-3 text-xs font-semibold text-[var(--primary)]">${item.package || '-'}</td>
+                        <td class="p-3">
+                            <div class="font-bold">${dShow}</div>
+                            <div class="text-[10px] text-orange-600 font-bold bg-orange-500/10 inline-block px-1 rounded">${item.time}</div>
+                        </td>
+                        <td class="p-3 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <button onclick="window.approveBooking('${item.id}')" class="bg-green-500 text-white rounded-lg px-3 py-2 hover:bg-green-600 active:scale-90 transition-all cursor-pointer shadow-md text-xs font-bold" title="Terima Deposit & Lock">
+                                    <i class="ph ph-check-circle"></i> Approve
+                                </button>
+                                <button onclick="window.deleteLock('${item.id}', true)" class="bg-red-500 text-white rounded-lg px-2 py-2 hover:bg-red-600 active:scale-90 transition-all cursor-pointer shadow-md" title="Reject & Padam">
+                                    <i class="ph ph-x"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    pendingTbody.appendChild(tr);
+                });
+            }
+
+            // ---- RENDER APPROVED ----
+            const tableContainer = document.getElementById('tableContainer');
+            const tbody = document.getElementById('lockedTableBody');
+            
+            document.getElementById('lockCount').innerText = `${approvedList.length} Aktif`;
+            
+            if (approvedList.length === 0) {
+                tableContainer.classList.add('hidden');
+                document.getElementById('loadingData').classList.remove('hidden');
+                document.getElementById('loadingData').innerHTML = "Tiada tarikh di-lock pada masa ini.";
+            } else {
+                tableContainer.classList.remove('hidden');
+                tbody.innerHTML = '';
+                
+                approvedList.forEach(item => {
+                    const isAllDay = item.time === 'ALL_DAY';
+                    const timeBadge = isAllDay 
+                        ? `<span class="bg-red-500/10 text-red-600 px-2 py-1 rounded-md text-[10px] uppercase font-bold">Sepenuh Hari</span>`
+                        : `<span class="bg-blue-500/10 text-blue-600 px-2 py-1 rounded-md text-[10px] uppercase font-bold">${item.time}</span>`;
+                    
+                    const dParts = item.date.split('-');
+                    const dShow = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.date;
+
+                    const infoDisplay = item.type === 'USER_BOOKING' 
+                        ? `<span class="font-bold text-gray-800 block">${item.name}</span><span class="text-gray-500">${item.package}</span>` 
+                        : `<span class="text-gray-500">${item.remark || '-'}</span>`;
+
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-gray-300 last:border-0 hover:bg-black/5";
+                    tr.innerHTML = `
+                        <td class="p-3 font-bold">${dShow}</td>
+                        <td class="p-3">${timeBadge}</td>
+                        <td class="p-3 text-[10px] whitespace-normal break-words max-w-[200px]">${infoDisplay}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="window.deleteLock('${item.id}')" class="bg-red-500 text-white rounded-lg p-2 hover:bg-red-600 active:scale-90 transition-all cursor-pointer shadow-md" title="Unlock Slot Ini">
+                                <i class="ph ph-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+    </script>
+
+    <!-- FIREBASE SEBENAR ANDA -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Config Akaun ruzprompt-6ac7c
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZPFbRJHsWbONzykNHMktJNJUkixIpG1M",
+            authDomain: "ruzprompt-6ac7c.firebaseapp.com",
+            projectId: "ruzprompt-6ac7c",
+            storageBucket: "ruzprompt-6ac7c.firebasestorage.app",
+            messagingSenderId: "159437142126",
+            appId: "1:159437142126:web:83a78dd6f9ee394cb98e7f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Pangkalan data jadual: coaching_bookings
+        const bookingsCollectionPath = collection(db, 'coaching_bookings');
+
+        // Baca Data (Live)
+        onSnapshot(bookingsCollectionPath, (snapshot) => {
+            const dataList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderTables(dataList);
+        }, (error) => {
+            console.error("Sync Error:", error);
+        });
+
+        // Tulis Fungsi Global
+        window.adminAddLock = async (data) => {
+            await addDoc(bookingsCollectionPath, data);
+        };
+
+        window.adminApproveLock = async (docId) => {
+            try {
+                await updateDoc(doc(db, 'coaching_bookings', docId), { status: 'APPROVED' });
+                // Popup notifikasi akan muncul selepas berjaya approve
+                // alert("Berjaya! Tarikh ini telah rasmi di-lock."); 
+            } catch (err) { 
+                console.error("Approve failed:", err); 
+                alert("Gagal Approve: " + err.message); // Memaparkan ralat kepada kita
+            }
+        };
+
+        window.adminDeleteLock = async (docId) => {
+            try {
+                await deleteDoc(doc(db, 'coaching_bookings', docId));
+            } catch (err) { 
+                console.error("Delete failed:", err);
+                alert("Gagal Delete: " + err.message);
+            }
+        };
+    </script>
+</body>
+</html>
