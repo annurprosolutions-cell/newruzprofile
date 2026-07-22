@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Diri - Web App</title>
     
+    <!-- PWA & Favicon Meta Tags -->
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RuzPrompt">
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1z1xkqatduSlFhGoihLfxXjt1ArJOP726">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1z1xkqatduSlFhGoihLfxXjt1ArJOP726">
+    <link rel="manifest" id="pwa-manifest">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -58,215 +67,50 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .arc-border {
-            stroke: var(--card-border);
-            transition: stroke 0.4s ease;
-        }
+        .arc-border { stroke: var(--card-border); transition: stroke 0.4s ease; }
+        .arc-main { stroke: var(--bg-color); transition: stroke 0.4s ease, filter 0.3s ease; filter: drop-shadow(6px 6px 10px var(--shadow-dark)) drop-shadow(-6px -6px 10px var(--shadow-light)); }
+        .menu-item { cursor: pointer; outline: none; }
+        .btn-scale-wrap { transform-origin: 0 0; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .menu-item:hover .btn-scale-wrap { transform: scale(1.02); }
+        .menu-item:active .btn-scale-wrap { transform: scale(0.96); filter: drop-shadow(2px 2px 5px var(--shadow-dark)) drop-shadow(-2px -2px 5px var(--shadow-light)); }
 
-        .arc-main {
-            stroke: var(--bg-color);
-            transition: stroke 0.4s ease, filter 0.3s ease;
-            filter: drop-shadow(6px 6px 10px var(--shadow-dark)) drop-shadow(-6px -6px 10px var(--shadow-light));
-        }
+        .svg-text { fill: var(--icon-color); transition: fill 0.3s ease; }
+        .menu-item:hover + g .svg-text, .svg-text.hover-active { fill: var(--primary); }
 
-        .menu-item {
-            cursor: pointer;
-            outline: none;
-        }
+        .html-overlay-icon i { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: var(--icon-color); }
+        .html-overlay-icon.hover-active i { color: var(--primary); transform: scale(1.15); }
 
-        .btn-scale-wrap {
-            transform-origin: 0 0;
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .center-circle { background-color: var(--bg-color); box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light); transition: all 0.4s ease; }
+        .center-circle-inset { background-color: var(--bg-color); box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light); }
 
-        .menu-item:hover .btn-scale-wrap {
-            transform: scale(1.02);
-        }
+        .view-layer { position: absolute; inset: 0; width: 100%; height: 100%; transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+        .view-active { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+        .view-hidden-down { opacity: 0; transform: translateY(150px) scale(0.85); pointer-events: none; }
+        .view-hidden-up { opacity: 0; transform: translateY(-150px) scale(0.85); pointer-events: none; }
 
-        .menu-item:active .btn-scale-wrap {
-            transform: scale(0.96);
-            filter: drop-shadow(2px 2px 5px var(--shadow-dark)) drop-shadow(-2px -2px 5px var(--shadow-light));
-        }
+        .modal-overlay { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
 
-        .svg-text {
-            fill: var(--icon-color);
-            transition: fill 0.3s ease;
-        }
-        
-        .menu-item:hover + g .svg-text,
-        .svg-text.hover-active {
-            fill: var(--primary);
-        }
+        .modal-card { background-color: var(--bg-color); border: 1px solid var(--card-border); box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light); border-radius: 24px; padding: 28px; transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.3s ease, width 0.3s ease; max-height: 90vh; overflow-y: auto; scrollbar-width: none; }
+        .modal-overlay.show .modal-card { transform: scale(1); }
 
-        .html-overlay-icon i {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            color: var(--icon-color);
-        }
+        .btn-modal { background-color: var(--bg-color); box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); transition: all 0.2s ease; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; }
+        .btn-modal:active:not(:disabled) { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); transform: scale(0.96); }
+        .btn-modal:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-modal.primary { color: var(--primary); }
 
-        .html-overlay-icon.hover-active i {
-            color: var(--primary);
-            transform: scale(1.15);
-        }
+        .neu-input { background-color: var(--bg-color); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); border: 1px solid transparent; color: var(--text-main); width: 100%; padding: 12px 16px; border-radius: 12px; outline: none; transition: all 0.2s ease; font-size: 14px; }
+        .neu-input:focus { border-color: var(--primary); }
 
-        .center-circle {
-            background-color: var(--bg-color);
-            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
-            transition: all 0.4s ease;
-        }
-        
-        .center-circle-inset {
-            background-color: var(--bg-color);
-            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
-        }
+        .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 13px; cursor: pointer; transition: all 0.2s; color: var(--text-main); font-weight: 500; }
+        .calendar-day:hover:not(.empty) { background-color: var(--primary); color: white; box-shadow: 2px 2px 5px var(--shadow-dark); }
+        .calendar-day.selected { background-color: var(--primary); color: white; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2); }
+        .calendar-day.empty { cursor: default; }
 
-        .view-layer {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .slot-btn { background-color: var(--bg-color); box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light); border-radius: 8px; padding: 10px; font-size: 11px; text-align: center; cursor: pointer; transition: all 0.2s; color: var(--text-main); font-weight: 600; }
+        .slot-btn:active { box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
 
-        .view-active {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-        }
-
-        .view-hidden-down {
-            opacity: 0;
-            transform: translateY(150px) scale(0.85);
-            pointer-events: none;
-        }
-        
-        .view-hidden-up {
-            opacity: 0;
-            transform: translateY(-150px) scale(0.85);
-            pointer-events: none;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-card {
-            background-color: var(--bg-color);
-            border: 1px solid var(--card-border);
-            box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
-            border-radius: 24px;
-            padding: 28px;
-            transform: scale(0.9);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.3s ease, width 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
-            scrollbar-width: none; /* Hide scrollbar for cleaner look */
-        }
-
-        .modal-overlay.show .modal-card {
-            transform: scale(1);
-        }
-
-        .btn-modal {
-            background-color: var(--bg-color);
-            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-            transition: all 0.2s ease;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-weight: 600;
-        }
-        .btn-modal:active:not(:disabled) {
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-            transform: scale(0.96);
-        }
-        .btn-modal:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .btn-modal.primary {
-            color: var(--primary);
-        }
-
-        .neu-input {
-            background-color: var(--bg-color);
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-            border: 1px solid transparent;
-            color: var(--text-main);
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            outline: none;
-            transition: all 0.2s ease;
-            font-size: 14px;
-        }
-        .neu-input:focus {
-            border-color: var(--primary);
-        }
-
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-        .calendar-day:hover:not(.empty) {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 2px 2px 5px var(--shadow-dark);
-        }
-        .calendar-day.selected {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
-        }
-        .calendar-day.empty {
-            cursor: default;
-        }
-
-        .slot-btn {
-            background-color: var(--bg-color);
-            box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 11px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-main);
-            font-weight: 600;
-        }
-        .slot-btn:active {
-            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
-        }
-
-        /* Timeline & Table Scroll */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -278,7 +122,6 @@
     </button>
 
     <div class="relative w-[340px] h-[340px] sm:w-[480px] sm:h-[480px] flex-shrink-0">
-        
         <!-- LAYER 1: MAIN MENU (4 Cabang) -->
         <div id="main-menu" class="view-layer view-active z-10">
             <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
@@ -302,18 +145,10 @@
                 <circle cx="-99" cy="-99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
 
                 <!-- BUTTONS MAIN MENU -->
-                <g class="menu-item main-item" data-target="learning" onclick="openSubMenu('learning')">
-                    <g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item main-item" data-target="experience" onclick="openSubMenu('experience')" transform="rotate(90)">
-                    <g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item main-item" data-target="coaching" onclick="openSubMenu('coaching')" transform="rotate(180)">
-                    <g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g>
-                </g>
-                <g class="menu-item main-item" data-target="about" onclick="openSubMenu('about')" transform="rotate(270)">
-                    <g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g>
-                </g>
+                <g class="menu-item main-item" data-target="learning" onclick="openSubMenu('learning')"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item main-item" data-target="experience" onclick="openSubMenu('experience')" transform="rotate(90)"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item main-item" data-target="coaching" onclick="openSubMenu('coaching')" transform="rotate(180)"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item main-item" data-target="about" onclick="openSubMenu('about')" transform="rotate(270)"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
 
                 <!-- TEKS MAIN MENU -->
                 <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.5px;">
@@ -335,8 +170,7 @@
             <!-- LOGO TENGAH -->
             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20">
                 <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex items-center justify-center relative overflow-hidden">
-                    <span class="absolute text-5xl sm:text-6xl font-black z-10" style="color: var(--primary-hover);">P</span>
-                    <span class="absolute text-5xl sm:text-6xl font-black translate-x-2 translate-y-2 opacity-50 z-0" style="color: var(--dot-color);">R</span>
+                    <img src="https://lh3.googleusercontent.com/d/1z1xkqatduSlFhGoihLfxXjt1ArJOP726" alt="RuzPrompt Logo" class="w-full h-full object-cover">
                 </div>
             </div>
         </div>
@@ -495,6 +329,30 @@
         </div>
     </div>
 
+    <!-- FOOTER: MEDIA SOSIAL & COPYRIGHT -->
+    <div class="absolute bottom-4 sm:bottom-6 flex flex-col items-center gap-4 z-10 w-full pointer-events-auto">
+        <div class="flex items-center justify-center gap-3 sm:gap-6">
+            <a href="https://www.facebook.com/IbnuAlKhawariizmi" target="_blank" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full center-circle flex items-center justify-center text-[var(--icon-color)] hover:text-[#1877F2] transition-all hover:-translate-y-1 active:scale-95">
+                <i class="ph ph-facebook-logo text-xl sm:text-2xl"></i>
+            </a>
+            <a href="https://www.tiktok.com/@bro_ruz" target="_blank" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full center-circle flex items-center justify-center text-[var(--icon-color)] hover:text-black dark:hover:text-white transition-all hover:-translate-y-1 active:scale-95">
+                <i class="ph ph-tiktok-logo text-xl sm:text-2xl"></i>
+            </a>
+            <a href="https://www.instagram.com/ibnu_alqalasadi" target="_blank" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full center-circle flex items-center justify-center text-[var(--icon-color)] hover:text-[#E4405F] transition-all hover:-translate-y-1 active:scale-95">
+                <i class="ph ph-instagram-logo text-xl sm:text-2xl"></i>
+            </a>
+            <a href="https://www.threads.com/@ibnu_alqalasadi" target="_blank" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full center-circle flex items-center justify-center text-[var(--icon-color)] hover:text-black dark:hover:text-white transition-all hover:-translate-y-1 active:scale-95">
+                <i class="ph ph-threads-logo text-xl sm:text-2xl"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/ts-ruzbihan-bakhtiar-b0519b341" target="_blank" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full center-circle flex items-center justify-center text-[var(--icon-color)] hover:text-[#0A66C2] transition-all hover:-translate-y-1 active:scale-95">
+                <i class="ph ph-linkedin-logo text-xl sm:text-2xl"></i>
+            </a>
+        </div>
+        <p class="text-[10px] sm:text-xs font-bold text-[var(--text-muted)] tracking-widest">
+            Copyright &copy; by RuzPrompt
+        </p>
+    </div>
+
     <!-- STRUKTUR MODAL PERTAMA (INFO / TIMELINE / PORTFOLIO) -->
     <div id="itemModal" class="modal-overlay" style="z-index: 100;">
         <div id="itemModalCard" class="modal-card w-[90%] max-w-[400px] relative transition-all duration-300">
@@ -599,7 +457,7 @@
 
                     <div class="flex gap-3 mt-2">
                         <button type="button" onclick="backToCalendar()" class="btn-modal w-1/3 py-3 rounded-xl text-xs font-medium">Kembali</button>
-                        <button type="submit" class="btn-modal primary w-2/3 py-3 rounded-xl flex items-center justify-center gap-2 text-xs font-bold hover:bg-[var(--primary)] hover:text-white transition-colors">
+                        <button type="submit" id="submitBtn" class="btn-modal primary w-2/3 py-3 rounded-xl flex items-center justify-center gap-2 text-xs font-bold hover:bg-[var(--primary)] hover:text-white transition-colors">
                             Hantar <i class="ph ph-paper-plane-right text-lg"></i>
                         </button>
                     </div>
@@ -609,17 +467,51 @@
     </div>
 
     <script>
+        // --- PWA (Progressive Web App) Setup --- //
+        // Fungsi ini mencipta 'manifest' untuk membenarkan pemasangan sebagai aplikasi Android/iOS
+        const setupPWA = () => {
+            const manifest = {
+                "name": "Profil Diri RuzPrompt",
+                "short_name": "RuzPrompt",
+                "description": "Profil dan Sistem Tempahan Coaching",
+                "start_url": "./",
+                "display": "standalone",
+                "background_color": "#e0e5ec",
+                "theme_color": "#3b82f6",
+                "icons": [
+                    {
+                        "src": "https://lh3.googleusercontent.com/d/1z1xkqatduSlFhGoihLfxXjt1ArJOP726",
+                        "sizes": "192x192",
+                        "type": "image/png",
+                        "purpose": "any maskable"
+                    },
+                    {
+                        "src": "https://lh3.googleusercontent.com/d/1z1xkqatduSlFhGoihLfxXjt1ArJOP726",
+                        "sizes": "512x512",
+                        "type": "image/png",
+                        "purpose": "any maskable"
+                    }
+                ]
+            };
+            
+            // Tukarkan objek manifest kepada JSON dan pautkannya ke tag <link> di atas
+            const manifestString = JSON.stringify(manifest);
+            const blobManifest = new Blob([manifestString], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(blobManifest);
+            document.getElementById('pwa-manifest').setAttribute('href', manifestURL);
+        };
+        setupPWA();
+
         // Pembolehubah Global
         let currentCoachingType = '';
         let currentDate = new Date();
         let selectedDate = null;
         let selectedTime = '';
         
-        let cachedPortfolioData = null; // Cache untuk data Google Sheet
-        let catChartInstance = null; // Instance Carta Kategori
-        let techChartInstance = null; // Instance Carta Teknologi
+        let cachedPortfolioData = null; 
+        let catChartInstance = null; 
+        let techChartInstance = null; 
         
-        // Pembolehubah Pagination Portfolio
         let currentPortfolioPage = 1;
         const portfolioItemsPerPage = 20;
         let sortedPortfolioData = [];
@@ -631,7 +523,6 @@
         };
 
         const popupData = {
-            // SELF LEARNING
             canva: {
                 title: "Canva Ai", icon: "ph-palette",
                 desc: "Canva Ai akan diajar bagaimana membina sistem yang pelbagai menggunakan keupayaan Canva Ai secara efektif dan mudah.",
@@ -663,7 +554,6 @@
                 btn2Text: "Link Belian", btn2Icon: "ph-shopping-cart", btn2Link: "https://annurprosolutions1.bcl.my/form/bundle", btn2Type: "iframe"
             },
             
-            // ABOUT ME
             aboutEdu: {
                 title: "Education", icon: "ph-student",
                 desc: `
@@ -730,14 +620,12 @@
                 btn2Text: "Lihat Resume Penuh", btn2Icon: "ph-file-pdf", btn2Link: "https://drive.google.com/file/d/1k-W4qzXDHzBjEQ1MyAYC6RE7kaKheVKc/preview", btn2Type: "iframe"
             },
             
-            // EXPERIENCE
             expGit: { title: "Github", icon: "ph-github-logo", desc: "Repositori Github sedang dikemaskini. Nantikan perkongsian kod dan projek terbaru!" },
             
-            // PROJECT DONE (DENGAN 2 CARTA & PAGINATION)
             expProj: { 
                 title: "Project Portfolio", 
                 icon: "ph-check-circle", 
-                isWide: true, // Custom flag to widen the modal card
+                isWide: true,
                 desc: `
                 <div id="portfolio-loading" class="flex flex-col items-center justify-center py-10 gap-3 text-[var(--primary)]">
                     <i class="ph ph-spinner-gap animate-spin text-4xl"></i>
@@ -745,7 +633,6 @@
                 </div>
                 <div id="portfolio-content" class="hidden flex-col gap-6">
                     
-                    <!-- Dashboard Ringkas (Statistik) -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <div class="p-3 rounded-2xl bg-[var(--bg-color)] shadow-[inset_3px_3px_6px_var(--shadow-dark),inset_-3px_-3px_6px_var(--shadow-light)] text-center flex flex-col justify-center">
                             <span class="text-2xl font-black text-[var(--primary)]" id="tot-projects">0</span>
@@ -765,16 +652,12 @@
                         </div>
                     </div>
                     
-                    <!-- Carta (Kategori & Teknologi) Bersebelahan -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- Carta Kategori -->
                         <div class="p-4 rounded-2xl bg-[var(--bg-color)] shadow-[inset_4px_4px_8px_var(--shadow-dark),inset_-4px_-4px_8px_var(--shadow-light)] flex flex-col items-center justify-center min-h-[140px]">
                             <span class="text-[11px] font-bold uppercase tracking-wider mb-2 text-[var(--text-main)]">Kategori Sistem</span>
                             <div class="w-full h-32 relative flex items-center justify-center"><canvas id="catChart"></canvas></div>
                             <div id="cat-chart-legend" class="flex flex-wrap gap-x-2 gap-y-1 justify-center mt-3"></div>
                         </div>
-                        
-                        <!-- Carta Teknologi -->
                         <div class="p-4 rounded-2xl bg-[var(--bg-color)] shadow-[inset_4px_4px_8px_var(--shadow-dark),inset_-4px_-4px_8px_var(--shadow-light)] flex flex-col items-center justify-center min-h-[140px]">
                             <span class="text-[11px] font-bold uppercase tracking-wider mb-2 text-[var(--text-main)]">Teknologi Utama</span>
                             <div class="w-full h-32 relative flex items-center justify-center"><canvas id="techChart"></canvas></div>
@@ -782,7 +665,6 @@
                         </div>
                     </div>
                     
-                    <!-- Jadual (Table) Projek & Pagination -->
                     <div>
                         <div class="w-full overflow-x-auto hide-scroll rounded-xl shadow-[4px_4px_8px_var(--shadow-dark),-4px_-4px_8px_var(--shadow-light)] border border-[var(--card-border)] bg-[var(--bg-color)]">
                             <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[500px]">
@@ -796,12 +678,10 @@
                                     </tr>
                                 </thead>
                                 <tbody id="portfolio-table-body" class="text-[var(--text-muted)]">
-                                    <!-- Data akan dijana oleh Javascript -->
                                 </tbody>
                             </table>
                         </div>
                         
-                        <!-- Pagination Controls -->
                         <div id="pagination-controls" class="flex justify-between items-center mt-4 px-1">
                             <button id="prev-page" class="btn-modal px-4 py-2 rounded-xl text-[10px] uppercase font-bold transition-opacity" onclick="changePortfolioPage(-1)">
                                 <i class="ph ph-caret-left text-sm"></i> Sebelum
@@ -820,28 +700,57 @@
                 title: "Testimonial", 
                 icon: "ph-star", 
                 desc: `
+                <style>
+                    .auto-scroll-wrapper {
+                        display: flex;
+                        overflow-x: auto;
+                        gap: 16px;
+                        padding: 8px 4px;
+                        scrollbar-width: none;
+                        -ms-overflow-style: none;
+                        cursor: grab;
+                    }
+                    .auto-scroll-wrapper::-webkit-scrollbar { display: none; }
+                    .auto-scroll-inner {
+                        display: flex;
+                        gap: 16px;
+                        animation: scrollAnimation 30s linear infinite;
+                    }
+                    .auto-scroll-wrapper:hover .auto-scroll-inner,
+                    .auto-scroll-wrapper:active .auto-scroll-inner {
+                        animation-play-state: paused;
+                    }
+                    .auto-scroll-wrapper:active { cursor: grabbing; }
+                    
+                    @keyframes scrollAnimation {
+                        0% { transform: translateX(0); }
+                        100% { transform: translateX(-50%); } 
+                    }
+                </style>
                 <div class="flex flex-col gap-4">
                     <div class="text-sm leading-relaxed text-[var(--text-muted)] text-justify border-l-4 border-[var(--primary)] pl-3">
                         <span class="font-bold text-[var(--text-main)] block mb-1">Bukti Nyata, Hasil Terbukti! 🔥</span>
-                        Ini adalah sebahagian daripada mereka yang telah berjaya mengubah corak kerja dan membina sistem berimpak tinggi selepas berkolaborasi bersama kami. Dari tiada asas kepada penguasaan automasi pintar, testimoni ini adalah jaminan kualiti modul kami.
+                        Ini adalah sebahagian daripada mereka yang telah berjaya mengubah corak kerja dan membina sistem berimpak tinggi selepas berkolaborasi bersama kami.
                     </div>
                     
-                    <!-- Carousel Container -->
-                    <div class="flex overflow-x-auto gap-4 snap-x snap-mandatory hide-scroll py-2 px-1">
-                        <img src="https://lh3.googleusercontent.com/d/1IEaQrfDIY27N_jn9rs_f0mT-1UY12Bro" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 1">
-                        <img src="https://lh3.googleusercontent.com/d/17Tf3q0BVyJ8sX11SmNbaN8BGx2kZRlbC" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 2">
-                        <img src="https://lh3.googleusercontent.com/d/1RDKFzKr-l8ElIn2Ty3VpF22aiyvvBHQH" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 3">
-                        <img src="https://lh3.googleusercontent.com/d/10ePwzUFSWYgV_oOswdHGouIUkM5epPqm" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 4">
-                        <img src="https://lh3.googleusercontent.com/d/1Qmp8r5SzeKouroPPWQ4gbcvLbYD-ZlV-" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 5">
-                        <img src="https://lh3.googleusercontent.com/d/1bBGVZicUjzV2J-oHI8GgWLoag5jwa3j7" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 6">
-                        <img src="https://lh3.googleusercontent.com/d/1iz_f1ATspgOH2BPYS3u5LbCEex9g9kvj" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 7">
-                        <img src="https://lh3.googleusercontent.com/d/18x7JJMdqthyIyI8-J5scmAAtcEbrQQsG" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 8">
-                        <img src="https://lh3.googleusercontent.com/d/1nBpGqLV84hsHkrw-vcP3tFcIZcvRZcfA" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 9">
-                        <img src="https://lh3.googleusercontent.com/d/1blrTXcPiQfFBHFmIwBZgxOLZjYS4ew76" class="snap-center h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni 10">
+                    <div class="auto-scroll-wrapper">
+                        <div class="auto-scroll-inner">
+                            <img src="https://lh3.googleusercontent.com/d/1IEaQrfDIY27N_jn9rs_f0mT-1UY12Bro" class="h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni">
+                            <img src="https://lh3.googleusercontent.com/d/17Tf3q0BVyJ8sX11SmNbaN8BGx2kZRlbC" class="h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni">
+                            <img src="https://lh3.googleusercontent.com/d/1RDKFzKr-l8ElIn2Ty3VpF22aiyvvBHQH" class="h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni">
+                            <img src="https://lh3.googleusercontent.com/d/10ePwzUFSWYgV_oOswdHGouIUkM5epPqm" class="h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni">
+                            <img src="https://lh3.googleusercontent.com/d/1Qmp8r5SzeKouroPPWQ4gbcvLbYD-ZlV-" class="h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni">
+                            <!-- Duplicate Set Untuk Infinite Loop -->
+                            <img src="https://lh3.googleusercontent.com/d/1IEaQrfDIY27N_jn9rs_f0mT-1UY12Bro" class="h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni">
+                            <img src="https://lh3.googleusercontent.com/d/17Tf3q0BVyJ8sX11SmNbaN8BGx2kZRlbC" class="h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni">
+                            <img src="https://lh3.googleusercontent.com/d/1RDKFzKr-l8ElIn2Ty3VpF22aiyvvBHQH" class="h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni">
+                            <img src="https://lh3.googleusercontent.com/d/10ePwzUFSWYgV_oOswdHGouIUkM5epPqm" class="h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni">
+                            <img src="https://lh3.googleusercontent.com/d/1Qmp8r5SzeKouroPPWQ4gbcvLbYD-ZlV-" class="h-64 w-auto flex-shrink-0 rounded-xl object-contain border border-[var(--card-border)] shadow-md" alt="Testimoni">
+                        </div>
                     </div>
                     
-                    <div class="text-[10px] text-center text-[var(--primary)] font-semibold uppercase tracking-wider animate-pulse flex items-center justify-center gap-2">
-                        <i class="ph ph-hand-swipe-left text-lg"></i> Leret untuk paparan seterusnya <i class="ph ph-hand-swipe-right text-lg"></i>
+                    <div class="text-[10px] text-center text-[var(--primary)] font-semibold uppercase tracking-wider flex items-center justify-center gap-2">
+                        <i class="ph ph-hand-swipe-left text-lg"></i> Leret/Pegang untuk berhenti <i class="ph ph-hand-swipe-right text-lg"></i>
                     </div>
                 </div>`
             }
@@ -874,7 +783,6 @@
             const data = popupData[id];
             if(!data) return;
 
-            // Logik pelebaran modal card untuk portfolio
             const card = document.getElementById('itemModalCard');
             if (data.isWide) {
                 card.classList.replace('max-w-[400px]', 'max-w-[800px]');
@@ -906,49 +814,35 @@
 
             document.getElementById('itemModal').classList.add('show');
 
-            // Sekiranya ia adalah Portfolio, jalankan fungsi memuatkan CSV
-            if (id === 'expProj') {
-                loadPortfolioData();
-            }
+            if (id === 'expProj') loadPortfolioData();
         }
 
         function closePopup() { document.getElementById('itemModal').classList.remove('show'); }
 
-        // --- PORTFOLIO FETCH, RENDER & PAGINATION LOGIC --- //
+        // --- PORTFOLIO LOGIC ---
         function renderPortfolioUI(data) {
             const loadingEl = document.getElementById('portfolio-loading');
             const contentEl = document.getElementById('portfolio-content');
             if (!loadingEl || !contentEl) return;
 
-            // 1. Pembolehubah Statistik & Graf
-            let countSiap = 0;
-            let countProgress = 0;
-            let totalPrice = 0;
-            
-            const categories = {};
-            const technologies = {};
+            let countSiap = 0, countProgress = 0, totalPrice = 0;
+            const categories = {}, technologies = {};
             
             data.forEach(row => {
-                // Kira kekerapan Kategori
                 const cat = row['Kategori'] ? row['Kategori'].trim() : 'Lain-lain';
                 categories[cat] = (categories[cat] || 0) + 1;
 
-                // Kira kekerapan Teknologi
                 const tech = row['Teknologi'] ? row['Teknologi'].trim() : 'Lain-lain';
                 technologies[tech] = (technologies[tech] || 0) + 1;
                 
-                // Semak Status Projek
                 const statLower = (row['Status'] || '').toLowerCase();
                 if (statLower.includes('siap') || statLower.includes('done')) countSiap++;
                 else if (statLower.includes('progress') || statLower.includes('sedang')) countProgress++;
                 
-                // Kira Anggaran Harga
-                const priceStr = row['Anggaran Harga'] || '0';
-                const priceNum = parseFloat(priceStr.replace(/[^0-9.-]+/g, '')) || 0;
+                const priceNum = parseFloat((row['Anggaran Harga'] || '0').replace(/[^0-9.-]+/g, '')) || 0;
                 totalPrice += priceNum;
             });
 
-            // Kemaskini Nombor Statistik UI
             document.getElementById('tot-projects').innerText = data.length;
             document.getElementById('tot-completed').innerText = countSiap;
             document.getElementById('tot-progress').innerText = countProgress;
@@ -959,76 +853,45 @@
             else displayPrice = totalPrice.toLocaleString('ms-MY');
             document.getElementById('tot-price').innerText = 'RM ' + displayPrice;
 
-            // Konfigurasi Warna untuk Carta
             const bgColors = ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f43f5e', '#64748b', '#84cc16'];
 
-            // ============================
-            // BINA CARTA 1 : KATEGORI
-            // ============================
+            // Carta 1
             const catLabels = Object.keys(categories);
             const catCounts = Object.values(categories);
-
             document.getElementById('cat-chart-legend').innerHTML = catLabels.map((lbl, i) => `
-                <div class="flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold text-[var(--text-muted)]">
-                    <span class="w-2 h-2 rounded-full" style="background-color: ${bgColors[i % bgColors.length]}"></span>
-                    ${lbl}
-                </div>
+                <div class="flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold text-[var(--text-muted)]"><span class="w-2 h-2 rounded-full" style="background-color: ${bgColors[i % bgColors.length]}"></span>${lbl}</div>
             `).join('');
 
             if (catChartInstance) catChartInstance.destroy();
             catChartInstance = new Chart(document.getElementById('catChart').getContext('2d'), {
                 type: 'doughnut',
-                data: {
-                    labels: catLabels,
-                    datasets: [{ data: catCounts, backgroundColor: bgColors, borderWidth: 0, hoverOffset: 4 }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false, cutout: '65%',
-                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => ' ' + c.label + ' : ' + c.raw + ' Projek' } } }
-                }
+                data: { labels: catLabels, datasets: [{ data: catCounts, backgroundColor: bgColors, borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: false } } }
             });
 
-            // ============================
-            // BINA CARTA 2 : TEKNOLOGI
-            // ============================
+            // Carta 2
             const techLabels = Object.keys(technologies);
             const techCounts = Object.values(technologies);
-            // Terbalikkan warna sedikit supaya nampak berbeza dengan carta kategori
             const techColors = [...bgColors].reverse(); 
 
             document.getElementById('tech-chart-legend').innerHTML = techLabels.map((lbl, i) => `
-                <div class="flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold text-[var(--text-muted)]">
-                    <span class="w-2 h-2 rounded-full" style="background-color: ${techColors[i % techColors.length]}"></span>
-                    ${lbl}
-                </div>
+                <div class="flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold text-[var(--text-muted)]"><span class="w-2 h-2 rounded-full" style="background-color: ${techColors[i % techColors.length]}"></span>${lbl}</div>
             `).join('');
 
             if (techChartInstance) techChartInstance.destroy();
             techChartInstance = new Chart(document.getElementById('techChart').getContext('2d'), {
                 type: 'doughnut',
-                data: {
-                    labels: techLabels,
-                    datasets: [{ data: techCounts, backgroundColor: techColors, borderWidth: 0, hoverOffset: 4 }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false, cutout: '65%',
-                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => ' ' + c.label + ' : ' + c.raw + ' Projek' } } }
-                }
+                data: { labels: techLabels, datasets: [{ data: techCounts, backgroundColor: techColors, borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: false } } }
             });
 
-            // ============================
-            // SETUP DATA JADUAL & PAGINATION
-            // ============================
             sortedPortfolioData = [...data].sort((a, b) => parseInt(b['Tahun'] || 0) - parseInt(a['Tahun'] || 0));
             currentPortfolioPage = 1;
             renderPortfolioTablePage();
 
-            // Selesai memuatkan
-            loadingEl.style.display = 'none';
-            contentEl.style.display = 'flex';
+            loadingEl.style.display = 'none'; contentEl.style.display = 'flex';
         }
 
-        // Fungsi Render Muka Surat Jadual
         function renderPortfolioTablePage() {
             const tbody = document.getElementById('portfolio-table-body');
             if(!tbody) return;
@@ -1042,7 +905,6 @@
             pageData.forEach(row => {
                 const stat = row['Status'] ? row['Status'].trim() : '-';
                 const statLower = stat.toLowerCase();
-                
                 let statusColor = 'text-gray-500 bg-gray-500/10';
                 if(statLower.includes('siap') || statLower.includes('done')) statusColor = 'text-green-500 bg-green-500/10';
                 else if(statLower.includes('progress') || statLower.includes('sedang')) statusColor = 'text-blue-500 bg-blue-500/10';
@@ -1050,7 +912,6 @@
 
                 const tr = document.createElement('tr');
                 tr.className = 'border-b border-[var(--card-border)] last:border-0 hover:bg-black/5 dark:hover:bg-white/5 transition-colors';
-                
                 tr.innerHTML = `
                     <td class="p-4 text-center font-medium">${row['Tahun'] || '-'}</td>
                     <td class="p-4 font-bold text-[var(--text-main)]">${row['Nama Sistem'] || '-'}</td>
@@ -1061,40 +922,24 @@
                 tbody.appendChild(tr);
             });
 
-            // Kemaskini Butang Pagination
             document.getElementById('page-info').innerText = `Muka ${currentPortfolioPage} / ${totalPages}`;
-            
-            const btnPrev = document.getElementById('prev-page');
-            const btnNext = document.getElementById('next-page');
-            
-            btnPrev.disabled = currentPortfolioPage === 1;
-            btnNext.disabled = currentPortfolioPage === totalPages;
+            document.getElementById('prev-page').disabled = currentPortfolioPage === 1;
+            document.getElementById('next-page').disabled = currentPortfolioPage === totalPages;
         }
 
-        // Fungsi Menukar Muka Surat
         function changePortfolioPage(direction) {
             const totalPages = Math.ceil(sortedPortfolioData.length / portfolioItemsPerPage) || 1;
             currentPortfolioPage += direction;
-            
             if (currentPortfolioPage < 1) currentPortfolioPage = 1;
             if (currentPortfolioPage > totalPages) currentPortfolioPage = totalPages;
-            
             renderPortfolioTablePage();
         }
 
         function loadPortfolioData() {
-            // Jika data sudah di-cache, kita terus pamerkan tanpa panggil CSV lagi
-            if (cachedPortfolioData) {
-                setTimeout(() => renderPortfolioUI(cachedPortfolioData), 50);
-                return;
-            }
-
-            // Penggunaan PapaParse untuk tarik data secara automatik dari Google Sheets URL
+            if (cachedPortfolioData) { setTimeout(() => renderPortfolioUI(cachedPortfolioData), 50); return; }
             Papa.parse("https://docs.google.com/spreadsheets/d/e/2PACX-1vSUwW-AXB3NV8OyPIRMO0Cd2ZebKJVZc-8OI9-8LXXSZwSCe4pSpG1gpr3gm0C-9GBpRJhghLteB944/pub?output=csv", {
-                download: true,
-                header: true,
+                download: true, header: true,
                 complete: function(results) {
-                    // Filter row yang mungkin kosong di bawah google sheets
                     cachedPortfolioData = results.data.filter(row => row['Nama Sistem'] && row['Nama Sistem'].trim() !== '');
                     renderPortfolioUI(cachedPortfolioData);
                 },
@@ -1104,9 +949,8 @@
                 }
             });
         }
-        // ------------------------------------ //
 
-
+        // --- MEDIA MODAL ---
         function openMediaModal(url, type) {
             if(!url || url === '#') return;
             const container = document.getElementById('mediaContainer');
@@ -1128,6 +972,7 @@
             setTimeout(() => { document.getElementById('mediaContainer').innerHTML = ''; }, 300);
         }
 
+        // --- BOOKING LOGIC & CALENDAR ---
         function openBooking(type) {
             currentCoachingType = type;
             const details = coachingDetails[type];
@@ -1165,12 +1010,23 @@
             for (let i = 0; i < firstDay; i++) { calendarDays.innerHTML += `<div class="calendar-day empty"></div>`; }
             
             const today = new Date();
-            today.setHours(0,0,0,0); // reset masa untuk perbandingan tepat
+            today.setHours(0,0,0,0);
             
             for (let i = 1; i <= daysInMonth; i++) {
                 const iterDate = new Date(year, month, i);
+                const dStr = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+                
+                let totalSlots = 1;
+                if (iterDate.getDay() === 0) totalSlots = 5;
+                if (iterDate.getDay() === 6) totalSlots = 2;
+                
+                const dayLocks = (window.lockedSlots || []).filter(lock => lock.date === dStr);
+                const isFullyBooked = dayLocks.some(l => l.time === 'ALL_DAY') || (dayLocks.length >= totalSlots);
+
                 if(iterDate < today) {
                     calendarDays.innerHTML += `<div class="calendar-day empty opacity-30">${i}</div>`;
+                } else if (isFullyBooked) {
+                    calendarDays.innerHTML += `<div class="calendar-day empty opacity-40 bg-red-500/10 text-red-500 cursor-not-allowed" title="Tarikh Penuh">${i}</div>`;
                 } else {
                     calendarDays.innerHTML += `<div class="calendar-day" onclick="selectDate(${year}, ${month}, ${i}, this)">${i}</div>`;
                 }
@@ -1190,18 +1046,21 @@
             grid.innerHTML = ''; container.classList.remove('hidden');
             let slots = [];
             
-            if (dayOfWeek === 0) { // Ahad
-                slots = ['08:00 AM - 10:00 AM', '11:00 AM - 01:00 PM', '02:00 PM - 04:00 PM', '05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM'];
-            } else if (dayOfWeek === 6) { // Sabtu
-                slots = ['05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM'];
-            } else { // Isnin - Jumaat
-                slots = ['09:00 PM - 11:00 PM'];
-            }
+            if (dayOfWeek === 0) slots = ['08:00 AM - 10:00 AM', '11:00 AM - 01:00 PM', '02:00 PM - 04:00 PM', '05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM'];
+            else if (dayOfWeek === 6) slots = ['05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM'];
+            else slots = ['09:00 PM - 11:00 PM'];
 
-            slots.forEach(time => {
-                grid.innerHTML += `<div class="slot-btn" onclick="proceedToForm('${time}')">${time}</div>`;
+            const dStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth()+1).padStart(2,'0')}-${String(selectedDate.getDate()).padStart(2,'0')}`;
+            
+            let availableSlots = slots.filter(time => {
+                return !(window.lockedSlots || []).some(lock => lock.date === dStr && (lock.time === 'ALL_DAY' || lock.time === time));
             });
-            // Auto scroll ke slot
+
+            if (availableSlots.length === 0) {
+                grid.innerHTML = '<div class="col-span-2 text-center text-[10px] sm:text-xs text-red-500 font-bold py-3 bg-red-500/10 rounded-xl">Semua slot penuh pada tarikh ini.</div>';
+            } else {
+                availableSlots.forEach(time => { grid.innerHTML += `<div class="slot-btn" onclick="proceedToForm('${time}')">${time}</div>`; });
+            }
             setTimeout(() => { container.scrollIntoView({behavior: 'smooth', block: 'nearest'}); }, 100);
         }
 
@@ -1251,37 +1110,83 @@
             document.getElementById('step2Form').style.display = 'none';
         }
 
-        function submitCoaching(e) {
+        async function submitCoaching(e) {
             e.preventDefault();
-            const name = document.getElementById('c_name').value;
-            const phone = document.getElementById('c_phone').value;
-            const remark = document.getElementById('c_remark').value || "Tiada catatan tambahan.";
-            const dateStr = selectedDate.toLocaleDateString('ms-MY');
-            
-            let message = `*TEMPAHAN COACHING BARU*%0A%0A`;
-            message += `*Pakej:* ${coachingDetails[currentCoachingType].title}%0A`;
-            message += `*Tarikh:* ${dateStr}%0A`;
-            message += `*Masa:* ${selectedTime}%0A`;
-            message += `*Nama:* ${name}%0A`;
-            message += `*No Tel:* ${phone}%0A%0A`;
-            
-            if (currentCoachingType === '1to1') {
-                message += `*Fokus:* ${document.getElementById('c_focus').value}%0A`;
-            } else if (currentCoachingType === '3to1') {
-                message += `*Fokus:* ${document.getElementById('c_focus').value}%0A`;
-                message += `*Senarai Peserta:* %0A${document.getElementById('c_participants').value}%0A`;
-            } else if (currentCoachingType === 'custom') {
-                message += `*Tujuan:* ${document.getElementById('c_goal').value}%0A`;
-                message += `*Bajet:* RM ${document.getElementById('c_budget').value}%0A`;
-                message += `*Mod Kelas:* ${document.getElementById('c_mode').value}%0A`;
+            const btn = document.getElementById('submitBtn');
+            const originalBtnText = btn.innerHTML;
+            btn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> Memproses...`;
+            btn.disabled = true;
+
+            try {
+                const name = document.getElementById('c_name').value;
+                const phone = document.getElementById('c_phone').value;
+                const remark = document.getElementById('c_remark').value || "Tiada catatan tambahan.";
+                
+                const dateStrWA = selectedDate.toLocaleDateString('ms-MY');
+                
+                const yyyy = selectedDate.getFullYear();
+                const mm = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(selectedDate.getDate()).padStart(2, '0');
+                const dbDateStr = `${yyyy}-${mm}-${dd}`;
+                
+                let detailsObj = {};
+                let message = `*PERMOHONAN COACHING BARU*%0A%0A`;
+                message += `*Pakej:* ${coachingDetails[currentCoachingType].title}%0A`;
+                message += `*Tarikh:* ${dateStrWA}%0A`;
+                message += `*Masa:* ${selectedTime}%0A`;
+                message += `*Nama:* ${name}%0A`;
+                message += `*No Tel:* ${phone}%0A%0A`;
+                
+                if (currentCoachingType === '1to1') {
+                    const focus = document.getElementById('c_focus').value;
+                    detailsObj = { focus: focus };
+                    message += `*Fokus:* ${focus}%0A`;
+                } else if (currentCoachingType === '3to1') {
+                    const focus = document.getElementById('c_focus').value;
+                    const participants = document.getElementById('c_participants').value;
+                    detailsObj = { focus: focus, participants: participants };
+                    message += `*Fokus:* ${focus}%0A`;
+                    message += `*Senarai Peserta:* %0A${participants}%0A`;
+                } else if (currentCoachingType === 'custom') {
+                    const goal = document.getElementById('c_goal').value;
+                    const budget = document.getElementById('c_budget').value;
+                    const mode = document.getElementById('c_mode').value;
+                    detailsObj = { goal: goal, budget: budget, mode: mode };
+                    message += `*Tujuan:* ${goal}%0A`;
+                    message += `*Bajet:* RM ${budget}%0A`;
+                    message += `*Mod Kelas:* ${mode}%0A`;
+                }
+
+                message += `%0A*Cabaran/Nota:* %0A${remark}%0A%0A_Sila buat bayaran deposit untuk saya Lock tarikh ini. Terima kasih!_`;
+
+                // 1. Simpan Data PENDING ke dalam Firebase Sebenar
+                if (window.addBookingRequest) {
+                    await window.addBookingRequest({
+                        type: 'USER_BOOKING',
+                        date: dbDateStr,
+                        time: selectedTime,
+                        status: 'PENDING',
+                        name: name,
+                        phone: phone,
+                        package: coachingDetails[currentCoachingType].title,
+                        details: JSON.stringify(detailsObj),
+                        remark: remark,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+
+                // 2. Buka WhatsApp
+                const whatsappNumber = "601120879149";
+                window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+                
+                closeBooking();
+
+            } catch (error) {
+                console.error("Gagal menghantar tempahan:", error);
+            } finally {
+                btn.innerHTML = originalBtnText;
+                btn.disabled = false;
             }
-
-            message += `%0A*Cabaran/Nota:* %0A${remark}`;
-
-            // === TUKAR NOMBOR TELEFON ANDA DI SINI ===
-            const whatsappNumber = "60111111111"; // <<-- Ganti dengan nombor anda
-            window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
-            closeBooking();
         }
 
         document.getElementById('itemModal').addEventListener('click', function(e) { if (e.target === this) closePopup(); });
@@ -1307,6 +1212,50 @@
             if(theme === 'dark') { themeIcon.classList.replace('ph-moon', 'ph-sun'); } 
             else { themeIcon.classList.replace('ph-sun', 'ph-moon'); }
         }
+    </script>
+
+    <!-- FIREBASE SEBENAR ANDA -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Config Akaun ruzprompt-6ac7c
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZPFbRJHsWbONzykNHMktJNJUkixIpG1M",
+            authDomain: "ruzprompt-6ac7c.firebaseapp.com",
+            projectId: "ruzprompt-6ac7c",
+            storageBucket: "ruzprompt-6ac7c.firebasestorage.app",
+            messagingSenderId: "159437142126",
+            appId: "1:159437142126:web:83a78dd6f9ee394cb98e7f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Pangkalan data jadual: coaching_bookings
+        const bookingsRef = collection(db, 'coaching_bookings');
+
+        window.addBookingRequest = async (data) => {
+            await addDoc(bookingsRef, data);
+        };
+
+        onSnapshot(bookingsRef, (snapshot) => {
+            const allData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Kalendar hanya 'block' tarikh yang disahkan (APPROVED)
+            window.lockedSlots = allData.filter(item => item.status === 'APPROVED');
+            
+            // Update Kalendar secara Live
+            const bookingModal = document.getElementById('bookingModal');
+            if (bookingModal && bookingModal.classList.contains('show')) {
+                if (typeof window.renderCalendar === 'function') {
+                    window.renderCalendar();
+                    document.getElementById('timeSlotContainer').classList.add('hidden'); 
+                }
+            }
+        }, (error) => {
+            console.error("Firestore Snapshot Error:", error);
+        });
     </script>
 </body>
 </html>
