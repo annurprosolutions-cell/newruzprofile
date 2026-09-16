@@ -167,6 +167,16 @@
                 </p>
             </form>
 
+            <div id="seedCourseBox" class="neu-inset rounded-xl p-4 mb-6 flex items-center justify-between gap-3 flex-wrap hidden">
+                <div class="text-xs text-gray-600">
+                    <span class="font-bold">Senarai course masih kosong.</span><br>
+                    Klik untuk masukkan balik 4 course asal (Canva Ai, Gemini Ai, Looker Studio, Edu Content) ke database.
+                </div>
+                <button type="button" id="seedCourseBtn" class="neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase flex items-center gap-2 flex-shrink-0" style="background-color:#3b82f6; color:white;">
+                    <i class="ph ph-download-simple"></i> Import Course Asal
+                </button>
+            </div>
+
             <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
                 <span class="flex items-center gap-2"><i class="ph ph-list-bullets"></i> Senarai Course</span>
                 <span id="courseCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Course</span>
@@ -412,15 +422,68 @@
             return d.innerHTML;
         }
 
+        // Course asal yang dulu hardcode dalam profile.html — untuk butang "Import Course Asal"
+        const DEFAULT_COURSES = [
+            {
+                title: "Canva Ai", icon: "ph-palette",
+                desc: "Canva Ai akan diajar bagaimana membina sistem yang pelbagai menggunakan keupayaan Canva Ai secara efektif dan mudah.",
+                imageUrl: "https://i.postimg.cc/fT51QtGz/Chat-GPT-Image-Jul-10-2026-09-32-39-PM.png",
+                purchaseLink: "https://annurprosolutions1.bcl.my/form/canva-ai-sistem"
+            },
+            {
+                title: "Gemini Ai", icon: "ph-sparkle",
+                desc: "Gemini Ai akan di ajar bagaimana bina sistem yang pelbagai menggunakan keupayaan Gemini Ai yang termaju.",
+                imageUrl: "https://i.postimg.cc/SNy1NQ4d/Chat-GPT-Image-Jul-10-2026-09-37-27-PM.png",
+                purchaseLink: "https://annurprosolutions1.bcl.my/form/gemini-ai-sistem"
+            },
+            {
+                title: "Looker Studio", icon: "ph-chart-bar",
+                desc: "Pelajari teknik membina dashboard interaktif dan visualisasi data yang profesional menggunakan Looker Studio.",
+                imageUrl: "https://i.postimg.cc/pXhhjzP2/Chat-GPT-Image-Jul-10-2026-09-39-55-PM.png",
+                purchaseLink: "https://annurprosolutions1.bcl.my/form/looker-studio"
+            },
+            {
+                title: "Edu Content", icon: "ph-book-open",
+                desc: "Kuasai seni penghasilan kandungan pendidikan (Edu Content) yang berkualiti dan berimpak tinggi.",
+                imageUrl: "https://i.postimg.cc/D0WZq3kH/Chat-GPT-Image-Jul-10-2026-09-42-54-PM.png",
+                purchaseLink: "https://annurprosolutions1.bcl.my/form/educontent"
+            }
+        ];
+
+        let currentCourseList = [];
+
+        document.getElementById('seedCourseBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('seedCourseBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Memasukkan...`;
+            try {
+                const existingTitles = currentCourseList.map(c => (c.title || '').toLowerCase());
+                for (const course of DEFAULT_COURSES) {
+                    if (!existingTitles.includes(course.title.toLowerCase())) {
+                        await window.adminAddCourse(course);
+                    }
+                }
+            } catch (err) {
+                alert("Gagal import: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="ph ph-download-simple"></i> Import Course Asal`;
+            }
+        });
+
         function renderCourseList(list) {
+            currentCourseList = list;
             document.getElementById('courseLoading').classList.add('hidden');
             document.getElementById('courseCount').innerText = `${list.length} Course`;
             const container = document.getElementById('courseListContainer');
+            const seedBox = document.getElementById('seedCourseBox');
             container.innerHTML = '';
             if (list.length === 0) {
                 container.innerHTML = `<div class="text-center text-sm text-gray-500 py-6">Tiada course lagi. Tambah course pertama guna borang di atas.</div>`;
+                seedBox.classList.remove('hidden');
                 return;
             }
+            seedBox.classList.add('hidden');
             list.forEach(item => {
                 const row = document.createElement('div');
                 row.className = 'neu-inset rounded-xl p-4 flex items-center gap-4';
