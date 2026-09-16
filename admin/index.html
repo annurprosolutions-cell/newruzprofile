@@ -78,6 +78,9 @@
             <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="courses">
                 <i class="ph ph-graduation-cap"></i> Course
             </button>
+            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="demos">
+                <i class="ph ph-desktop"></i> Demo
+            </button>
             <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="config">
                 <i class="ph ph-gear-six"></i> Site Config
             </button>
@@ -187,6 +190,55 @@
             </div>
         </div>
 
+        <!-- ======================= PANEL: DEMO ======================= -->
+        <div id="panel-demos" class="tab-panel neu-card p-6 sm:p-8 hidden">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">
+                <span id="demoFormMode">Tambah Sistem Demo Baru</span>
+            </h2>
+            <form id="demoForm" class="flex flex-col gap-4 mb-8">
+                <input type="hidden" id="demoEditId" value="">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="demoTitle" placeholder="Nama Sistem (cth: Prompt2Booking)" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="text" id="demoBadge" placeholder="Label kecil (optional: BARU / RECORDING)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <textarea id="demoDesc" rows="2" placeholder="Penerangan ringkas sistem" class="neu-inset p-3 rounded-xl w-full text-sm resize-none"></textarea>
+                <input type="url" id="demoThumb" placeholder="Link Gambar Thumbnail (Google Drive share link)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <input type="url" id="demoLink" placeholder="Link Demo (untuk orang tengok sistem)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="url" id="demoPurchase" placeholder="Link beli template ni je (optional)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="number" id="demoOrder" placeholder="Susunan (1, 2, 3...)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <div class="flex gap-3">
+                    <button type="submit" id="demoSubmitBtn" class="neu-btn flex-1 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-xs flex items-center justify-center gap-2" style="background-color: #3b82f6;">
+                        <i class="ph ph-plus-circle text-lg"></i> Tambah Demo
+                    </button>
+                    <button type="button" id="demoCancelEditBtn" class="neu-btn px-4 py-3 rounded-xl uppercase text-xs font-bold hidden">Batal</button>
+                </div>
+                <p class="text-[10px] text-gray-500">
+                    Nota: kalau "Link beli template ni je" dikosongkan, butang belian akan guna bundle "Semua Template" yang diset dalam tab Site Config.
+                </p>
+            </form>
+
+            <div id="seedDemoBox" class="neu-inset rounded-xl p-4 mb-6 flex items-center justify-between gap-3 flex-wrap hidden">
+                <div class="text-xs text-gray-600">
+                    <span class="font-bold">Senarai demo masih kosong.</span><br>
+                    Klik untuk masukkan 5 sistem demo asal (Prompt2Booking, Prompt2OPR, Prompt2Dashboard, Prompt2Website, Sistem Guru Ganti).
+                </div>
+                <button type="button" id="seedDemoBtn" class="neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase flex items-center gap-2 flex-shrink-0" style="background-color:#3b82f6; color:white;">
+                    <i class="ph ph-download-simple"></i> Import Demo Asal
+                </button>
+            </div>
+
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="ph ph-list-bullets"></i> Senarai Demo</span>
+                <span id="demoCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Demo</span>
+            </h2>
+            <div id="demoListContainer" class="flex flex-col gap-3"></div>
+            <div id="demoLoading" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
+                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan...
+            </div>
+        </div>
+
         <!-- ======================= PANEL: SITE CONFIG ======================= -->
         <div id="panel-config" class="tab-panel neu-card p-6 sm:p-8 hidden">
             <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">Tetapan Umum Laman</h2>
@@ -209,6 +261,15 @@
                     <input type="url" id="cfgLinkedin" placeholder="Link LinkedIn" class="neu-inset p-3 rounded-xl w-full text-sm">
                     <input type="url" id="cfgWhatsapp" placeholder="No. WhatsApp (cth: 601120879149)" class="neu-inset p-3 rounded-xl w-full text-sm">
                 </div>
+
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-4">Bundle Template (Sistem Demo)</h3>
+                <p class="text-[10px] text-gray-500 -mt-2">Satu link belian untuk semua template sistem. Bila tambah demo baru, tak payah ubah link ni.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="cfgBundleTitle" placeholder="Tajuk butang (cth: Dapatkan Semua Template)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="text" id="cfgBundlePrice" placeholder="Harga (cth: RM99)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <input type="text" id="cfgBundleDesc" placeholder="Penerangan ringkas bundle" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <input type="url" id="cfgBundleLink" placeholder="Link belian bundle" class="neu-inset p-3 rounded-xl w-full text-sm">
 
                 <button type="submit" id="configSubmitBtn" class="neu-btn text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2" style="background-color: #3b82f6;">
                     <i class="ph ph-floppy-disk text-lg"></i> Simpan Tetapan
@@ -503,6 +564,159 @@
             });
         }
 
+        // ================= DEMO =================
+        const DEFAULT_DEMOS = [
+            {
+                title: "Prompt2Booking", icon: "ph-calendar-check", badge: "",
+                desc: "Sistem tempahan pintar (Booking System) yang mudah dan pantas untuk diintegrasi ke dalam perniagaan anda.",
+                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/booking-system",
+                purchaseLink: "", order: 1
+            },
+            {
+                title: "Prompt2OPR", icon: "ph-file-text", badge: "",
+                desc: "Sistem pengurusan rekod OPR (One Page Report) yang diautomasikan secara sistematik.",
+                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/opr",
+                purchaseLink: "", order: 2
+            },
+            {
+                title: "Prompt2Dashboard", icon: "ph-presentation-chart", badge: "RECORDING",
+                desc: "Paparan Dashboard analitik yang interaktif untuk pemantauan data perniagaan secara real-time.",
+                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/prompt2dashboard",
+                purchaseLink: "", order: 3
+            },
+            {
+                title: "Prompt2Website", icon: "ph-globe", badge: "",
+                desc: "Laman web profil dan perniagaan berprestasi tinggi yang dioptimumkan sepenuhnya (Website & SEO).",
+                thumbnailUrl: "", demoLink: "https://prompt2website.netlify.app/",
+                purchaseLink: "", order: 4
+            },
+            {
+                title: "Sistem Guru Ganti", icon: "ph-users-three", badge: "",
+                desc: "Sistem pengurusan guru ganti (Relief System) yang pantas dan efisien untuk pengurusan sekolah.",
+                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/relief-system",
+                purchaseLink: "", order: 5
+            }
+        ];
+
+        let currentDemoList = [];
+        const demoForm = document.getElementById('demoForm');
+        const demoCancelBtn = document.getElementById('demoCancelEditBtn');
+
+        demoCancelBtn.addEventListener('click', () => {
+            demoForm.reset();
+            document.getElementById('demoEditId').value = '';
+            document.getElementById('demoFormMode').innerText = 'Tambah Sistem Demo Baru';
+            document.getElementById('demoSubmitBtn').innerHTML = `<i class="ph ph-plus-circle text-lg"></i> Tambah Demo`;
+            demoCancelBtn.classList.add('hidden');
+        });
+
+        demoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('demoEditId').value;
+            const data = {
+                title: document.getElementById('demoTitle').value,
+                badge: document.getElementById('demoBadge').value,
+                desc: document.getElementById('demoDesc').value,
+                thumbnailUrl: document.getElementById('demoThumb').value,
+                demoLink: document.getElementById('demoLink').value,
+                purchaseLink: document.getElementById('demoPurchase').value,
+                order: Number(document.getElementById('demoOrder').value) || 999
+            };
+            const btn = document.getElementById('demoSubmitBtn');
+            btn.disabled = true;
+            try {
+                if (editId) { await window.adminUpdateDemo(editId, data); }
+                else { await window.adminAddDemo(data); }
+                demoCancelBtn.click();
+            } catch (err) {
+                alert("Gagal simpan demo: " + err.message);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('seedDemoBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('seedDemoBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Memasukkan...`;
+            try {
+                const existingTitles = currentDemoList.map(d => (d.title || '').toLowerCase());
+                for (const demo of DEFAULT_DEMOS) {
+                    if (!existingTitles.includes(demo.title.toLowerCase())) {
+                        await window.adminAddDemo(demo);
+                    }
+                }
+            } catch (err) {
+                alert("Gagal import: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="ph ph-download-simple"></i> Import Demo Asal`;
+            }
+        });
+
+        window.editDemo = (id) => {
+            const item = currentDemoList.find(d => d.id === id);
+            if (!item) return;
+            document.getElementById('demoEditId').value = id;
+            document.getElementById('demoTitle').value = item.title || '';
+            document.getElementById('demoBadge').value = item.badge || '';
+            document.getElementById('demoDesc').value = item.desc || '';
+            document.getElementById('demoThumb').value = item.thumbnailUrl || '';
+            document.getElementById('demoLink').value = item.demoLink || '';
+            document.getElementById('demoPurchase').value = item.purchaseLink || '';
+            document.getElementById('demoOrder').value = item.order || '';
+            document.getElementById('demoFormMode').innerText = 'Edit Demo: ' + (item.title || '');
+            document.getElementById('demoSubmitBtn').innerHTML = `<i class="ph ph-floppy-disk text-lg"></i> Kemaskini`;
+            demoCancelBtn.classList.remove('hidden');
+            document.getElementById('panel-demos').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.removeDemo = async (id) => {
+            const item = currentDemoList.find(d => d.id === id);
+            if (!confirm(`Padam demo "${item ? item.title : ''}"? Tindakan ni tak boleh undo.`)) return;
+            await window.adminDeleteDemo(id);
+        };
+
+        function renderDemoList(list) {
+            currentDemoList = list;
+            document.getElementById('demoLoading').classList.add('hidden');
+            document.getElementById('demoCount').innerText = `${list.length} Demo`;
+            const container = document.getElementById('demoListContainer');
+            const seedBox = document.getElementById('seedDemoBox');
+            container.innerHTML = '';
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="text-center text-sm text-gray-500 py-6">Tiada demo lagi.</div>`;
+                seedBox.classList.remove('hidden');
+                return;
+            }
+            seedBox.classList.add('hidden');
+
+            list.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'neu-inset rounded-xl p-4 flex items-center gap-4';
+                const thumb = item.thumbnailUrl
+                    ? `<img src="${item.thumbnailUrl}" alt="" class="w-12 h-12 rounded-lg object-cover flex-shrink-0 bg-gray-200">`
+                    : `<div class="w-12 h-12 rounded-full neu-card flex items-center justify-center flex-shrink-0"><i class="ph ph-desktop text-xl text-blue-500"></i></div>`;
+                const badge = item.badge ? `<span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600">${esc(item.badge)}</span>` : '';
+                const priceTag = item.purchaseLink
+                    ? `<span class="text-[9px] text-green-600 font-bold">+ link individu</span>`
+                    : `<span class="text-[9px] text-gray-400">guna bundle</span>`;
+                row.innerHTML = `
+                    ${thumb}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2"><span class="font-bold text-sm truncate">${esc(item.title)}</span>${badge}</div>
+                        <div class="text-xs text-gray-500 truncate">${esc(item.desc)}</div>
+                        <div class="mt-0.5">${priceTag}</div>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0">
+                        <button onclick="window.editDemo('${item.id}')" class="bg-blue-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-blue-600"><i class="ph ph-pencil-simple"></i></button>
+                        <button onclick="window.removeDemo('${item.id}')" class="bg-red-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-red-600"><i class="ph ph-trash"></i></button>
+                    </div>`;
+                container.appendChild(row);
+            });
+        }
+
         // ---- CONFIG FORM ----
         document.getElementById('configForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -516,6 +730,12 @@
                     threads: document.getElementById('cfgThreads').value,
                     linkedin: document.getElementById('cfgLinkedin').value,
                     whatsapp: document.getElementById('cfgWhatsapp').value
+                },
+                demoBundle: {
+                    title: document.getElementById('cfgBundleTitle').value,
+                    price: document.getElementById('cfgBundlePrice').value,
+                    desc: document.getElementById('cfgBundleDesc').value,
+                    link: document.getElementById('cfgBundleLink').value
                 }
             };
             const btn = document.getElementById('configSubmitBtn');
@@ -543,6 +763,12 @@
             document.getElementById('cfgThreads').value = s.threads || '';
             document.getElementById('cfgLinkedin').value = s.linkedin || '';
             document.getElementById('cfgWhatsapp').value = s.whatsapp || '';
+
+            const b = cfg.demoBundle || {};
+            document.getElementById('cfgBundleTitle').value = b.title || '';
+            document.getElementById('cfgBundlePrice').value = b.price || '';
+            document.getElementById('cfgBundleDesc').value = b.desc || '';
+            document.getElementById('cfgBundleLink').value = b.link || '';
         }
     </script>
 
@@ -570,9 +796,10 @@
         const bookingsCollectionPath = collection(db, 'coaching_bookings');
         const lockedSlotsPath = collection(db, 'locked_slots');
         const coursesPath = collection(db, 'courses');
+        const demosPath = collection(db, 'demos');
         const configDocRef = doc(db, 'site_config', 'main');
 
-        let unsubBookings = null, unsubCourses = null;
+        let unsubBookings = null, unsubCourses = null, unsubDemos = null;
 
         const loginScreen = document.getElementById('loginScreen');
         const dashboard = document.getElementById('dashboard');
@@ -602,6 +829,7 @@
                 dashboard.classList.add('hidden');
                 if (unsubBookings) { unsubBookings(); unsubBookings = null; }
                 if (unsubCourses) { unsubCourses(); unsubCourses = null; }
+                if (unsubDemos) { unsubDemos(); unsubDemos = null; }
             }
         });
 
@@ -614,6 +842,13 @@
             if (!unsubCourses) {
                 unsubCourses = onSnapshot(coursesPath, (snapshot) => {
                     renderCourseList(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+                }, (error) => console.error("Sync Error:", error));
+            }
+            if (!unsubDemos) {
+                unsubDemos = onSnapshot(demosPath, (snapshot) => {
+                    const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                    list.sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+                    renderDemoList(list);
                 }, (error) => console.error("Sync Error:", error));
             }
             try {
@@ -656,6 +891,17 @@
         };
         window.adminDeleteCourse = async (id) => {
             await deleteDoc(doc(db, 'courses', id));
+        };
+
+        // ---- DEMOS CRUD ----
+        window.adminAddDemo = async (data) => {
+            await addDoc(demosPath, { ...data, createdAt: new Date().toISOString() });
+        };
+        window.adminUpdateDemo = async (id, data) => {
+            await updateDoc(doc(db, 'demos', id), data);
+        };
+        window.adminDeleteDemo = async (id) => {
+            await deleteDoc(doc(db, 'demos', id));
         };
 
         // ---- SITE CONFIG ----
