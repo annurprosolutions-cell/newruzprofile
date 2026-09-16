@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Lock Tarikh - Admin</title>
-    
+    <title>Superadmin Panel - RuzPrompt</title>
+
     <!-- Tailwind & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -17,23 +17,18 @@
             font-family: 'Poppins', sans-serif;
             min-height: 100vh;
         }
-        
         .neu-card {
             background-color: #e0e5ec;
             box-shadow: 10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff;
             border-radius: 20px;
         }
-        
         .neu-inset {
             background-color: #e0e5ec;
             box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
             border: none;
             outline: none;
         }
-        .neu-inset:focus {
-            border: 1px solid #3b82f6;
-        }
-        
+        .neu-inset:focus { border: 1px solid #3b82f6; }
         .neu-btn {
             background-color: #e0e5ec;
             box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
@@ -43,197 +38,247 @@
             box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
             transform: scale(0.97);
         }
+        .tab-btn { transition: all 0.2s ease; }
+        .tab-btn.active { background-color: #3b82f6; color: white; box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-start p-4 sm:p-8">
 
-    <div class="w-full max-w-2xl neu-card p-6 sm:p-8 relative">
-        <h1 class="text-xl sm:text-2xl font-bold uppercase tracking-wider text-[var(--primary)] flex items-center gap-3 border-b border-gray-300 pb-4 mb-6">
-            <i class="ph ph-lock-key text-3xl text-blue-500"></i> Admin Panel: Lock Tarikh
+    <!-- =================== SKRIN LOGIN =================== -->
+    <div id="loginScreen" class="w-full max-w-sm neu-card p-8 mt-16 flex flex-col gap-5">
+        <h1 class="text-lg font-bold uppercase tracking-wider text-center flex flex-col items-center gap-2">
+            <i class="ph ph-lock-key text-4xl text-blue-500"></i>
+            Log Masuk Superadmin
         </h1>
+        <input type="email" id="loginEmail" placeholder="Email" class="neu-inset p-3 rounded-xl w-full text-sm" autocomplete="username">
+        <input type="password" id="loginPassword" placeholder="Kata Laluan" class="neu-inset p-3 rounded-xl w-full text-sm" autocomplete="current-password">
+        <button id="loginBtn" class="neu-btn text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm" style="background-color: #3b82f6;">
+            Log Masuk
+        </button>
+        <p id="loginError" class="text-xs text-red-500 text-center hidden"></p>
+    </div>
 
-        <!-- Form Masukkan Lock Data -->
-        <form id="adminForm" class="flex flex-col gap-5 mb-10">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div class="flex flex-col gap-2">
-                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Tarikh Untuk Di-Lock</label>
-                    <input type="date" id="lockDate" required class="neu-inset p-3 rounded-xl w-full text-sm">
-                </div>
-                
-                <div class="flex flex-col gap-2">
-                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Pilihan Masa / Slot</label>
-                    <select id="lockTime" required class="neu-inset p-3 rounded-xl w-full text-sm">
-                        <option value="" disabled selected>Sila Pilih Tarikh Dahulu...</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="flex flex-col gap-2">
-                <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Nota Peribadi (Pelanggan/Sebab)</label>
-                <input type="text" id="lockNote" placeholder="Cth: Tempahan dari Ali, 1 to 1 Coaching" class="neu-inset p-3 rounded-xl w-full text-sm">
-            </div>
+    <!-- =================== DASHBOARD =================== -->
+    <div id="dashboard" class="w-full max-w-3xl flex flex-col gap-5 hidden">
 
-            <button type="submit" class="neu-btn bg-blue-500 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2" style="background-color: #3b82f6; box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;">
-                <i class="ph ph-plus-circle text-lg"></i> Lock Tarikh Ini
+        <div class="neu-card p-4 sm:p-6 flex items-center justify-between">
+            <h1 class="text-lg sm:text-xl font-bold uppercase tracking-wider text-blue-500 flex items-center gap-3">
+                <i class="ph ph-shield-star text-2xl sm:text-3xl text-blue-500"></i> Superadmin Panel
+            </h1>
+            <button id="logoutBtn" class="neu-btn px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1">
+                <i class="ph ph-sign-out"></i> Log Keluar
             </button>
-        </form>
+        </div>
 
-        <!-- Senarai Permohonan Menunggu (Pending) -->
-        <div class="mb-8">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-orange-500 mb-4 flex items-center justify-between">
-                <span class="flex items-center gap-2"><i class="ph ph-bell-ringing"></i> Permohonan Baru (Pending)</span>
-                <span id="pendingCount" class="bg-orange-500/10 text-orange-600 px-3 py-1 rounded-full text-[10px]">0 Request</span>
-            </h2>
-            
-            <div class="w-full overflow-x-auto neu-inset rounded-xl p-2 hidden" id="pendingContainer">
-                <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[600px]">
-                    <thead class="text-gray-500 border-b border-gray-300">
-                        <tr>
-                            <th class="p-3">Pelanggan</th>
-                            <th class="p-3">Pakej</th>
-                            <th class="p-3">Tarikh & Masa</th>
-                            <th class="p-3 text-center">Tindakan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pendingTableBody" class="text-gray-700 font-medium">
-                        <!-- Data live dari Firebase -->
-                    </tbody>
-                </table>
+        <!-- TAB SWITCHER -->
+        <div class="neu-card p-2 flex gap-2 overflow-x-auto">
+            <button class="tab-btn active neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="booking">
+                <i class="ph ph-calendar-check"></i> Booking
+            </button>
+            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="courses">
+                <i class="ph ph-graduation-cap"></i> Course
+            </button>
+            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="config">
+                <i class="ph ph-gear-six"></i> Site Config
+            </button>
+        </div>
+
+        <!-- ======================= PANEL: BOOKING ======================= -->
+        <div id="panel-booking" class="tab-panel neu-card p-6 sm:p-8">
+            <form id="adminForm" class="flex flex-col gap-5 mb-10">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Tarikh Untuk Di-Lock</label>
+                        <input type="date" id="lockDate" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Pilihan Masa / Slot</label>
+                        <select id="lockTime" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                            <option value="" disabled selected>Sila Pilih Tarikh Dahulu...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Nota Peribadi (Pelanggan/Sebab)</label>
+                    <input type="text" id="lockNote" placeholder="Cth: Tempahan dari Ali, 1 to 1 Coaching" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <button type="submit" class="neu-btn bg-blue-500 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2" style="background-color: #3b82f6; box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;">
+                    <i class="ph ph-plus-circle text-lg"></i> Lock Tarikh Ini
+                </button>
+            </form>
+
+            <div class="mb-8">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-orange-500 mb-4 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="ph ph-bell-ringing"></i> Permohonan Baru (Pending)</span>
+                    <span id="pendingCount" class="bg-orange-500/10 text-orange-600 px-3 py-1 rounded-full text-[10px]">0 Request</span>
+                </h2>
+                <div class="w-full overflow-x-auto neu-inset rounded-xl p-2 hidden" id="pendingContainer">
+                    <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[600px]">
+                        <thead class="text-gray-500 border-b border-gray-300">
+                            <tr><th class="p-3">Pelanggan</th><th class="p-3">Pakej</th><th class="p-3">Tarikh & Masa</th><th class="p-3 text-center">Tindakan</th></tr>
+                        </thead>
+                        <tbody id="pendingTableBody" class="text-gray-700 font-medium"></tbody>
+                    </table>
+                </div>
+                <div id="noPendingData" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-6">Tiada permohonan baru setakat ini.</div>
             </div>
-            <div id="noPendingData" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-6">
-                Tiada permohonan baru setakat ini.
+
+            <div>
+                <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="ph ph-calendar-check"></i> Senarai Tarikh Di-Lock (Approved)</span>
+                    <span id="lockCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Aktif</span>
+                </h2>
+                <div class="w-full overflow-x-auto neu-inset rounded-xl p-2 hidden" id="tableContainer">
+                    <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[500px]">
+                        <thead class="text-gray-500 border-b border-gray-300">
+                            <tr><th class="p-3">Tarikh</th><th class="p-3">Masa</th><th class="p-3">Nota / Pelanggan</th><th class="p-3 text-center">Tindakan</th></tr>
+                        </thead>
+                        <tbody id="lockedTableBody" class="text-gray-700 font-medium"></tbody>
+                    </table>
+                </div>
+                <div id="loadingData" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
+                    <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan Database...
+                </div>
             </div>
         </div>
 
-        <!-- Senarai Lock List -->
-        <div>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
-                <span class="flex items-center gap-2"><i class="ph ph-calendar-check"></i> Senarai Tarikh Di-Lock (Approved)</span>
-                <span id="lockCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Aktif</span>
+        <!-- ======================= PANEL: COURSES ======================= -->
+        <div id="panel-courses" class="tab-panel neu-card p-6 sm:p-8 hidden">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">
+                <span id="courseFormMode">Tambah Course Baru</span>
             </h2>
-            
-            <!-- Table Container -->
-            <div class="w-full overflow-x-auto neu-inset rounded-xl p-2 hidden" id="tableContainer">
-                <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[500px]">
-                    <thead class="text-gray-500 border-b border-gray-300">
-                        <tr>
-                            <th class="p-3">Tarikh</th>
-                            <th class="p-3">Masa</th>
-                            <th class="p-3">Nota / Pelanggan</th>
-                            <th class="p-3 text-center">Tindakan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lockedTableBody" class="text-gray-700 font-medium">
-                        <!-- Data live dari Firebase -->
-                    </tbody>
-                </table>
+            <form id="courseForm" class="flex flex-col gap-4 mb-8">
+                <input type="hidden" id="courseEditId" value="">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="courseTitle" placeholder="Tajuk Course (cth: Canva Ai)" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="text" id="courseIcon" placeholder="Nama Icon Phosphor (cth: ph-palette)" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <textarea id="courseDesc" rows="2" placeholder="Penerangan ringkas course" class="neu-inset p-3 rounded-xl w-full text-sm resize-none"></textarea>
+                <input type="url" id="courseImage" placeholder="Link Gambar Silibus (Google Drive share link)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <input type="url" id="courseLink" placeholder="Link Belian / Pendaftaran" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <div class="flex gap-3">
+                    <button type="submit" id="courseSubmitBtn" class="neu-btn flex-1 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-xs flex items-center justify-center gap-2" style="background-color: #3b82f6;">
+                        <i class="ph ph-plus-circle text-lg"></i> Tambah Course
+                    </button>
+                    <button type="button" id="courseCancelEditBtn" class="neu-btn px-4 py-3 rounded-xl uppercase text-xs font-bold hidden">Batal</button>
+                </div>
+                <p class="text-[10px] text-gray-500">
+                    Nota: untuk link gambar Google Drive, upload dulu ke Drive → klik "Get link" → tukar setting ke "Anyone with the link" → paste link tu di sini.
+                </p>
+            </form>
+
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="ph ph-list-bullets"></i> Senarai Course</span>
+                <span id="courseCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Course</span>
+            </h2>
+            <div id="courseListContainer" class="flex flex-col gap-3"></div>
+            <div id="courseLoading" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
+                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan...
             </div>
-            <div id="loadingData" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
-                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan Database...
-            </div>
+        </div>
+
+        <!-- ======================= PANEL: SITE CONFIG ======================= -->
+        <div id="panel-config" class="tab-panel neu-card p-6 sm:p-8 hidden">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">Tetapan Umum Laman</h2>
+            <form id="configForm" class="flex flex-col gap-4">
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Tajuk Laman (Tab Browser)</label>
+                    <input type="text" id="cfgSiteTitle" placeholder="Profil Diri - Web App" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Link Logo (Google Drive share link)</label>
+                    <input type="url" id="cfgLogoUrl" placeholder="https://lh3.googleusercontent.com/d/..." class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-2">Link Media Sosial</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="url" id="cfgFacebook" placeholder="Link Facebook" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="url" id="cfgTiktok" placeholder="Link TikTok" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="url" id="cfgInstagram" placeholder="Link Instagram" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="url" id="cfgThreads" placeholder="Link Threads" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="url" id="cfgLinkedin" placeholder="Link LinkedIn" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="url" id="cfgWhatsapp" placeholder="No. WhatsApp (cth: 601120879149)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+
+                <button type="submit" id="configSubmitBtn" class="neu-btn text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2" style="background-color: #3b82f6;">
+                    <i class="ph ph-floppy-disk text-lg"></i> Simpan Tetapan
+                </button>
+                <p id="configSavedMsg" class="text-xs text-green-600 text-center hidden">Tetapan disimpan. Website public akan update serta-merta.</p>
+            </form>
         </div>
     </div>
 
-    <!-- LOGIK JAVASCRIPT UNTUK ADMIN -->
+    <!-- LOGIK UI (Booking) -->
     <script>
         const lockDateInput = document.getElementById('lockDate');
         const lockTimeSelect = document.getElementById('lockTime');
 
         lockDateInput.addEventListener('change', (e) => {
             const dateVal = e.target.value;
-            
-            // Kosongkan dan masukkan pilihan default
             lockTimeSelect.innerHTML = `
                 <option value="" disabled selected>Pilih Slot...</option>
                 <option value="ALL_DAY" class="font-bold text-red-500">🛑 LOCK SEPENUH HARI</option>
             `;
-            
             if (!dateVal) return;
-
-            // Semak hari dalam minggu (0 = Ahad, 1-5 = Isnin-Jumaat, 6 = Sabtu)
             const selectedDate = new Date(dateVal);
-            const dayOfWeek = selectedDate.getDay(); 
-
+            const dayOfWeek = selectedDate.getDay();
             let slots = [];
-            if (dayOfWeek === 0) { // Ahad
-                slots = ['08:00 AM - 10:00 AM', '11:00 AM - 01:00 PM', '02:00 PM - 04:00 PM', '05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM'];
-            } else if (dayOfWeek === 6) { // Sabtu
-                slots = ['05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM'];
-            } else { // Isnin - Jumaat
-                slots = ['09:00 PM - 11:00 PM'];
-            }
-
-            // Tambah slot yang bersesuaian dengan hari yang dipilih sahaja
+            if (dayOfWeek === 0) { slots = ['08:00 AM - 10:00 AM', '11:00 AM - 01:00 PM', '02:00 PM - 04:00 PM', '05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM']; }
+            else if (dayOfWeek === 6) { slots = ['05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM']; }
+            else { slots = ['09:00 PM - 11:00 PM']; }
             slots.forEach(slot => {
                 const opt = document.createElement('option');
-                opt.value = slot;
-                opt.innerText = slot;
+                opt.value = slot; opt.innerText = slot;
                 lockTimeSelect.appendChild(opt);
             });
         });
 
-        // Tulis (Write) - Fungsi Add Lock (Manual oleh Admin)
         document.getElementById('adminForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const dateVal = document.getElementById('lockDate').value;
             const timeVal = document.getElementById('lockTime').value;
             const noteVal = document.getElementById('lockNote').value || "-";
-
             const btn = e.target.querySelector('button[type="submit"]');
             btn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> Menyimpan...`;
             btn.disabled = true;
-
             try {
                 if (window.adminAddLock) {
-                    await window.adminAddLock({
-                        type: 'MANUAL_LOCK',
-                        date: dateVal,
-                        time: timeVal,
-                        status: 'APPROVED',
-                        name: 'Admin',
-                        remark: noteVal,
-                        createdAt: new Date().toISOString()
-                    });
+                    await window.adminAddLock({ type: 'MANUAL_LOCK', date: dateVal, time: timeVal, status: 'APPROVED', name: 'Admin', remark: noteVal, createdAt: new Date().toISOString() });
                 }
-                e.target.reset(); // Clear Form
+                e.target.reset();
                 lockTimeSelect.innerHTML = `<option value="" disabled selected>Sila Pilih Tarikh Dahulu...</option>`;
             } catch (err) {
                 console.error("Save failed:", err);
+                alert("Gagal simpan: " + err.message);
             } finally {
                 btn.innerHTML = `<i class="ph ph-plus-circle text-lg"></i> Lock Tarikh Ini`;
                 btn.disabled = false;
             }
         });
 
-        // Approve Request (Oleh Firebase)
-        window.approveBooking = async (docId) => {
+        window.approveBooking = async (docId, date, time) => {
             if(!confirm("Mengesahkan bayaran deposit dan LOCK slot ini secara rasmi?")) return;
-            if(window.adminApproveLock) await window.adminApproveLock(docId);
+            if(window.adminApproveLock) await window.adminApproveLock(docId, date, time);
         };
 
-        // Buang (Delete) - Fungsi Unlock atau Reject (Oleh Firebase)
-        window.deleteLock = async (docId, isPending = false) => {
-            const msg = isPending 
+        window.deleteLock = async (docId, isPending = false, date, time) => {
+            const msg = isPending
                 ? "Anda pasti mahu REJECT & PADAM permohonan ini?"
                 : "Anda pasti mahu UNLOCK / DELETE tarikh ini? Pelanggan lain akan boleh book semula slot ini.";
             if(!confirm(msg)) return;
-            if(window.adminDeleteLock) await window.adminDeleteLock(docId);
+            if(window.adminDeleteLock) await window.adminDeleteLock(docId, date, time);
         };
 
-        // Render Antaramuka Jadual
         function renderTables(list) {
             document.getElementById('loadingData').classList.add('hidden');
-            
             const pendingList = list.filter(item => item.status === 'PENDING').sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
             const approvedList = list.filter(item => item.status === 'APPROVED').sort((a,b) => new Date(a.date) - new Date(b.date));
 
-            // ---- RENDER PENDING ----
             const pendingContainer = document.getElementById('pendingContainer');
             const pendingTbody = document.getElementById('pendingTableBody');
             const noPendingData = document.getElementById('noPendingData');
-            
             document.getElementById('pendingCount').innerText = `${pendingList.length} Request`;
-            
+
             if (pendingList.length === 0) {
                 pendingContainer.classList.add('hidden');
                 noPendingData.classList.remove('hidden');
@@ -241,44 +286,29 @@
                 pendingContainer.classList.remove('hidden');
                 noPendingData.classList.add('hidden');
                 pendingTbody.innerHTML = '';
-                
                 pendingList.forEach(item => {
                     const dParts = item.date.split('-');
                     const dShow = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.date;
-                    
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-gray-300 last:border-0 hover:bg-orange-500/5";
                     tr.innerHTML = `
-                        <td class="p-3">
-                            <div class="font-bold text-gray-800">${item.name || 'Unknown'}</div>
-                            <div class="text-[10px] text-gray-500"><i class="ph ph-phone"></i> ${item.phone || '-'}</div>
-                        </td>
-                        <td class="p-3 text-xs font-semibold text-[var(--primary)]">${item.package || '-'}</td>
-                        <td class="p-3">
-                            <div class="font-bold">${dShow}</div>
-                            <div class="text-[10px] text-orange-600 font-bold bg-orange-500/10 inline-block px-1 rounded">${item.time}</div>
-                        </td>
+                        <td class="p-3"><div class="font-bold text-gray-800">${item.name || 'Unknown'}</div><div class="text-[10px] text-gray-500"><i class="ph ph-phone"></i> ${item.phone || '-'}</div></td>
+                        <td class="p-3 text-xs font-semibold text-blue-500">${item.package || '-'}</td>
+                        <td class="p-3"><div class="font-bold">${dShow}</div><div class="text-[10px] text-orange-600 font-bold bg-orange-500/10 inline-block px-1 rounded">${item.time}</div></td>
                         <td class="p-3 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <button onclick="window.approveBooking('${item.id}')" class="bg-green-500 text-white rounded-lg px-3 py-2 hover:bg-green-600 active:scale-90 transition-all cursor-pointer shadow-md text-xs font-bold" title="Terima Deposit & Lock">
-                                    <i class="ph ph-check-circle"></i> Approve
-                                </button>
-                                <button onclick="window.deleteLock('${item.id}', true)" class="bg-red-500 text-white rounded-lg px-2 py-2 hover:bg-red-600 active:scale-90 transition-all cursor-pointer shadow-md" title="Reject & Padam">
-                                    <i class="ph ph-x"></i>
-                                </button>
+                                <button onclick="window.approveBooking('${item.id}', '${item.date}', '${item.time}')" class="bg-green-500 text-white rounded-lg px-3 py-2 hover:bg-green-600 active:scale-90 transition-all cursor-pointer shadow-md text-xs font-bold" title="Terima Deposit & Lock"><i class="ph ph-check-circle"></i> Approve</button>
+                                <button onclick="window.deleteLock('${item.id}', true)" class="bg-red-500 text-white rounded-lg px-2 py-2 hover:bg-red-600 active:scale-90 transition-all cursor-pointer shadow-md" title="Reject & Padam"><i class="ph ph-x"></i></button>
                             </div>
-                        </td>
-                    `;
+                        </td>`;
                     pendingTbody.appendChild(tr);
                 });
             }
 
-            // ---- RENDER APPROVED ----
             const tableContainer = document.getElementById('tableContainer');
             const tbody = document.getElementById('lockedTableBody');
-            
             document.getElementById('lockCount').innerText = `${approvedList.length} Aktif`;
-            
+
             if (approvedList.length === 0) {
                 tableContainer.classList.add('hidden');
                 document.getElementById('loadingData').classList.remove('hidden');
@@ -286,44 +316,181 @@
             } else {
                 tableContainer.classList.remove('hidden');
                 tbody.innerHTML = '';
-                
                 approvedList.forEach(item => {
                     const isAllDay = item.time === 'ALL_DAY';
-                    const timeBadge = isAllDay 
+                    const timeBadge = isAllDay
                         ? `<span class="bg-red-500/10 text-red-600 px-2 py-1 rounded-md text-[10px] uppercase font-bold">Sepenuh Hari</span>`
                         : `<span class="bg-blue-500/10 text-blue-600 px-2 py-1 rounded-md text-[10px] uppercase font-bold">${item.time}</span>`;
-                    
                     const dParts = item.date.split('-');
                     const dShow = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.date;
-
-                    const infoDisplay = item.type === 'USER_BOOKING' 
-                        ? `<span class="font-bold text-gray-800 block">${item.name}</span><span class="text-gray-500">${item.package}</span>` 
+                    const infoDisplay = item.type === 'USER_BOOKING'
+                        ? `<span class="font-bold text-gray-800 block">${item.name}</span><span class="text-gray-500">${item.package}</span>`
                         : `<span class="text-gray-500">${item.remark || '-'}</span>`;
-
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-gray-300 last:border-0 hover:bg-black/5";
                     tr.innerHTML = `
                         <td class="p-3 font-bold">${dShow}</td>
                         <td class="p-3">${timeBadge}</td>
                         <td class="p-3 text-[10px] whitespace-normal break-words max-w-[200px]">${infoDisplay}</td>
-                        <td class="p-3 text-center">
-                            <button onclick="window.deleteLock('${item.id}')" class="bg-red-500 text-white rounded-lg p-2 hover:bg-red-600 active:scale-90 transition-all cursor-pointer shadow-md" title="Unlock Slot Ini">
-                                <i class="ph ph-trash"></i>
-                            </button>
-                        </td>
-                    `;
+                        <td class="p-3 text-center"><button onclick="window.deleteLock('${item.id}', false, '${item.date}', '${item.time}')" class="bg-red-500 text-white rounded-lg p-2 hover:bg-red-600 active:scale-90 transition-all cursor-pointer shadow-md" title="Unlock Slot Ini"><i class="ph ph-trash"></i></button></td>`;
                     tbody.appendChild(tr);
                 });
             }
         }
     </script>
 
-    <!-- FIREBASE SEBENAR ANDA -->
+    <!-- LOGIK UI (Tabs, Course form, Config form) -->
+    <script>
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+                document.getElementById('panel-' + btn.dataset.tab).classList.remove('hidden');
+            });
+        });
+
+        // ---- COURSE FORM ----
+        const courseForm = document.getElementById('courseForm');
+        const courseCancelBtn = document.getElementById('courseCancelEditBtn');
+
+        courseCancelBtn.addEventListener('click', () => {
+            courseForm.reset();
+            document.getElementById('courseEditId').value = '';
+            document.getElementById('courseFormMode').innerText = 'Tambah Course Baru';
+            document.getElementById('courseSubmitBtn').innerHTML = `<i class="ph ph-plus-circle text-lg"></i> Tambah Course`;
+            courseCancelBtn.classList.add('hidden');
+        });
+
+        courseForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('courseEditId').value;
+            const data = {
+                title: document.getElementById('courseTitle').value,
+                icon: document.getElementById('courseIcon').value || 'ph-book-open',
+                desc: document.getElementById('courseDesc').value,
+                imageUrl: document.getElementById('courseImage').value,
+                purchaseLink: document.getElementById('courseLink').value
+            };
+            const btn = document.getElementById('courseSubmitBtn');
+            btn.disabled = true;
+            try {
+                if (editId) {
+                    await window.adminUpdateCourse(editId, data);
+                } else {
+                    await window.adminAddCourse(data);
+                }
+                courseCancelBtn.click();
+            } catch (err) {
+                alert("Gagal simpan course: " + err.message);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        window.editCourse = (id, title, icon, desc, imageUrl, purchaseLink) => {
+            document.getElementById('courseEditId').value = id;
+            document.getElementById('courseTitle').value = title;
+            document.getElementById('courseIcon').value = icon;
+            document.getElementById('courseDesc').value = desc;
+            document.getElementById('courseImage').value = imageUrl;
+            document.getElementById('courseLink').value = purchaseLink;
+            document.getElementById('courseFormMode').innerText = 'Edit Course: ' + title;
+            document.getElementById('courseSubmitBtn').innerHTML = `<i class="ph ph-floppy-disk text-lg"></i> Kemaskini`;
+            courseCancelBtn.classList.remove('hidden');
+            document.getElementById('panel-courses').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.removeCourse = async (id, title) => {
+            if (!confirm(`Padam course "${title}"? Tindakan ni tak boleh undo.`)) return;
+            await window.adminDeleteCourse(id);
+        };
+
+        function esc(str) {
+            const d = document.createElement('div');
+            d.innerText = str || '';
+            return d.innerHTML;
+        }
+
+        function renderCourseList(list) {
+            document.getElementById('courseLoading').classList.add('hidden');
+            document.getElementById('courseCount').innerText = `${list.length} Course`;
+            const container = document.getElementById('courseListContainer');
+            container.innerHTML = '';
+            if (list.length === 0) {
+                container.innerHTML = `<div class="text-center text-sm text-gray-500 py-6">Tiada course lagi. Tambah course pertama guna borang di atas.</div>`;
+                return;
+            }
+            list.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'neu-inset rounded-xl p-4 flex items-center gap-4';
+                row.innerHTML = `
+                    <div class="w-12 h-12 rounded-full neu-card flex items-center justify-center flex-shrink-0">
+                        <i class="ph ${esc(item.icon)} text-xl text-blue-500"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-sm truncate">${esc(item.title)}</div>
+                        <div class="text-xs text-gray-500 truncate">${esc(item.desc)}</div>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0">
+                        <button onclick="window.editCourse('${item.id}', '${esc(item.title).replace(/'/g,"\\'")}', '${esc(item.icon)}', '${esc(item.desc).replace(/'/g,"\\'")}', '${item.imageUrl || ''}', '${item.purchaseLink || ''}')" class="bg-blue-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-blue-600"><i class="ph ph-pencil-simple"></i></button>
+                        <button onclick="window.removeCourse('${item.id}', '${esc(item.title).replace(/'/g,"\\'")}')" class="bg-red-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-red-600"><i class="ph ph-trash"></i></button>
+                    </div>`;
+                container.appendChild(row);
+            });
+        }
+
+        // ---- CONFIG FORM ----
+        document.getElementById('configForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                siteTitle: document.getElementById('cfgSiteTitle').value,
+                logoUrl: document.getElementById('cfgLogoUrl').value,
+                socialLinks: {
+                    facebook: document.getElementById('cfgFacebook').value,
+                    tiktok: document.getElementById('cfgTiktok').value,
+                    instagram: document.getElementById('cfgInstagram').value,
+                    threads: document.getElementById('cfgThreads').value,
+                    linkedin: document.getElementById('cfgLinkedin').value,
+                    whatsapp: document.getElementById('cfgWhatsapp').value
+                }
+            };
+            const btn = document.getElementById('configSubmitBtn');
+            btn.disabled = true;
+            try {
+                await window.adminSaveConfig(data);
+                const msg = document.getElementById('configSavedMsg');
+                msg.classList.remove('hidden');
+                setTimeout(() => msg.classList.add('hidden'), 3000);
+            } catch (err) {
+                alert("Gagal simpan tetapan: " + err.message);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        function fillConfigForm(cfg) {
+            if (!cfg) return;
+            document.getElementById('cfgSiteTitle').value = cfg.siteTitle || '';
+            document.getElementById('cfgLogoUrl').value = cfg.logoUrl || '';
+            const s = cfg.socialLinks || {};
+            document.getElementById('cfgFacebook').value = s.facebook || '';
+            document.getElementById('cfgTiktok').value = s.tiktok || '';
+            document.getElementById('cfgInstagram').value = s.instagram || '';
+            document.getElementById('cfgThreads').value = s.threads || '';
+            document.getElementById('cfgLinkedin').value = s.linkedin || '';
+            document.getElementById('cfgWhatsapp').value = s.whatsapp || '';
+        }
+    </script>
+
+    <!-- FIREBASE + AUTH -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import {
+            getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, setDoc, getDoc, onSnapshot
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Config Akaun ruzprompt-6ac7c
         const firebaseConfig = {
             apiKey: "AIzaSyAZPFbRJHsWbONzykNHMktJNJUkixIpG1M",
             authDomain: "ruzprompt-6ac7c.firebaseapp.com",
@@ -334,42 +501,103 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
-        
-        // Pangkalan data jadual: coaching_bookings
-        const bookingsCollectionPath = collection(db, 'coaching_bookings');
 
-        // Baca Data (Live)
-        onSnapshot(bookingsCollectionPath, (snapshot) => {
-            const dataList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderTables(dataList);
-        }, (error) => {
-            console.error("Sync Error:", error);
+        const bookingsCollectionPath = collection(db, 'coaching_bookings');
+        const lockedSlotsPath = collection(db, 'locked_slots');
+        const coursesPath = collection(db, 'courses');
+        const configDocRef = doc(db, 'site_config', 'main');
+
+        let unsubBookings = null, unsubCourses = null;
+
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const loginError = document.getElementById('loginError');
+
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            loginError.classList.add('hidden');
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (err) {
+                loginError.innerText = "Email atau kata laluan salah.";
+                loginError.classList.remove('hidden');
+            }
         });
 
-        // Tulis Fungsi Global
+        document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginScreen.classList.add('hidden');
+                dashboard.classList.remove('hidden');
+                startListening();
+            } else {
+                loginScreen.classList.remove('hidden');
+                dashboard.classList.add('hidden');
+                if (unsubBookings) { unsubBookings(); unsubBookings = null; }
+                if (unsubCourses) { unsubCourses(); unsubCourses = null; }
+            }
+        });
+
+        async function startListening() {
+            if (!unsubBookings) {
+                unsubBookings = onSnapshot(bookingsCollectionPath, (snapshot) => {
+                    renderTables(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+                }, (error) => console.error("Sync Error:", error));
+            }
+            if (!unsubCourses) {
+                unsubCourses = onSnapshot(coursesPath, (snapshot) => {
+                    renderCourseList(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+                }, (error) => console.error("Sync Error:", error));
+            }
+            try {
+                const cfgSnap = await getDoc(configDocRef);
+                if (cfgSnap.exists()) fillConfigForm(cfgSnap.data());
+            } catch (err) { console.error("Config load error:", err); }
+        }
+
+        function slotDocId(date, time) {
+            return `${date}_${time}`.replace(/[^a-zA-Z0-9_-]/g, '');
+        }
+
         window.adminAddLock = async (data) => {
             await addDoc(bookingsCollectionPath, data);
+            await setDoc(doc(lockedSlotsPath, slotDocId(data.date, data.time)), { date: data.date, time: data.time });
         };
 
-        window.adminApproveLock = async (docId) => {
+        window.adminApproveLock = async (docId, slotDate, slotTime) => {
             try {
                 await updateDoc(doc(db, 'coaching_bookings', docId), { status: 'APPROVED' });
-                // Popup notifikasi akan muncul selepas berjaya approve
-                // alert("Berjaya! Tarikh ini telah rasmi di-lock."); 
-            } catch (err) { 
-                console.error("Approve failed:", err); 
-                alert("Gagal Approve: " + err.message); // Memaparkan ralat kepada kita
-            }
+                if (slotDate && slotTime) {
+                    await setDoc(doc(lockedSlotsPath, slotDocId(slotDate, slotTime)), { date: slotDate, time: slotTime });
+                }
+            } catch (err) { console.error("Approve failed:", err); alert("Gagal Approve: " + err.message); }
         };
 
-        window.adminDeleteLock = async (docId) => {
+        window.adminDeleteLock = async (docId, slotDate, slotTime) => {
             try {
                 await deleteDoc(doc(db, 'coaching_bookings', docId));
-            } catch (err) { 
-                console.error("Delete failed:", err);
-                alert("Gagal Delete: " + err.message);
-            }
+                if (slotDate && slotTime) await deleteDoc(doc(lockedSlotsPath, slotDocId(slotDate, slotTime))).catch(() => {});
+            } catch (err) { console.error("Delete failed:", err); alert("Gagal Delete: " + err.message); }
+        };
+
+        // ---- COURSES CRUD ----
+        window.adminAddCourse = async (data) => {
+            await addDoc(coursesPath, { ...data, createdAt: new Date().toISOString() });
+        };
+        window.adminUpdateCourse = async (id, data) => {
+            await updateDoc(doc(db, 'courses', id), data);
+        };
+        window.adminDeleteCourse = async (id) => {
+            await deleteDoc(doc(db, 'courses', id));
+        };
+
+        // ---- SITE CONFIG ----
+        window.adminSaveConfig = async (data) => {
+            await setDoc(configDocRef, data, { merge: true });
         };
     </script>
 </body>
