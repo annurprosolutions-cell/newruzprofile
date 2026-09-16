@@ -122,49 +122,58 @@
     </button>
 
     <div class="relative w-[340px] h-[340px] sm:w-[480px] sm:h-[480px] flex-shrink-0">
-        <!-- LAYER 1: MAIN MENU (4 Cabang) -->
+        <!-- LAYER 1: MAIN MENU (5 Cabang) -->
         <div id="main-menu" class="view-layer view-active z-10">
             <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
                 <defs>
                     <path id="arc-shape" d="M -70 -121.2 A 140 140 0 0 1 70 -121.2" stroke-linecap="round" fill="none" />
                     <path id="arc-shape-3" d="M -99 -99 A 140 140 0 0 1 99 -99" stroke-linecap="round" fill="none" />
+                    <path id="arc-shape-5" d="M -70 -121.2 A 140 140 0 0 1 70 -121.2" stroke-linecap="round" fill="none" />
                     <path id="tp-top" d="M -106 -106 A 150 150 0 0 1 106 -106" fill="none" />
                     <path id="tp-right" d="M 106 -106 A 150 150 0 0 1 106 106" fill="none" />
                     <path id="tp-bottom" d="M -106 106 A 150 150 0 0 0 106 106" fill="none" />
                     <path id="tp-left" d="M -106 106 A 150 150 0 0 1 -106 -106" fill="none" />
+                    <path id="tp-top-5" d="M -96.4 -114.9 A 150 150 0 0 1 96.4 -114.9" fill="none" />
+                    <path id="tp-bottom-5" d="M -96.4 114.9 A 150 150 0 0 0 96.4 114.9" fill="none" />
                     <filter id="dot-glow" x="-50%" y="-50%" width="200%" height="200%">
                         <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
                         <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
                     </filter>
                 </defs>
 
-                <!-- DOTS -->
-                <circle cx="99" cy="-99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
-                <circle cx="99" cy="99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
-                <circle cx="-99" cy="99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
-                <circle cx="-99" cy="-99" r="4.5" fill="var(--dot-color)" filter="url(#dot-glow)" />
+                <!-- DOTS (5 pemisah) -->
+                <g fill="var(--dot-color)" filter="url(#dot-glow)">
+                    <circle cx="0" cy="-140" transform="rotate(36)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(108)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(252)" r="4.5" />
+                    <circle cx="0" cy="-140" transform="rotate(324)" r="4.5" />
+                </g>
 
                 <!-- BUTTONS MAIN MENU -->
-                <g class="menu-item main-item" data-target="learning" onclick="openSubMenu('learning')"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
-                <g class="menu-item main-item" data-target="experience" onclick="openSubMenu('experience')" transform="rotate(90)"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
-                <g class="menu-item main-item" data-target="coaching" onclick="openSubMenu('coaching')" transform="rotate(180)"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
-                <g class="menu-item main-item" data-target="about" onclick="openSubMenu('about')" transform="rotate(270)"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item main-item" data-target="learning" onclick="openSubMenu('learning')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item main-item" data-target="demo" onclick="openSubMenu('demo')" transform="rotate(72)"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item main-item" data-target="experience" onclick="openSubMenu('experience')" transform="rotate(144)"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item main-item" data-target="coaching" onclick="openSubMenu('coaching')" transform="rotate(216)"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item main-item" data-target="about" onclick="openSubMenu('about')" transform="rotate(288)"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
 
                 <!-- TEKS MAIN MENU -->
-                <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.5px;">
-                    <text class="svg-text svg-text-main-learning"><textPath href="#tp-top" startOffset="50%" text-anchor="middle">Self Learning</textPath></text>
-                    <text class="svg-text svg-text-main-experience"><textPath href="#tp-right" startOffset="50%" text-anchor="middle">Exp & Project</textPath></text>
-                    <text class="svg-text svg-text-main-coaching"><textPath href="#tp-bottom" startOffset="50%" text-anchor="middle" dy="9">Personal Coaching</textPath></text>
-                    <text class="svg-text svg-text-main-about"><textPath href="#tp-left" startOffset="50%" text-anchor="middle">About Me</textPath></text>
+                <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 1.2px;">
+                    <g><text class="svg-text svg-text-main-learning"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Self Learning</textPath></text></g>
+                    <g transform="rotate(72)"><text class="svg-text svg-text-main-demo"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Sistem Demo</textPath></text></g>
+                    <g transform="rotate(-36)"><text class="svg-text svg-text-main-experience"><textPath href="#tp-bottom-5" startOffset="50%" text-anchor="middle" dy="4">Exp &amp; Project</textPath></text></g>
+                    <g transform="rotate(36)"><text class="svg-text svg-text-main-coaching"><textPath href="#tp-bottom-5" startOffset="50%" text-anchor="middle" dy="4">Coaching</textPath></text></g>
+                    <g transform="rotate(-72)"><text class="svg-text svg-text-main-about"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">About Me</textPath></text></g>
                 </g>
             </svg>
 
             <!-- ICON HTML -->
             <div class="absolute inset-0 pointer-events-none z-10">
-                <div id="icon-main-learning" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-graduation-cap text-[26px] sm:text-[32px]"></i></div>
-                <div id="icon-main-experience" class="html-overlay-icon absolute" style="top: 50%; left: 81.5%; transform: translate(-50%, -50%);"><i class="ph ph-briefcase text-[26px] sm:text-[32px]"></i></div>
-                <div id="icon-main-coaching" class="html-overlay-icon absolute" style="top: 81.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-headset text-[26px] sm:text-[32px]"></i></div>
-                <div id="icon-main-about" class="html-overlay-icon absolute" style="top: 50%; left: 18.5%; transform: translate(-50%, -50%);"><i class="ph ph-user text-[26px] sm:text-[32px]"></i></div>
+                <div id="icon-main-learning" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-graduation-cap text-[24px] sm:text-[30px]"></i></div>
+                <div id="icon-main-demo" class="html-overlay-icon absolute" style="top: 40.27%; left: 79.96%; transform: translate(-50%, -50%);"><i class="ph ph-desktop text-[24px] sm:text-[30px]"></i></div>
+                <div id="icon-main-experience" class="html-overlay-icon absolute" style="top: 75.48%; left: 68.52%; transform: translate(-50%, -50%);"><i class="ph ph-briefcase text-[24px] sm:text-[30px]"></i></div>
+                <div id="icon-main-coaching" class="html-overlay-icon absolute" style="top: 75.48%; left: 31.48%; transform: translate(-50%, -50%);"><i class="ph ph-headset text-[24px] sm:text-[30px]"></i></div>
+                <div id="icon-main-about" class="html-overlay-icon absolute" style="top: 40.27%; left: 20.04%; transform: translate(-50%, -50%);"><i class="ph ph-user text-[24px] sm:text-[30px]"></i></div>
             </div>
 
             <!-- LOGO TENGAH -->
@@ -189,46 +198,32 @@
             </div>
         </div>
 
-        <!-- LAYER 6: SUB MENU - SISTEM DEMO (5 Cabang) -->
-        <div id="submenu-demo" class="view-layer view-hidden-down z-20">
-            <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
-                <defs>
-                    <!-- Digunakan semula dari #arc-shape-5 dan #tp-top-5 -->
-                </defs>
-                <g fill="var(--dot-color)" filter="url(#dot-glow)">
-                    <circle cx="0" cy="-140" transform="rotate(36)" r="4.5" />
-                    <circle cx="0" cy="-140" transform="rotate(108)" r="4.5" />
-                    <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
-                    <circle cx="0" cy="-140" transform="rotate(252)" r="4.5" />
-                    <circle cx="0" cy="-140" transform="rotate(324)" r="4.5" />
-                </g>
-                <g class="menu-item sub-item" data-target="demo-booking" transform="rotate(0)" onclick="openPopup('demoBooking')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
-                <g class="menu-item sub-item" data-target="demo-opr" transform="rotate(72)" onclick="openPopup('demoOPR')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
-                <g class="menu-item sub-item" data-target="demo-dash" transform="rotate(144)" onclick="openPopup('demoDash')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
-                <g class="menu-item sub-item" data-target="demo-web" transform="rotate(216)" onclick="openPopup('demoWeb')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
-                <g class="menu-item sub-item" data-target="demo-relief" transform="rotate(288)" onclick="openPopup('demoRelief')"><g class="btn-scale-wrap"><use href="#arc-shape-5" class="arc-border" stroke-width="68" /><use href="#arc-shape-5" class="arc-main" stroke-width="64" /></g></g>
+        <!-- LAYER 6: SUB MENU - SISTEM DEMO (dinamik dari Firestore 'demos' + bundle template) -->
+        <div id="submenu-demo" class="view-layer view-hidden-down z-20 flex items-center justify-center">
+            <div class="neu-card w-full h-full rounded-[36px] p-5 flex flex-col overflow-hidden">
+                <h3 class="text-center text-xs font-bold uppercase tracking-widest text-[var(--icon-color)] mb-3 flex-shrink-0">Sistem Demo</h3>
 
-                <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 8px; letter-spacing: 0.5px;">
-                    <g><text class="svg-text"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Prompt2Booking</textPath></text></g>
-                    <g transform="rotate(72)"><text class="svg-text"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Prompt2OPR</textPath></text></g>
-                    <g transform="rotate(-36)"><text class="svg-text"><textPath href="#tp-bottom-5" startOffset="50%" text-anchor="middle" dy="4">Prompt2Dashboard</textPath></text></g>
-                    <g transform="rotate(36)"><text class="svg-text"><textPath href="#tp-bottom-5" startOffset="50%" text-anchor="middle" dy="4">Prompt2Website</textPath></text></g>
-                    <g transform="rotate(-72)"><text class="svg-text"><textPath href="#tp-top-5" startOffset="50%" text-anchor="middle">Prompt2Relief</textPath></text></g>
-                </g>
-            </svg>
-            <div class="absolute inset-0 pointer-events-none z-10">
-                <div class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-calendar-check text-[24px]"></i></div>
-                <div class="html-overlay-icon absolute" style="top: 40.27%; left: 79.96%; transform: translate(-50%, -50%);"><i class="ph ph-file-text text-[24px]"></i></div>
-                <div class="html-overlay-icon absolute" style="top: 75.48%; left: 68.52%; transform: translate(-50%, -50%);"><i class="ph ph-presentation-chart text-[24px]"></i></div>
-                <div class="html-overlay-icon absolute" style="top: 75.48%; left: 31.48%; transform: translate(-50%, -50%);"><i class="ph ph-globe text-[24px]"></i></div>
-                <div class="html-overlay-icon absolute" style="top: 40.27%; left: 20.04%; transform: translate(-50%, -50%);"><i class="ph ph-users-three text-[24px]"></i></div>
-            </div>
-            <!-- Back Button Untuk Sistem Demo (Kembali ke Self Learning) -->
-            <div onclick="goBack('submenu-learning')" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
-                <div class="w-[85%] h-[85%] rounded-full center-circle-inset flex flex-col items-center justify-center relative overflow-hidden bg-[var(--bg-color)] group-hover:bg-blue-500/5 transition-colors">
-                    <i class="ph ph-arrow-u-up-left text-3xl sm:text-4xl text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors mb-1"></i>
-                    <span class="text-[9px] sm:text-[10px] font-bold text-[var(--text-muted)] group-hover:text-[var(--primary)] uppercase tracking-wider transition-colors">Kembali</span>
+                <!-- Butang bundle: semua template dalam satu -->
+                <div id="demoBundleBox" class="flex-shrink-0 mb-3 hidden">
+                    <div onclick="openDemoBundle()" class="menu-item center-circle rounded-2xl p-3 flex items-center gap-3 cursor-pointer">
+                        <div class="w-9 h-9 rounded-full center-circle-inset flex items-center justify-center flex-shrink-0">
+                            <i class="ph ph-package text-base text-[var(--primary)]"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div id="demoBundleTitle" class="text-xs font-bold uppercase tracking-wide truncate text-[var(--primary)]">Dapatkan Semua Template</div>
+                            <div id="demoBundleDesc" class="text-[10px] text-[var(--text-muted)] truncate"></div>
+                        </div>
+                        <span id="demoBundlePrice" class="text-[10px] font-bold text-[var(--primary)] flex-shrink-0"></span>
+                    </div>
                 </div>
+
+                <div id="demoCardList" class="flex-1 overflow-y-auto flex flex-col gap-2.5 pr-1 hide-scroll">
+                    <div class="text-center text-xs text-[var(--text-muted)] py-6">Memuatkan senarai demo...</div>
+                </div>
+            </div>
+            <!-- Back Button -->
+            <div onclick="goBack()" class="absolute top-2 right-2 w-11 h-11 rounded-full center-circle flex items-center justify-center z-30 cursor-pointer group active:scale-95 transition-transform">
+                <i class="ph ph-arrow-u-up-left text-lg text-[var(--icon-color)] group-hover:text-[var(--primary)] transition-colors"></i>
             </div>
         </div>
 
@@ -770,20 +765,107 @@
                 });
             }
 
-            // Butang tetap "Sistem Demo" di penghujung senarai
-            const demoCard = document.createElement('div');
-            demoCard.className = 'menu-item flex items-center gap-3 p-3 rounded-2xl cursor-pointer center-circle-inset';
-            demoCard.onclick = () => openSubMenuNested('submenu-learning', 'submenu-demo');
-            demoCard.innerHTML = `
-                <div class="w-9 h-9 rounded-full center-circle flex items-center justify-center flex-shrink-0">
-                    <i class="ph ph-desktop text-base text-[var(--primary)]"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="text-xs font-bold uppercase tracking-wide truncate text-[var(--text-main)]">Sistem Demo</div>
-                    <div class="text-[10px] text-[var(--text-muted)] truncate">Lihat demo sistem yang kami bina</div>
-                </div>
-                <i class="ph ph-caret-right text-[var(--icon-color)] flex-shrink-0"></i>`;
-            container.appendChild(demoCard);
+        }
+
+        // ---- Demo cards (dinamik dari Firestore 'demos') ----
+        window.demosData = [];
+        window.demoBundle = null;
+
+        function renderDemoCards(list) {
+            window.demosData = list;
+            const container = document.getElementById('demoCardList');
+            container.innerHTML = '';
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="text-center text-xs text-[var(--text-muted)] py-6">Tiada demo lagi.</div>`;
+                return;
+            }
+
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'menu-item flex items-center gap-3 p-2.5 rounded-2xl cursor-pointer center-circle-inset';
+                card.onclick = () => openDemoPopup(item.id);
+
+                const thumb = item.thumbnailUrl
+                    ? `<img src="${item.thumbnailUrl}" alt="" class="w-12 h-12 rounded-xl object-cover flex-shrink-0 bg-black/5">`
+                    : `<div class="w-12 h-12 rounded-xl center-circle flex items-center justify-center flex-shrink-0"><i class="ph ph-desktop text-base text-[var(--primary)]"></i></div>`;
+
+                const badge = item.badge
+                    ? `<span class="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--primary)]/15 text-[var(--primary)] flex-shrink-0">${item.badge}</span>`
+                    : '';
+
+                card.innerHTML = `
+                    ${thumb}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5">
+                            <div class="text-xs font-bold uppercase tracking-wide truncate text-[var(--text-main)]">${item.title || ''}</div>
+                            ${badge}
+                        </div>
+                        <div class="text-[10px] text-[var(--text-muted)] truncate">${item.desc || ''}</div>
+                    </div>
+                    <i class="ph ph-caret-right text-[var(--icon-color)] flex-shrink-0"></i>`;
+                container.appendChild(card);
+            });
+        }
+
+        function openDemoPopup(id) {
+            const item = (window.demosData || []).find(d => d.id === id);
+            if (!item) return;
+            const card = document.getElementById('itemModalCard');
+            card.classList.replace('max-w-[800px]', 'max-w-[400px]');
+            card.classList.replace('w-[95%]', 'w-[90%]');
+            document.getElementById('popupTitle').innerText = item.title || '';
+            document.getElementById('popupIcon').className = `ph ${item.icon || 'ph-desktop'} text-2xl text-[var(--primary)]`;
+
+            const thumbHtml = item.thumbnailUrl
+                ? `<img src="${item.thumbnailUrl}" alt="" class="w-full rounded-xl mb-3 object-cover">`
+                : '';
+            document.getElementById('popupDesc').innerHTML = thumbHtml + (item.desc || '');
+
+            // Butang 1: lihat demo
+            const btn1 = document.getElementById('popupBtn1');
+            if (item.demoLink) {
+                btn1.style.display = 'flex';
+                document.getElementById('popupBtn1Text').innerText = 'Lihat Demo';
+                document.getElementById('popupBtn1Icon').className = 'ph ph-play-circle text-xl text-[var(--icon-color)]';
+                btn1.onclick = () => openMediaModal(item.demoLink, 'iframe');
+            } else { btn1.style.display = 'none'; }
+
+            // Butang 2: beli template ini sahaja (kalau ada), kalau tak — bundle semua template
+            const btn2 = document.getElementById('popupBtn2');
+            const bundle = window.demoBundle;
+            if (item.purchaseLink) {
+                btn2.style.display = 'flex';
+                document.getElementById('popupBtn2Text').innerText = 'Beli Template Ni Je';
+                document.getElementById('popupBtn2Icon').className = 'ph ph-shopping-cart text-xl text-[var(--primary)]';
+                btn2.onclick = () => openMediaModal(item.purchaseLink, 'iframe');
+            } else if (bundle && bundle.link) {
+                btn2.style.display = 'flex';
+                document.getElementById('popupBtn2Text').innerText = bundle.title || 'Dapatkan Semua Template';
+                document.getElementById('popupBtn2Icon').className = 'ph ph-package text-xl text-[var(--primary)]';
+                btn2.onclick = () => openMediaModal(bundle.link, 'iframe');
+            } else { btn2.style.display = 'none'; }
+
+            document.getElementById('itemModal').classList.add('show');
+        }
+
+        function openDemoBundle() {
+            const bundle = window.demoBundle;
+            if (bundle && bundle.link) openMediaModal(bundle.link, 'iframe');
+        }
+
+        function applyDemoBundle(bundle) {
+            window.demoBundle = bundle || null;
+            const box = document.getElementById('demoBundleBox');
+            if (!box) return;
+            if (bundle && bundle.link) {
+                document.getElementById('demoBundleTitle').innerText = bundle.title || 'Dapatkan Semua Template';
+                document.getElementById('demoBundleDesc').innerText = bundle.desc || 'Semua template sistem dalam satu';
+                document.getElementById('demoBundlePrice').innerText = bundle.price || '';
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+            }
         }
 
         function openCoursePopup(id) {
@@ -834,6 +916,9 @@
                 if (el) el.href = map[elId];
             });
             window.siteWhatsappNumber = s.whatsapp || window.siteWhatsappNumber;
+
+            // Bundle template untuk bahagian Sistem Demo
+            applyDemoBundle(cfg.demoBundle);
         }
 
         function closePopup() { document.getElementById('itemModal').classList.remove('show'); }
@@ -1195,6 +1280,9 @@
         // Senarai course (Self Learning) — public baca sahaja, superadmin urus dari admin panel
         const coursesRef = collection(db, 'courses');
 
+        // Senarai sistem demo — public baca sahaja, superadmin urus dari admin panel
+        const demosRef = collection(db, 'demos');
+
         // Tetapan umum laman (tajuk, logo, link sosial) — public baca sahaja
         const configDocRef = doc(db, 'site_config', 'main');
 
@@ -1202,11 +1290,22 @@
             await addDoc(bookingsRef, data);
         };
 
+        function sortByOrder(list) {
+            return list.sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+        }
+
         onSnapshot(coursesRef, (snapshot) => {
-            const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            const list = sortByOrder(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
             if (typeof renderCourseCards === 'function') renderCourseCards(list);
         }, (error) => {
             console.error("Courses Snapshot Error:", error);
+        });
+
+        onSnapshot(demosRef, (snapshot) => {
+            const list = sortByOrder(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+            if (typeof renderDemoCards === 'function') renderDemoCards(list);
+        }, (error) => {
+            console.error("Demos Snapshot Error:", error);
         });
 
         onSnapshot(configDocRef, (snap) => {
