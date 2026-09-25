@@ -81,6 +81,13 @@
             <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="demos">
                 <i class="ph ph-desktop"></i> Demo
             </button>
+            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="requests">
+                <i class="ph ph-wrench"></i> Request
+                <span id="requestBadge" class="bg-red-500 text-white rounded-full px-1.5 text-[9px] hidden">0</span>
+            </button>
+            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="portfolio">
+                <i class="ph ph-briefcase"></i> Portfolio
+            </button>
             <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="config">
                 <i class="ph ph-gear-six"></i> Site Config
             </button>
@@ -239,6 +246,39 @@
             </div>
         </div>
 
+        <!-- ======================= PANEL: REQUEST SYSTEM ======================= -->
+        <div id="panel-requests" class="tab-panel neu-card p-6 sm:p-8 hidden">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="ph ph-wrench"></i> Permohonan Bina Sistem</span>
+                <span id="requestCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Request</span>
+            </h2>
+            <p class="text-[10px] text-gray-500 mb-5">
+                Rekod ni disimpan dalam Firestore sebagai salinan utama. Kalau Apps Script (Google Sheet) diset, satu salinan lagi masuk Sheet awak.
+            </p>
+            <div id="requestListContainer" class="flex flex-col gap-3"></div>
+            <div id="requestLoading" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
+                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan...
+            </div>
+        </div>
+
+        <!-- ======================= PANEL: PORTFOLIO ======================= -->
+        <div id="panel-portfolio" class="tab-panel neu-card p-6 sm:p-8 hidden">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="ph ph-briefcase"></i> Projek Portfolio</span>
+                <button type="button" id="portfolioRefreshBtn" class="neu-btn px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase flex items-center gap-1">
+                    <i class="ph ph-arrows-clockwise"></i> Muat Semula
+                </button>
+            </h2>
+            <p class="text-[10px] text-gray-500 mb-5">
+                Senarai ni datang terus dari tab <b>Portfolio_Sistem</b> dalam Google Sheet anda.
+                Tukar status di sini — Sheet dan jadual portfolio di website akan ikut.
+            </p>
+            <div id="portfolioListContainer" class="flex flex-col gap-3"></div>
+            <div id="portfolioMsg" class="text-xs text-center text-gray-500 py-8">
+                Klik "Muat Semula" untuk ambil senarai projek dari Google Sheet.
+            </div>
+        </div>
+
         <!-- ======================= PANEL: SITE CONFIG ======================= -->
         <div id="panel-config" class="tab-panel neu-card p-6 sm:p-8 hidden">
             <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">Tetapan Umum Laman</h2>
@@ -261,6 +301,12 @@
                     <input type="url" id="cfgLinkedin" placeholder="Link LinkedIn" class="neu-inset p-3 rounded-xl w-full text-sm">
                     <input type="url" id="cfgWhatsapp" placeholder="No. WhatsApp (cth: 601120879149)" class="neu-inset p-3 rounded-xl w-full text-sm">
                 </div>
+
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-4">Request System → Google Sheet</h3>
+                <p class="text-[10px] text-gray-500 -mt-2">URL Apps Script Web App. Kalau kosong, permohonan tetap masuk Firestore dan WhatsApp — cuma tak masuk Sheet.</p>
+                <input type="url" id="cfgRequestSheetUrl" placeholder="https://script.google.com/macros/s/..../exec" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <input type="text" id="cfgPromoteToken" placeholder="RUZ-2QzlSK63hW5FBIQDdLmrg54q6rMd" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <p class="text-[10px] text-gray-500 -mt-2">Token ni disimpan berasingan dan hanya anda boleh baca. Ia yang membenarkan admin panel tulis ke portfolio.</p>
 
                 <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-4">Bundle Template (Sistem Demo)</h3>
                 <p class="text-[10px] text-gray-500 -mt-2">Satu link belian untuk semua template sistem. Bila tambah demo baru, tak payah ubah link ni.</p>
@@ -717,6 +763,224 @@
             });
         }
 
+        // ================= REQUEST SYSTEM =================
+        let currentRequestList = [];
+
+        window.removeRequest = async (id) => {
+            const item = currentRequestList.find(r => r.id === id);
+            if (!confirm(`Padam permohonan dari "${item ? item.name : ''}"? Tindakan ni tak boleh undo.`)) return;
+            await window.adminDeleteRequest(id);
+        };
+
+        window.waRequest = (id) => {
+            const item = currentRequestList.find(r => r.id === id);
+            if (!item || !item.phone) return;
+            let n = String(item.phone).replace(/[^0-9]/g, '');
+            if (n.startsWith('0')) n = '60' + n.slice(1);
+            else if (!n.startsWith('60')) n = '60' + n;
+            const msg = `Salam ${item.name}, terima kasih atas permohonan sistem (${item.systemType}). Saya nak bincang lanjut tentang keperluan anda.`;
+            window.open(`https://wa.me/${n}?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        function renderRequestList(list) {
+            currentRequestList = list;
+            document.getElementById('requestLoading').classList.add('hidden');
+            document.getElementById('requestCount').innerText = `${list.length} Request`;
+
+            const badge = document.getElementById('requestBadge');
+            if (list.length > 0) {
+                badge.innerText = list.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            const container = document.getElementById('requestListContainer');
+            container.innerHTML = '';
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="text-center text-sm text-gray-500 py-6">Tiada permohonan setakat ini.</div>`;
+                return;
+            }
+
+            list.forEach(item => {
+                const d = item.createdAt ? new Date(item.createdAt) : null;
+                const dShow = d ? `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}` : '-';
+                const row = document.createElement('div');
+                row.className = 'neu-inset rounded-xl p-4 flex flex-col gap-2';
+                row.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="font-bold text-sm">${esc(item.name)} <span class="text-[10px] font-normal text-gray-400">· ${dShow}</span></div>
+                            <div class="text-[11px] text-gray-500">${esc(item.email)} · ${esc(item.phone)}</div>
+                            ${item.company && item.company !== '-' ? `<div class="text-[11px] text-gray-500">${esc(item.company)}</div>` : ''}
+                        </div>
+                        <div class="flex gap-2 flex-shrink-0">
+                            ${item.status === 'APPROVED'
+                                ? `<span class="bg-green-500/10 text-green-600 rounded-lg px-3 py-2 text-[10px] font-bold flex items-center" title="Dah masuk portfolio"><i class="ph ph-check-circle"></i></span>`
+                                : `<button onclick="window.approveRequest('${item.id}')" class="bg-blue-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-blue-600" title="Approve &amp; masuk Portfolio"><i class="ph ph-check-circle"></i></button>`}
+                            <button onclick="window.waRequest('${item.id}')" class="bg-green-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-green-600" title="WhatsApp pemohon"><i class="ph ph-whatsapp-logo"></i></button>
+                            <button onclick="window.removeRequest('${item.id}')" class="bg-red-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-red-600"><i class="ph ph-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-[10px]">
+                        <span class="bg-blue-500/10 text-blue-600 px-2 py-1 rounded font-bold">${esc(item.systemType)}</span>
+                        ${item.budget && item.budget !== '-' ? `<span class="bg-amber-500/10 text-amber-600 px-2 py-1 rounded font-bold">RM ${esc(item.budget)}</span>` : ''}
+                        ${item.timeline && item.timeline !== '-' ? `<span class="bg-gray-500/10 text-gray-600 px-2 py-1 rounded font-bold">${esc(item.timeline)}</span>` : ''}
+                    </div>
+                    <div class="text-xs text-gray-600 whitespace-pre-wrap break-words bg-white/40 rounded-lg p-2">${esc(item.detail)}</div>`;
+                container.appendChild(row);
+            });
+        }
+
+        // ================= JAMBATAN KE APPS SCRIPT (JSONP) =================
+        // Apps Script tak handle CORS untuk POST biasa, jadi arahan admin dihantar
+        // melalui GET + JSONP. Dengan cara ni kita boleh BACA jawapan dia
+        // (tahu berjaya ke tidak), bukan hantar buta-buta.
+        window.appsScriptUrl = '';
+        window.promoteToken = '';
+
+        function callAppsScript(params) {
+            return new Promise((resolve, reject) => {
+                if (!window.appsScriptUrl) {
+                    reject(new Error('URL Apps Script belum diset dalam Site Config.'));
+                    return;
+                }
+                if (!window.promoteToken) {
+                    reject(new Error('Token Rahsia Apps Script belum diset dalam Site Config.'));
+                    return;
+                }
+
+                const cb = 'ruzcb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+                const script = document.createElement('script');
+
+                const bersih = () => {
+                    try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                };
+
+                const timer = setTimeout(() => {
+                    bersih();
+                    reject(new Error('Tiada jawapan dari Apps Script (timeout). Semak URL dan deployment.'));
+                }, 20000);
+
+                window[cb] = (data) => {
+                    clearTimeout(timer);
+                    bersih();
+                    if (data && data.status === 'OK') resolve(data);
+                    else reject(new Error((data && data.message) || 'Apps Script pulangkan ralat.'));
+                };
+
+                const q = new URLSearchParams(Object.assign({}, params, {
+                    token: window.promoteToken,
+                    callback: cb
+                })).toString();
+
+                script.src = window.appsScriptUrl + '?' + q;
+                script.onerror = () => {
+                    clearTimeout(timer);
+                    bersih();
+                    reject(new Error('Gagal sambung ke Apps Script. Semak URL /exec dan akses "Anyone".'));
+                };
+                document.body.appendChild(script);
+            });
+        }
+
+        // ================= APPROVE: REQUEST -> PORTFOLIO =================
+        window.approveRequest = async (id) => {
+            const item = currentRequestList.find(r => r.id === id);
+            if (!item) return;
+
+            const namaSistem = prompt(
+                'Nama projek ni untuk portfolio?\n\n' +
+                'Pemohon: ' + item.name + '\nJenis: ' + item.systemType,
+                item.systemType || ''
+            );
+            if (namaSistem === null) return;
+            if (!namaSistem.trim()) { alert('Nama sistem tak boleh kosong.'); return; }
+
+            const teknologi = prompt('Teknologi? (boleh edit kemudian)', 'Web System');
+            if (teknologi === null) return;
+
+            try {
+                const hasil = await callAppsScript({
+                    action: 'promote',
+                    reqId: item.reqId || '',
+                    namaSistem: namaSistem.trim(),
+                    kategori: item.systemType || '',
+                    teknologi: teknologi.trim() || 'Web System',
+                    harga: (item.budget && item.budget !== '-') ? item.budget : ''
+                });
+
+                await window.adminUpdateRequest(id, {
+                    status: 'APPROVED',
+                    portfolioName: namaSistem.trim()
+                });
+
+                alert(hasil.message || 'Berjaya masuk portfolio.');
+            } catch (err) {
+                alert('Gagal: ' + err.message);
+            }
+        };
+
+        // ================= PANEL PORTFOLIO =================
+        const STATUS_PILIHAN = ['In Progress', 'Done', 'Hold'];
+
+        document.getElementById('portfolioRefreshBtn').addEventListener('click', muatPortfolio);
+
+        async function muatPortfolio() {
+            const msg = document.getElementById('portfolioMsg');
+            const container = document.getElementById('portfolioListContainer');
+            msg.classList.remove('hidden');
+            msg.innerHTML = '<i class="ph ph-spinner animate-spin"></i> Mengambil data dari Google Sheet...';
+            container.innerHTML = '';
+
+            try {
+                const hasil = await callAppsScript({ action: 'listPortfolio' });
+                const items = hasil.items || [];
+
+                if (items.length === 0) {
+                    msg.innerText = 'Tiada projek dalam Portfolio_Sistem.';
+                    return;
+                }
+                msg.classList.add('hidden');
+
+                items.forEach(item => {
+                    const warna = item.status === 'Done' ? 'text-green-600 bg-green-500/10'
+                                : item.status === 'In Progress' ? 'text-blue-600 bg-blue-500/10'
+                                : 'text-orange-600 bg-orange-500/10';
+                    const row = document.createElement('div');
+                    row.className = 'neu-inset rounded-xl p-4 flex items-center gap-3 flex-wrap';
+                    row.innerHTML = `
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-sm truncate">${esc(item.nama)}
+                                <span class="text-[10px] font-normal text-gray-400">· ${esc(String(item.tahun))}</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500 truncate">${esc(item.kategori)} · ${esc(item.teknologi)}${item.harga ? ' · RM ' + esc(String(item.harga)) : ''}</div>
+                        </div>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded ${warna}">${esc(item.status)}</span>
+                        <select class="neu-inset text-xs rounded-lg px-2 py-1.5" onchange="window.tukarStatusPortfolio(${item.row}, this.value, this)">
+                            ${STATUS_PILIHAN.map(st => `<option value="${st}" ${st === item.status ? 'selected' : ''}>${st}</option>`).join('')}
+                        </select>`;
+                    container.appendChild(row);
+                });
+            } catch (err) {
+                msg.classList.remove('hidden');
+                msg.innerHTML = '<span class="text-red-500">' + err.message + '</span>';
+            }
+        }
+
+        window.tukarStatusPortfolio = async (row, status, selectEl) => {
+            selectEl.disabled = true;
+            try {
+                await callAppsScript({ action: 'setStatus', row: row, status: status });
+                await muatPortfolio();
+            } catch (err) {
+                alert('Gagal tukar status: ' + err.message);
+                selectEl.disabled = false;
+            }
+        };
+
         // ---- CONFIG FORM ----
         document.getElementById('configForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -731,6 +995,7 @@
                     linkedin: document.getElementById('cfgLinkedin').value,
                     whatsapp: document.getElementById('cfgWhatsapp').value
                 },
+                requestSheetUrl: document.getElementById('cfgRequestSheetUrl').value,
                 demoBundle: {
                     title: document.getElementById('cfgBundleTitle').value,
                     price: document.getElementById('cfgBundlePrice').value,
@@ -742,6 +1007,9 @@
             btn.disabled = true;
             try {
                 await window.adminSaveConfig(data);
+                await window.adminSaveToken(document.getElementById('cfgPromoteToken').value);
+                window.appsScriptUrl = data.requestSheetUrl || '';
+                window.promoteToken = document.getElementById('cfgPromoteToken').value || '';
                 const msg = document.getElementById('configSavedMsg');
                 msg.classList.remove('hidden');
                 setTimeout(() => msg.classList.add('hidden'), 3000);
@@ -763,6 +1031,8 @@
             document.getElementById('cfgThreads').value = s.threads || '';
             document.getElementById('cfgLinkedin').value = s.linkedin || '';
             document.getElementById('cfgWhatsapp').value = s.whatsapp || '';
+
+            document.getElementById('cfgRequestSheetUrl').value = cfg.requestSheetUrl || '';
 
             const b = cfg.demoBundle || {};
             document.getElementById('cfgBundleTitle').value = b.title || '';
@@ -797,9 +1067,12 @@
         const lockedSlotsPath = collection(db, 'locked_slots');
         const coursesPath = collection(db, 'courses');
         const demosPath = collection(db, 'demos');
+        const requestsPath = collection(db, 'system_requests');
         const configDocRef = doc(db, 'site_config', 'main');
+        // Token rahsia Apps Script — doc berasingan, superadmin sahaja boleh baca/tulis
+        const secretsDocRef = doc(db, 'admin_secrets', 'main');
 
-        let unsubBookings = null, unsubCourses = null, unsubDemos = null;
+        let unsubBookings = null, unsubCourses = null, unsubDemos = null, unsubRequests = null;
 
         const loginScreen = document.getElementById('loginScreen');
         const dashboard = document.getElementById('dashboard');
@@ -830,6 +1103,7 @@
                 if (unsubBookings) { unsubBookings(); unsubBookings = null; }
                 if (unsubCourses) { unsubCourses(); unsubCourses = null; }
                 if (unsubDemos) { unsubDemos(); unsubDemos = null; }
+                if (unsubRequests) { unsubRequests(); unsubRequests = null; }
             }
         });
 
@@ -851,10 +1125,31 @@
                     renderDemoList(list);
                 }, (error) => console.error("Sync Error:", error));
             }
+            if (!unsubRequests) {
+                unsubRequests = onSnapshot(requestsPath, (snapshot) => {
+                    const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                    list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                    renderRequestList(list);
+                }, (error) => console.error("Sync Error:", error));
+            }
             try {
                 const cfgSnap = await getDoc(configDocRef);
-                if (cfgSnap.exists()) fillConfigForm(cfgSnap.data());
+                if (cfgSnap.exists()) {
+                    const cfg = cfgSnap.data();
+                    fillConfigForm(cfg);
+                    window.appsScriptUrl = cfg.requestSheetUrl || '';
+                }
             } catch (err) { console.error("Config load error:", err); }
+
+            try {
+                const secSnap = await getDoc(secretsDocRef);
+                if (secSnap.exists()) {
+                    const sec = secSnap.data();
+                    window.promoteToken = sec.promoteToken || '';
+                    const el = document.getElementById('cfgPromoteToken');
+                    if (el) el.value = sec.promoteToken || '';
+                }
+            } catch (err) { console.error("Secrets load error:", err); }
         }
 
         function slotDocId(date, time) {
@@ -902,6 +1197,19 @@
         };
         window.adminDeleteDemo = async (id) => {
             await deleteDoc(doc(db, 'demos', id));
+        };
+
+        // ---- REQUEST SYSTEM ----
+        window.adminDeleteRequest = async (id) => {
+            await deleteDoc(doc(db, 'system_requests', id));
+        };
+        window.adminUpdateRequest = async (id, data) => {
+            await updateDoc(doc(db, 'system_requests', id), data);
+        };
+
+        // ---- TOKEN RAHSIA (superadmin sahaja) ----
+        window.adminSaveToken = async (token) => {
+            await setDoc(secretsDocRef, { promoteToken: token || '' }, { merge: true });
         };
 
         // ---- SITE CONFIG ----
