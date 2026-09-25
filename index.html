@@ -1085,7 +1085,7 @@
 
         function loadPortfolioData() {
             if (cachedPortfolioData) { setTimeout(() => renderPortfolioUI(cachedPortfolioData), 50); return; }
-            Papa.parse("https://docs.google.com/spreadsheets/d/e/2PACX-1vSUwW-AXB3NV8OyPIRMO0Cd2ZebKJVZc-8OI9-8LXXSZwSCe4pSpG1gpr3gm0C-9GBpRJhghLteB944/pub?output=csv", {
+            Papa.parse("https://docs.google.com/spreadsheets/d/e/2PACX-1vSUwW-AXB3NV8OyPIRMO0Cd2ZebKJVZc-8OI9-8LXXSZwSCe4pSpG1gpr3gm0C-9GBpRJhghLteB944/pub?gid=13897400&single=true&output=csv", {
                 download: true, header: true,
                 complete: function(results) {
                     cachedPortfolioData = results.data.filter(row => row['Nama Sistem'] && row['Nama Sistem'].trim() !== '');
