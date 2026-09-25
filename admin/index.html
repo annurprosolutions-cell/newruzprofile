@@ -304,7 +304,7 @@
 
                 <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-4">Request System → Google Sheet</h3>
                 <p class="text-[10px] text-gray-500 -mt-2">URL Apps Script Web App. Kalau kosong, permohonan tetap masuk Firestore dan WhatsApp — cuma tak masuk Sheet.</p>
-                <input type="url" id="cfgRequestSheetUrl" placeholder="https://script.google.com/macros/s/..../exec" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <input type="url" id="cfgRequestSheetUrl" placeholder="https://script.google.com/macros/s/AKfycbzDg2__b-C65OZ79tin-E-e7tLDtR6FocrudZEJ3vO9VDBBE3oSy0G4ceBImWtBBon5rQ/exec" class="neu-inset p-3 rounded-xl w-full text-sm">
                 <input type="text" id="cfgPromoteToken" placeholder="RUZ-2QzlSK63hW5FBIQDdLmrg54q6rMd" class="neu-inset p-3 rounded-xl w-full text-sm">
                 <p class="text-[10px] text-gray-500 -mt-2">Token ni disimpan berasingan dan hanya anda boleh baca. Ia yang membenarkan admin panel tulis ke portfolio.</p>
 
@@ -837,7 +837,7 @@
         // Apps Script tak handle CORS untuk POST biasa, jadi arahan admin dihantar
         // melalui GET + JSONP. Dengan cara ni kita boleh BACA jawapan dia
         // (tahu berjaya ke tidak), bukan hantar buta-buta.
-        window.appsScriptUrl = 'https://script.google.com/macros/s/AKfycbzDg2__b-C65OZ79tin-E-e7tLDtR6FocrudZEJ3vO9VDBBE3oSy0G4ceBImWtBBon5rQ/exec';
+        window.appsScriptUrl = '';
         window.promoteToken = '';
 
         function callAppsScript(params) {
