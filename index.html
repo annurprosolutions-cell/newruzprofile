@@ -263,32 +263,32 @@
             </div>
         </div>
 
-        <!-- LAYER 4: SUB MENU - COACHING (3 Cabang) -->
+        <!-- LAYER 4: SUB MENU - COACHING & REQUEST (4 Cabang) -->
         <div id="submenu-coaching" class="view-layer view-hidden-down z-20">
             <svg viewBox="-200 -200 400 400" class="absolute inset-0 w-full h-full overflow-visible">
-                <defs>
-                    <path id="tp-top-coach" d="M -106 -106 A 150 150 0 0 1 106 -106" fill="none" />
-                    <path id="tp-bottom-coach" d="M -106 106 A 150 150 0 0 0 106 106" fill="none" />
-                </defs>
                 <g fill="var(--dot-color)" filter="url(#dot-glow)">
-                    <circle cx="0" cy="-140" transform="rotate(60)" r="4.5" />
-                    <circle cx="0" cy="-140" transform="rotate(180)" r="4.5" />
-                    <circle cx="0" cy="-140" transform="rotate(300)" r="4.5" />
+                    <circle cx="99" cy="-99" r="4.5" />
+                    <circle cx="99" cy="99" r="4.5" />
+                    <circle cx="-99" cy="99" r="4.5" />
+                    <circle cx="-99" cy="-99" r="4.5" />
                 </g>
-                <g class="menu-item sub-item" data-target="coach-1" transform="rotate(0)" onclick="openBooking('1to1')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
-                <g class="menu-item sub-item" data-target="coach-3" transform="rotate(120)" onclick="openBooking('3to1')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
-                <g class="menu-item sub-item" data-target="coach-c" transform="rotate(240)" onclick="openBooking('custom')"><g class="btn-scale-wrap"><use href="#arc-shape-3" class="arc-border" stroke-width="68" /><use href="#arc-shape-3" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="coach-1" transform="rotate(0)" onclick="openBooking('1to1')"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="coach-3" transform="rotate(90)" onclick="openBooking('3to1')"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="coach-c" transform="rotate(180)" onclick="openBooking('custom')"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
+                <g class="menu-item sub-item" data-target="coach-req" transform="rotate(270)" onclick="openRequestSystem()"><g class="btn-scale-wrap"><use href="#arc-shape" class="arc-border" stroke-width="68" /><use href="#arc-shape" class="arc-main" stroke-width="64" /></g></g>
 
                 <g class="pointer-events-none uppercase" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 9px; letter-spacing: 0.8px;">
-                    <g><text class="svg-text svg-text-sub-coach-1"><textPath href="#tp-top-coach" startOffset="50%" text-anchor="middle">1 to 1 - RM189</textPath></text></g>
-                    <g transform="rotate(-60)"><text class="svg-text svg-text-sub-coach-3"><textPath href="#tp-bottom-coach" startOffset="50%" text-anchor="middle" dy="4">3 to 1 - RM350</textPath></text></g>
-                    <g transform="rotate(60)"><text class="svg-text svg-text-sub-coach-c" style="font-size: 11px;"><textPath href="#tp-bottom-coach" startOffset="50%" text-anchor="middle" dy="4">Custom</textPath></text></g>
+                    <text class="svg-text svg-text-sub-coach-1"><textPath href="#tp-top" startOffset="50%" text-anchor="middle">1 to 1 - RM189</textPath></text>
+                    <text class="svg-text svg-text-sub-coach-3"><textPath href="#tp-right" startOffset="50%" text-anchor="middle">3 to 1 - RM350</textPath></text>
+                    <text class="svg-text svg-text-sub-coach-c"><textPath href="#tp-bottom" startOffset="50%" text-anchor="middle" dy="8">Custom Coaching</textPath></text>
+                    <text class="svg-text svg-text-sub-coach-req"><textPath href="#tp-left" startOffset="50%" text-anchor="middle">Request System</textPath></text>
                 </g>
             </svg>
             <div class="absolute inset-0 pointer-events-none z-10">
                 <div id="icon-sub-coach-1" class="html-overlay-icon absolute" style="top: 18.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-user text-[24px]"></i></div>
-                <div id="icon-sub-coach-3" class="html-overlay-icon absolute" style="top: 65.75%; left: 77.28%; transform: translate(-50%, -50%);"><i class="ph ph-users text-[24px]"></i></div>
-                <div id="icon-sub-coach-c" class="html-overlay-icon absolute" style="top: 65.75%; left: 22.72%; transform: translate(-50%, -50%);"><i class="ph ph-sliders-horizontal text-[24px]"></i></div>
+                <div id="icon-sub-coach-3" class="html-overlay-icon absolute" style="top: 50%; left: 81.5%; transform: translate(-50%, -50%);"><i class="ph ph-users text-[24px]"></i></div>
+                <div id="icon-sub-coach-c" class="html-overlay-icon absolute" style="top: 81.5%; left: 50%; transform: translate(-50%, -50%);"><i class="ph ph-sliders-horizontal text-[24px]"></i></div>
+                <div id="icon-sub-coach-req" class="html-overlay-icon absolute" style="top: 50%; left: 18.5%; transform: translate(-50%, -50%);"><i class="ph ph-wrench text-[24px]"></i></div>
             </div>
             <!-- Back Button -->
             <div onclick="goBack()" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-36 sm:h-36 rounded-full center-circle flex items-center justify-center z-20 cursor-pointer group active:scale-95 transition-transform">
@@ -397,6 +397,71 @@
             </div>
             <div id="mediaContainer" class="w-full h-full overflow-hidden rounded-xl bg-white/5 relative z-10 flex items-center justify-center">
             </div>
+        </div>
+    </div>
+
+    <!-- STRUKTUR MODAL KEEMPAT (REQUEST SYSTEM) -->
+    <div id="requestModal" class="modal-overlay" style="z-index: 125;">
+        <div class="modal-card w-[95%] max-w-md max-h-[90vh] flex flex-col relative overflow-y-auto" style="border-radius: 24px;">
+            <button onclick="closeRequestSystem()" class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center btn-modal text-lg z-20">
+                <i class="ph ph-x text-[var(--icon-color)]"></i>
+            </button>
+
+            <div class="flex items-center gap-3 mb-5 mt-2 pr-6">
+                <div class="w-12 h-12 rounded-full center-circle flex items-center justify-center flex-shrink-0">
+                    <i class="ph ph-wrench text-2xl text-[var(--primary)]"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold uppercase tracking-wide text-[var(--text-main)]">Request System</h3>
+                    <p class="text-xs font-medium text-[var(--primary)]">Beritahu sistem apa yang anda perlukan</p>
+                </div>
+            </div>
+
+            <form id="requestForm" onsubmit="submitRequestSystem(event)" class="flex flex-col gap-4">
+                <input type="text" id="r_name" required placeholder="Nama Penuh" class="neu-input">
+                <input type="email" id="r_email" required placeholder="Email" class="neu-input">
+                <input type="tel" id="r_phone" required placeholder="No. Telefon (WhatsApp)" class="neu-input">
+                <input type="text" id="r_company" placeholder="Nama Syarikat / Organisasi (optional)" class="neu-input">
+
+                <!-- Nilai di sini sengaja sama dengan kolum "Kategori" dalam Sheet
+                     Portfolio_Sistem, supaya permohonan yang di-approve terus padan -->
+                <select id="r_type" required class="neu-input">
+                    <option value="" disabled selected>Jenis Sistem Yang Diperlukan</option>
+                    <option value="Sistem Tempahan / Booking">Sistem Tempahan / Booking</option>
+                    <option value="Dashboard &amp; Analitik">Dashboard &amp; Analitik</option>
+                    <option value="Sistem Laporan &amp; Penjana Dokumen">Sistem Laporan &amp; Penjana Dokumen</option>
+                    <option value="Sistem Profil &amp; Aplikasi Digital">Sistem Profil &amp; Aplikasi Digital</option>
+                    <option value="Portal Web">Portal Web</option>
+                    <option value="Sistem Kewangan">Sistem Kewangan</option>
+                    <option value="Sistem Pendidikan">Sistem Pendidikan</option>
+                    <option value="Sistem Pengurusan Aset &amp; Operasi">Sistem Pengurusan Aset &amp; Operasi</option>
+                    <option value="Sistem Semakan &amp; Pengesahan">Sistem Semakan &amp; Pengesahan</option>
+                    <option value="Sistem Insurans / Takaful">Sistem Insurans / Takaful</option>
+                    <option value="Sistem Kerajaan &amp; Komuniti">Sistem Kerajaan &amp; Komuniti</option>
+                    <option value="Sistem Tenaga &amp; Solar">Sistem Tenaga &amp; Solar</option>
+                    <option value="Sistem Lain-lain">Sistem Lain-lain</option>
+                </select>
+
+                <textarea id="r_detail" required rows="3" placeholder="Terangkan keperluan sistem anda — masalah sekarang, siapa guna, apa nak capai..." class="neu-input resize-none"></textarea>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="r_budget" placeholder="Anggaran Bajet (RM)" class="neu-input">
+                    <select id="r_timeline" class="neu-input">
+                        <option value="" disabled selected>Bila diperlukan?</option>
+                        <option value="Segera (dalam 2 minggu)">Segera (2 minggu)</option>
+                        <option value="1-2 bulan">1-2 bulan</option>
+                        <option value="3 bulan ke atas">3 bulan ke atas</option>
+                        <option value="Tiada tarikh khusus">Tiada tarikh khusus</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="requestSubmitBtn" class="btn-modal primary py-3 rounded-xl w-full flex items-center justify-center gap-2 text-xs font-bold hover:bg-[var(--primary)] hover:text-white transition-colors mt-1">
+                    Hantar Permohonan <i class="ph ph-paper-plane-right text-lg"></i>
+                </button>
+                <p class="text-[10px] text-center text-[var(--text-muted)]">
+                    Selepas hantar, WhatsApp akan dibuka untuk anda hantar terus kepada kami.
+                </p>
+            </form>
         </div>
     </div>
 
@@ -917,6 +982,9 @@
             });
             window.siteWhatsappNumber = s.whatsapp || window.siteWhatsappNumber;
 
+            // URL Apps Script untuk hantar Request System ke Google Sheet
+            window.requestSheetUrl = cfg.requestSheetUrl || '';
+
             // Bundle template untuk bahagian Sistem Demo
             applyDemoBundle(cfg.demoBundle);
         }
@@ -1220,7 +1288,7 @@
                         details: JSON.stringify(detailsObj), remark: remark, createdAt: new Date().toISOString()
                     });
                 }
-                const whatsappNumber = window.siteWhatsappNumber || "601120879149";
+                const whatsappNumber = normalizeWhatsapp(window.siteWhatsappNumber);
                 window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
                 closeBooking();
             } catch (error) {
@@ -1231,6 +1299,95 @@
             }
         }
 
+        // ================= REQUEST SYSTEM =================
+        // Terima apa-apa format nombor (011..., 6011..., +6011..., 011-208 7914) dan tukar ke format wa.me
+        function normalizeWhatsapp(raw) {
+            let n = String(raw || '601120879149').replace(/[^0-9]/g, '');
+            if (n.startsWith('0')) n = '60' + n.slice(1);      // 011... -> 6011...
+            else if (!n.startsWith('60')) n = '60' + n;         // 11...  -> 6011...
+            return n;
+        }
+
+        function openRequestSystem() {
+            document.getElementById('requestForm').reset();
+            document.getElementById('requestModal').classList.add('show');
+        }
+
+        function closeRequestSystem() {
+            document.getElementById('requestModal').classList.remove('show');
+        }
+
+        async function submitRequestSystem(e) {
+            e.preventDefault();
+            const btn = document.getElementById('requestSubmitBtn');
+            const originalBtnText = btn.innerHTML;
+            btn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> Memproses...`;
+            btn.disabled = true;
+
+            try {
+                // ID unik supaya rekod Firestore dan baris Google Sheet boleh dipadankan
+                const reqId = 'REQ-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
+
+                const payload = {
+                    reqId: reqId,
+                    name: document.getElementById('r_name').value,
+                    email: document.getElementById('r_email').value,
+                    phone: document.getElementById('r_phone').value,
+                    company: document.getElementById('r_company').value || '-',
+                    systemType: document.getElementById('r_type').value,
+                    detail: document.getElementById('r_detail').value,
+                    budget: document.getElementById('r_budget').value || '-',
+                    timeline: document.getElementById('r_timeline').value || '-',
+                    status: 'BARU',
+                    createdAt: new Date().toISOString()
+                };
+
+                // 1. Simpan ke Firestore (rekod utama — sentiasa jalan, nampak dalam admin panel)
+                if (window.addSystemRequest) {
+                    await window.addSystemRequest(payload).catch(err => console.error('Firestore gagal:', err));
+                }
+
+                // 2. Hantar ke Google Sheet melalui Apps Script (kalau URL dah diset dalam Site Config)
+                const sheetUrl = window.requestSheetUrl;
+                if (sheetUrl) {
+                    // no-cors + text/plain: Apps Script tak handle CORS preflight.
+                    // Kita tak boleh baca response, sebab tu Firestore jadi rekod utama.
+                    fetch(sheetUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    }).catch(err => console.error('Sheet gagal:', err));
+                }
+
+                // 3. Buka WhatsApp dengan mesej siap taip
+                // Guna newline sebenar + encodeURIComponent supaya simbol macam & # + tak putuskan mesej
+                const message =
+                    `*REQUEST SYSTEM BARU*\n\n` +
+                    `*Nama:* ${payload.name}\n` +
+                    `*Email:* ${payload.email}\n` +
+                    `*No Tel:* ${payload.phone}\n` +
+                    `*Syarikat:* ${payload.company}\n\n` +
+                    `*Jenis Sistem:* ${payload.systemType}\n` +
+                    `*Bajet:* RM ${payload.budget}\n` +
+                    `*Timeline:* ${payload.timeline}\n\n` +
+                    `*Keperluan:*\n${payload.detail}\n\n` +
+                    `_Mohon semakan dan sebut harga. Terima kasih!_`;
+
+                const whatsappNumber = normalizeWhatsapp(window.siteWhatsappNumber);
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+
+                closeRequestSystem();
+            } catch (error) {
+                console.error("Gagal menghantar permohonan:", error);
+                alert("Maaf, ada masalah teknikal. Cuba sekali lagi.");
+            } finally {
+                btn.innerHTML = originalBtnText;
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('requestModal').addEventListener('click', function(e) { if (e.target === this) closeRequestSystem(); });
         document.getElementById('itemModal').addEventListener('click', function(e) { if (e.target === this) closePopup(); });
         document.getElementById('mediaModal').addEventListener('click', function(e) { if (e.target === this) closeMediaModal(); });
         document.getElementById('bookingModal').addEventListener('click', function(e) { if (e.target === this) closeBooking(); });
@@ -1286,8 +1443,15 @@
         // Tetapan umum laman (tajuk, logo, link sosial) — public baca sahaja
         const configDocRef = doc(db, 'site_config', 'main');
 
+        // Permohonan bina sistem (Request System) — public boleh CREATE sahaja
+        const systemRequestsRef = collection(db, 'system_requests');
+
         window.addBookingRequest = async (data) => {
             await addDoc(bookingsRef, data);
+        };
+
+        window.addSystemRequest = async (data) => {
+            await addDoc(systemRequestsRef, data);
         };
 
         function sortByOrder(list) {
