@@ -1,1221 +1,1256 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Superadmin Panel - RuzPrompt</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superadmin Panel - RuzPrompt</title>
 
-    <!-- Tailwind & Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- PWA & Favicon Meta Tags -->
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Admin Ruz">
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1z1xkqatduSlFhGoihLfxXjt1ArJOP726">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1z1xkqatduSlFhGoihLfxXjt1ArJOP726">
+    <link rel="manifest" id="pwa-manifest">
 
-    <style>
-        body {
-            background-color: #e0e5ec;
-            color: #2d3748;
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-        }
-        .neu-card {
-            background-color: #e0e5ec;
-            box-shadow: 10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff;
-            border-radius: 20px;
-        }
-        .neu-inset {
-            background-color: #e0e5ec;
-            box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
-            border: none;
-            outline: none;
-        }
-        .neu-inset:focus { border: 1px solid #3b82f6; }
-        .neu-btn {
-            background-color: #e0e5ec;
-            box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
-            transition: all 0.2s ease;
-        }
-        .neu-btn:active:not(:disabled) {
-            box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
-            transform: scale(0.97);
-        }
-        .tab-btn { transition: all 0.2s ease; }
-        .tab-btn.active { background-color: #3b82f6; color: white; box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff; }
-    </style>
+    <!-- Tailwind & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #e0e5ec;
+            color: #2d3748;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+        }
+        .neu-card {
+            background-color: #e0e5ec;
+            box-shadow: 10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff;
+            border-radius: 20px;
+        }
+        .neu-inset {
+            background-color: #e0e5ec;
+            box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
+            border: none;
+            outline: none;
+        }
+        .neu-inset:focus { border: 1px solid #3b82f6; }
+        .neu-btn {
+            background-color: #e0e5ec;
+            box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
+            transition: all 0.2s ease;
+        }
+        .neu-btn:active:not(:disabled) {
+            box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
+            transform: scale(0.97);
+        }
+        .tab-btn { transition: all 0.2s ease; }
+        .tab-btn.active { background-color: #3b82f6; color: white; box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff; }
+    </style>
 </head>
 <body class="flex flex-col items-center justify-start p-4 sm:p-8">
 
-    <!-- =================== SKRIN LOGIN =================== -->
-    <div id="loginScreen" class="w-full max-w-sm neu-card p-8 mt-16 flex flex-col gap-5">
-        <h1 class="text-lg font-bold uppercase tracking-wider text-center flex flex-col items-center gap-2">
-            <i class="ph ph-lock-key text-4xl text-blue-500"></i>
-            Log Masuk Superadmin
-        </h1>
-        <input type="email" id="loginEmail" placeholder="Email" class="neu-inset p-3 rounded-xl w-full text-sm" autocomplete="username">
-        <input type="password" id="loginPassword" placeholder="Kata Laluan" class="neu-inset p-3 rounded-xl w-full text-sm" autocomplete="current-password">
-        <button id="loginBtn" class="neu-btn text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm" style="background-color: #3b82f6;">
-            Log Masuk
-        </button>
-        <p id="loginError" class="text-xs text-red-500 text-center hidden"></p>
-    </div>
-
-    <!-- =================== DASHBOARD =================== -->
-    <div id="dashboard" class="w-full max-w-3xl flex flex-col gap-5 hidden">
-
-        <div class="neu-card p-4 sm:p-6 flex items-center justify-between">
-            <h1 class="text-lg sm:text-xl font-bold uppercase tracking-wider text-blue-500 flex items-center gap-3">
-                <i class="ph ph-shield-star text-2xl sm:text-3xl text-blue-500"></i> Superadmin Panel
-            </h1>
-            <button id="logoutBtn" class="neu-btn px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1">
-                <i class="ph ph-sign-out"></i> Log Keluar
-            </button>
-        </div>
-
-        <!-- TAB SWITCHER -->
-        <div class="neu-card p-2 flex gap-2 overflow-x-auto">
-            <button class="tab-btn active neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="booking">
-                <i class="ph ph-calendar-check"></i> Booking
-            </button>
-            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="courses">
-                <i class="ph ph-graduation-cap"></i> Course
-            </button>
-            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="demos">
-                <i class="ph ph-desktop"></i> Demo
-            </button>
-            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="requests">
-                <i class="ph ph-wrench"></i> Request
-                <span id="requestBadge" class="bg-red-500 text-white rounded-full px-1.5 text-[9px] hidden">0</span>
-            </button>
-            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="portfolio">
-                <i class="ph ph-briefcase"></i> Portfolio
-            </button>
-            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="config">
-                <i class="ph ph-gear-six"></i> Site Config
-            </button>
-        </div>
-
-        <!-- ======================= PANEL: BOOKING ======================= -->
-        <div id="panel-booking" class="tab-panel neu-card p-6 sm:p-8">
-            <form id="adminForm" class="flex flex-col gap-5 mb-10">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div class="flex flex-col gap-2">
-                        <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Tarikh Untuk Di-Lock</label>
-                        <input type="date" id="lockDate" required class="neu-inset p-3 rounded-xl w-full text-sm">
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Pilihan Masa / Slot</label>
-                        <select id="lockTime" required class="neu-inset p-3 rounded-xl w-full text-sm">
-                            <option value="" disabled selected>Sila Pilih Tarikh Dahulu...</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Nota Peribadi (Pelanggan/Sebab)</label>
-                    <input type="text" id="lockNote" placeholder="Cth: Tempahan dari Ali, 1 to 1 Coaching" class="neu-inset p-3 rounded-xl w-full text-sm">
-                </div>
-                <button type="submit" class="neu-btn bg-blue-500 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2" style="background-color: #3b82f6; box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;">
-                    <i class="ph ph-plus-circle text-lg"></i> Lock Tarikh Ini
-                </button>
-            </form>
-
-            <div class="mb-8">
-                <h2 class="text-sm font-bold uppercase tracking-wider text-orange-500 mb-4 flex items-center justify-between">
-                    <span class="flex items-center gap-2"><i class="ph ph-bell-ringing"></i> Permohonan Baru (Pending)</span>
-                    <span id="pendingCount" class="bg-orange-500/10 text-orange-600 px-3 py-1 rounded-full text-[10px]">0 Request</span>
-                </h2>
-                <div class="w-full overflow-x-auto neu-inset rounded-xl p-2 hidden" id="pendingContainer">
-                    <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[600px]">
-                        <thead class="text-gray-500 border-b border-gray-300">
-                            <tr><th class="p-3">Pelanggan</th><th class="p-3">Pakej</th><th class="p-3">Tarikh & Masa</th><th class="p-3 text-center">Tindakan</th></tr>
-                        </thead>
-                        <tbody id="pendingTableBody" class="text-gray-700 font-medium"></tbody>
-                    </table>
-                </div>
-                <div id="noPendingData" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-6">Tiada permohonan baru setakat ini.</div>
-            </div>
-
-            <div>
-                <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
-                    <span class="flex items-center gap-2"><i class="ph ph-calendar-check"></i> Senarai Tarikh Di-Lock (Approved)</span>
-                    <span id="lockCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Aktif</span>
-                </h2>
-                <div class="w-full overflow-x-auto neu-inset rounded-xl p-2 hidden" id="tableContainer">
-                    <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[500px]">
-                        <thead class="text-gray-500 border-b border-gray-300">
-                            <tr><th class="p-3">Tarikh</th><th class="p-3">Masa</th><th class="p-3">Nota / Pelanggan</th><th class="p-3 text-center">Tindakan</th></tr>
-                        </thead>
-                        <tbody id="lockedTableBody" class="text-gray-700 font-medium"></tbody>
-                    </table>
-                </div>
-                <div id="loadingData" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
-                    <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan Database...
-                </div>
-            </div>
-        </div>
-
-        <!-- ======================= PANEL: COURSES ======================= -->
-        <div id="panel-courses" class="tab-panel neu-card p-6 sm:p-8 hidden">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">
-                <span id="courseFormMode">Tambah Course Baru</span>
-            </h2>
-            <form id="courseForm" class="flex flex-col gap-4 mb-8">
-                <input type="hidden" id="courseEditId" value="">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="text" id="courseTitle" placeholder="Tajuk Course (cth: Canva Ai)" required class="neu-inset p-3 rounded-xl w-full text-sm">
-                    <input type="text" id="courseIcon" placeholder="Nama Icon Phosphor (cth: ph-palette)" required class="neu-inset p-3 rounded-xl w-full text-sm">
-                </div>
-                <textarea id="courseDesc" rows="2" placeholder="Penerangan ringkas course" class="neu-inset p-3 rounded-xl w-full text-sm resize-none"></textarea>
-                <input type="url" id="courseImage" placeholder="Link Gambar Silibus (Google Drive share link)" class="neu-inset p-3 rounded-xl w-full text-sm">
-                <input type="url" id="courseLink" placeholder="Link Belian / Pendaftaran" class="neu-inset p-3 rounded-xl w-full text-sm">
-                <div class="flex gap-3">
-                    <button type="submit" id="courseSubmitBtn" class="neu-btn flex-1 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-xs flex items-center justify-center gap-2" style="background-color: #3b82f6;">
-                        <i class="ph ph-plus-circle text-lg"></i> Tambah Course
-                    </button>
-                    <button type="button" id="courseCancelEditBtn" class="neu-btn px-4 py-3 rounded-xl uppercase text-xs font-bold hidden">Batal</button>
-                </div>
-                <p class="text-[10px] text-gray-500">
-                    Nota: untuk link gambar Google Drive, upload dulu ke Drive → klik "Get link" → tukar setting ke "Anyone with the link" → paste link tu di sini.
-                </p>
-            </form>
-
-            <div id="seedCourseBox" class="neu-inset rounded-xl p-4 mb-6 flex items-center justify-between gap-3 flex-wrap hidden">
-                <div class="text-xs text-gray-600">
-                    <span class="font-bold">Senarai course masih kosong.</span><br>
-                    Klik untuk masukkan balik 4 course asal (Canva Ai, Gemini Ai, Looker Studio, Edu Content) ke database.
-                </div>
-                <button type="button" id="seedCourseBtn" class="neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase flex items-center gap-2 flex-shrink-0" style="background-color:#3b82f6; color:white;">
-                    <i class="ph ph-download-simple"></i> Import Course Asal
-                </button>
-            </div>
-
-            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
-                <span class="flex items-center gap-2"><i class="ph ph-list-bullets"></i> Senarai Course</span>
-                <span id="courseCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Course</span>
-            </h2>
-            <div id="courseListContainer" class="flex flex-col gap-3"></div>
-            <div id="courseLoading" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
-                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan...
-            </div>
-        </div>
-
-        <!-- ======================= PANEL: DEMO ======================= -->
-        <div id="panel-demos" class="tab-panel neu-card p-6 sm:p-8 hidden">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">
-                <span id="demoFormMode">Tambah Sistem Demo Baru</span>
-            </h2>
-            <form id="demoForm" class="flex flex-col gap-4 mb-8">
-                <input type="hidden" id="demoEditId" value="">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="text" id="demoTitle" placeholder="Nama Sistem (cth: Prompt2Booking)" required class="neu-inset p-3 rounded-xl w-full text-sm">
-                    <input type="text" id="demoBadge" placeholder="Label kecil (optional: BARU / RECORDING)" class="neu-inset p-3 rounded-xl w-full text-sm">
-                </div>
-                <textarea id="demoDesc" rows="2" placeholder="Penerangan ringkas sistem" class="neu-inset p-3 rounded-xl w-full text-sm resize-none"></textarea>
-                <input type="url" id="demoThumb" placeholder="Link Gambar Thumbnail (Google Drive share link)" class="neu-inset p-3 rounded-xl w-full text-sm">
-                <input type="url" id="demoLink" placeholder="Link Demo (untuk orang tengok sistem)" class="neu-inset p-3 rounded-xl w-full text-sm">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="url" id="demoPurchase" placeholder="Link beli template ni je (optional)" class="neu-inset p-3 rounded-xl w-full text-sm">
-                    <input type="number" id="demoOrder" placeholder="Susunan (1, 2, 3...)" class="neu-inset p-3 rounded-xl w-full text-sm">
-                </div>
-                <div class="flex gap-3">
-                    <button type="submit" id="demoSubmitBtn" class="neu-btn flex-1 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-xs flex items-center justify-center gap-2" style="background-color: #3b82f6;">
-                        <i class="ph ph-plus-circle text-lg"></i> Tambah Demo
-                    </button>
-                    <button type="button" id="demoCancelEditBtn" class="neu-btn px-4 py-3 rounded-xl uppercase text-xs font-bold hidden">Batal</button>
-                </div>
-                <p class="text-[10px] text-gray-500">
-                    Nota: kalau "Link beli template ni je" dikosongkan, butang belian akan guna bundle "Semua Template" yang diset dalam tab Site Config.
-                </p>
-            </form>
-
-            <div id="seedDemoBox" class="neu-inset rounded-xl p-4 mb-6 flex items-center justify-between gap-3 flex-wrap hidden">
-                <div class="text-xs text-gray-600">
-                    <span class="font-bold">Senarai demo masih kosong.</span><br>
-                    Klik untuk masukkan 5 sistem demo asal (Prompt2Booking, Prompt2OPR, Prompt2Dashboard, Prompt2Website, Sistem Guru Ganti).
-                </div>
-                <button type="button" id="seedDemoBtn" class="neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase flex items-center gap-2 flex-shrink-0" style="background-color:#3b82f6; color:white;">
-                    <i class="ph ph-download-simple"></i> Import Demo Asal
-                </button>
-            </div>
-
-            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
-                <span class="flex items-center gap-2"><i class="ph ph-list-bullets"></i> Senarai Demo</span>
-                <span id="demoCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Demo</span>
-            </h2>
-            <div id="demoListContainer" class="flex flex-col gap-3"></div>
-            <div id="demoLoading" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
-                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan...
-            </div>
-        </div>
-
-        <!-- ======================= PANEL: REQUEST SYSTEM ======================= -->
-        <div id="panel-requests" class="tab-panel neu-card p-6 sm:p-8 hidden">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center justify-between">
-                <span class="flex items-center gap-2"><i class="ph ph-wrench"></i> Permohonan Bina Sistem</span>
-                <span id="requestCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Request</span>
-            </h2>
-            <p class="text-[10px] text-gray-500 mb-5">
-                Rekod ni disimpan dalam Firestore sebagai salinan utama. Kalau Apps Script (Google Sheet) diset, satu salinan lagi masuk Sheet awak.
-            </p>
-            <div id="requestListContainer" class="flex flex-col gap-3"></div>
-            <div id="requestLoading" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
-                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan...
-            </div>
-        </div>
-
-        <!-- ======================= PANEL: PORTFOLIO ======================= -->
-        <div id="panel-portfolio" class="tab-panel neu-card p-6 sm:p-8 hidden">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center justify-between">
-                <span class="flex items-center gap-2"><i class="ph ph-briefcase"></i> Projek Portfolio</span>
-                <button type="button" id="portfolioRefreshBtn" class="neu-btn px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase flex items-center gap-1">
-                    <i class="ph ph-arrows-clockwise"></i> Muat Semula
-                </button>
-            </h2>
-            <p class="text-[10px] text-gray-500 mb-5">
-                Senarai ni datang terus dari tab <b>Portfolio_Sistem</b> dalam Google Sheet anda.
-                Tukar status di sini — Sheet dan jadual portfolio di website akan ikut.
-            </p>
-            <div id="portfolioListContainer" class="flex flex-col gap-3"></div>
-            <div id="portfolioMsg" class="text-xs text-center text-gray-500 py-8">
-                Klik "Muat Semula" untuk ambil senarai projek dari Google Sheet.
-            </div>
-        </div>
-
-        <!-- ======================= PANEL: SITE CONFIG ======================= -->
-        <div id="panel-config" class="tab-panel neu-card p-6 sm:p-8 hidden">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">Tetapan Umum Laman</h2>
-            <form id="configForm" class="flex flex-col gap-4">
-                <div class="flex flex-col gap-2">
-                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Tajuk Laman (Tab Browser)</label>
-                    <input type="text" id="cfgSiteTitle" placeholder="Profil Diri - Web App" class="neu-inset p-3 rounded-xl w-full text-sm">
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Link Logo (Google Drive share link)</label>
-                    <input type="url" id="cfgLogoUrl" placeholder="https://lh3.googleusercontent.com/d/..." class="neu-inset p-3 rounded-xl w-full text-sm">
-                </div>
-
-                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-2">Link Media Sosial</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="url" id="cfgFacebook" placeholder="Link Facebook" class="neu-inset p-3 rounded-xl w-full text-sm">
-                    <input type="url" id="cfgTiktok" placeholder="Link TikTok" class="neu-inset p-3 rounded-xl w-full text-sm">
-                    <input type="url" id="cfgInstagram" placeholder="Link Instagram" class="neu-inset p-3 rounded-xl w-full text-sm">
-                    <input type="url" id="cfgThreads" placeholder="Link Threads" class="neu-inset p-3 rounded-xl w-full text-sm">
-                    <input type="url" id="cfgLinkedin" placeholder="Link LinkedIn" class="neu-inset p-3 rounded-xl w-full text-sm">
-                    <input type="url" id="cfgWhatsapp" placeholder="No. WhatsApp (cth: 601120879149)" class="neu-inset p-3 rounded-xl w-full text-sm">
-                </div>
-
-                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-4">Request System → Google Sheet</h3>
-                <p class="text-[10px] text-gray-500 -mt-2">URL Apps Script Web App. Kalau kosong, permohonan tetap masuk Firestore dan WhatsApp — cuma tak masuk Sheet.</p>
-                <input type="url" id="cfgRequestSheetUrl" placeholder="https://script.google.com/macros/s/AKfycbzDg2__b-C65OZ79tin-E-e7tLDtR6FocrudZEJ3vO9VDBBE3oSy0G4ceBImWtBBon5rQ/exec" class="neu-inset p-3 rounded-xl w-full text-sm">
-                <input type="text" id="cfgPromoteToken" placeholder="RUZ-2QzlSK63hW5FBIQDdLmrg54q6rMd" class="neu-inset p-3 rounded-xl w-full text-sm">
-                <p class="text-[10px] text-gray-500 -mt-2">Token ni disimpan berasingan dan hanya anda boleh baca. Ia yang membenarkan admin panel tulis ke portfolio.</p>
-
-                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-4">Bundle Template (Sistem Demo)</h3>
-                <p class="text-[10px] text-gray-500 -mt-2">Satu link belian untuk semua template sistem. Bila tambah demo baru, tak payah ubah link ni.</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="text" id="cfgBundleTitle" placeholder="Tajuk butang (cth: Dapatkan Semua Template)" class="neu-inset p-3 rounded-xl w-full text-sm">
-                    <input type="text" id="cfgBundlePrice" placeholder="Harga (cth: RM99)" class="neu-inset p-3 rounded-xl w-full text-sm">
-                </div>
-                <input type="text" id="cfgBundleDesc" placeholder="Penerangan ringkas bundle" class="neu-inset p-3 rounded-xl w-full text-sm">
-                <input type="url" id="cfgBundleLink" placeholder="Link belian bundle" class="neu-inset p-3 rounded-xl w-full text-sm">
-
-                <button type="submit" id="configSubmitBtn" class="neu-btn text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2" style="background-color: #3b82f6;">
-                    <i class="ph ph-floppy-disk text-lg"></i> Simpan Tetapan
-                </button>
-                <p id="configSavedMsg" class="text-xs text-green-600 text-center hidden">Tetapan disimpan. Website public akan update serta-merta.</p>
-            </form>
-        </div>
-    </div>
-
-    <!-- LOGIK UI (Booking) -->
-    <script>
-        const lockDateInput = document.getElementById('lockDate');
-        const lockTimeSelect = document.getElementById('lockTime');
-
-        lockDateInput.addEventListener('change', (e) => {
-            const dateVal = e.target.value;
-            lockTimeSelect.innerHTML = `
-                <option value="" disabled selected>Pilih Slot...</option>
-                <option value="ALL_DAY" class="font-bold text-red-500">🛑 LOCK SEPENUH HARI</option>
-            `;
-            if (!dateVal) return;
-            const selectedDate = new Date(dateVal);
-            const dayOfWeek = selectedDate.getDay();
-            let slots = [];
-            if (dayOfWeek === 0) { slots = ['08:00 AM - 10:00 AM', '11:00 AM - 01:00 PM', '02:00 PM - 04:00 PM', '05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM']; }
-            else if (dayOfWeek === 6) { slots = ['05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM']; }
-            else { slots = ['09:00 PM - 11:00 PM']; }
-            slots.forEach(slot => {
-                const opt = document.createElement('option');
-                opt.value = slot; opt.innerText = slot;
-                lockTimeSelect.appendChild(opt);
-            });
-        });
-
-        document.getElementById('adminForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const dateVal = document.getElementById('lockDate').value;
-            const timeVal = document.getElementById('lockTime').value;
-            const noteVal = document.getElementById('lockNote').value || "-";
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> Menyimpan...`;
-            btn.disabled = true;
-            try {
-                if (window.adminAddLock) {
-                    await window.adminAddLock({ type: 'MANUAL_LOCK', date: dateVal, time: timeVal, status: 'APPROVED', name: 'Admin', remark: noteVal, createdAt: new Date().toISOString() });
-                }
-                e.target.reset();
-                lockTimeSelect.innerHTML = `<option value="" disabled selected>Sila Pilih Tarikh Dahulu...</option>`;
-            } catch (err) {
-                console.error("Save failed:", err);
-                alert("Gagal simpan: " + err.message);
-            } finally {
-                btn.innerHTML = `<i class="ph ph-plus-circle text-lg"></i> Lock Tarikh Ini`;
-                btn.disabled = false;
-            }
-        });
-
-        window.approveBooking = async (docId, date, time) => {
-            if(!confirm("Mengesahkan bayaran deposit dan LOCK slot ini secara rasmi?")) return;
-            if(window.adminApproveLock) await window.adminApproveLock(docId, date, time);
-        };
-
-        window.deleteLock = async (docId, isPending = false, date, time) => {
-            const msg = isPending
-                ? "Anda pasti mahu REJECT & PADAM permohonan ini?"
-                : "Anda pasti mahu UNLOCK / DELETE tarikh ini? Pelanggan lain akan boleh book semula slot ini.";
-            if(!confirm(msg)) return;
-            if(window.adminDeleteLock) await window.adminDeleteLock(docId, date, time);
-        };
-
-        function renderTables(list) {
-            document.getElementById('loadingData').classList.add('hidden');
-            const pendingList = list.filter(item => item.status === 'PENDING').sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-            const approvedList = list.filter(item => item.status === 'APPROVED').sort((a,b) => new Date(a.date) - new Date(b.date));
-
-            const pendingContainer = document.getElementById('pendingContainer');
-            const pendingTbody = document.getElementById('pendingTableBody');
-            const noPendingData = document.getElementById('noPendingData');
-            document.getElementById('pendingCount').innerText = `${pendingList.length} Request`;
-
-            if (pendingList.length === 0) {
-                pendingContainer.classList.add('hidden');
-                noPendingData.classList.remove('hidden');
-            } else {
-                pendingContainer.classList.remove('hidden');
-                noPendingData.classList.add('hidden');
-                pendingTbody.innerHTML = '';
-                pendingList.forEach(item => {
-                    const dParts = item.date.split('-');
-                    const dShow = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.date;
-                    const tr = document.createElement('tr');
-                    tr.className = "border-b border-gray-300 last:border-0 hover:bg-orange-500/5";
-                    tr.innerHTML = `
-                        <td class="p-3"><div class="font-bold text-gray-800">${item.name || 'Unknown'}</div><div class="text-[10px] text-gray-500"><i class="ph ph-phone"></i> ${item.phone || '-'}</div></td>
-                        <td class="p-3 text-xs font-semibold text-blue-500">${item.package || '-'}</td>
-                        <td class="p-3"><div class="font-bold">${dShow}</div><div class="text-[10px] text-orange-600 font-bold bg-orange-500/10 inline-block px-1 rounded">${item.time}</div></td>
-                        <td class="p-3 text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <button onclick="window.approveBooking('${item.id}', '${item.date}', '${item.time}')" class="bg-green-500 text-white rounded-lg px-3 py-2 hover:bg-green-600 active:scale-90 transition-all cursor-pointer shadow-md text-xs font-bold" title="Terima Deposit & Lock"><i class="ph ph-check-circle"></i> Approve</button>
-                                <button onclick="window.deleteLock('${item.id}', true)" class="bg-red-500 text-white rounded-lg px-2 py-2 hover:bg-red-600 active:scale-90 transition-all cursor-pointer shadow-md" title="Reject & Padam"><i class="ph ph-x"></i></button>
-                            </div>
-                        </td>`;
-                    pendingTbody.appendChild(tr);
-                });
-            }
-
-            const tableContainer = document.getElementById('tableContainer');
-            const tbody = document.getElementById('lockedTableBody');
-            document.getElementById('lockCount').innerText = `${approvedList.length} Aktif`;
-
-            if (approvedList.length === 0) {
-                tableContainer.classList.add('hidden');
-                document.getElementById('loadingData').classList.remove('hidden');
-                document.getElementById('loadingData').innerHTML = "Tiada tarikh di-lock pada masa ini.";
-            } else {
-                tableContainer.classList.remove('hidden');
-                tbody.innerHTML = '';
-                approvedList.forEach(item => {
-                    const isAllDay = item.time === 'ALL_DAY';
-                    const timeBadge = isAllDay
-                        ? `<span class="bg-red-500/10 text-red-600 px-2 py-1 rounded-md text-[10px] uppercase font-bold">Sepenuh Hari</span>`
-                        : `<span class="bg-blue-500/10 text-blue-600 px-2 py-1 rounded-md text-[10px] uppercase font-bold">${item.time}</span>`;
-                    const dParts = item.date.split('-');
-                    const dShow = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.date;
-                    const infoDisplay = item.type === 'USER_BOOKING'
-                        ? `<span class="font-bold text-gray-800 block">${item.name}</span><span class="text-gray-500">${item.package}</span>`
-                        : `<span class="text-gray-500">${item.remark || '-'}</span>`;
-                    const tr = document.createElement('tr');
-                    tr.className = "border-b border-gray-300 last:border-0 hover:bg-black/5";
-                    tr.innerHTML = `
-                        <td class="p-3 font-bold">${dShow}</td>
-                        <td class="p-3">${timeBadge}</td>
-                        <td class="p-3 text-[10px] whitespace-normal break-words max-w-[200px]">${infoDisplay}</td>
-                        <td class="p-3 text-center"><button onclick="window.deleteLock('${item.id}', false, '${item.date}', '${item.time}')" class="bg-red-500 text-white rounded-lg p-2 hover:bg-red-600 active:scale-90 transition-all cursor-pointer shadow-md" title="Unlock Slot Ini"><i class="ph ph-trash"></i></button></td>`;
-                    tbody.appendChild(tr);
-                });
-            }
-        }
-    </script>
-
-    <!-- LOGIK UI (Tabs, Course form, Config form) -->
-    <script>
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
-                document.getElementById('panel-' + btn.dataset.tab).classList.remove('hidden');
-            });
-        });
-
-        // ---- COURSE FORM ----
-        const courseForm = document.getElementById('courseForm');
-        const courseCancelBtn = document.getElementById('courseCancelEditBtn');
-
-        courseCancelBtn.addEventListener('click', () => {
-            courseForm.reset();
-            document.getElementById('courseEditId').value = '';
-            document.getElementById('courseFormMode').innerText = 'Tambah Course Baru';
-            document.getElementById('courseSubmitBtn').innerHTML = `<i class="ph ph-plus-circle text-lg"></i> Tambah Course`;
-            courseCancelBtn.classList.add('hidden');
-        });
-
-        courseForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const editId = document.getElementById('courseEditId').value;
-            const data = {
-                title: document.getElementById('courseTitle').value,
-                icon: document.getElementById('courseIcon').value || 'ph-book-open',
-                desc: document.getElementById('courseDesc').value,
-                imageUrl: document.getElementById('courseImage').value,
-                purchaseLink: document.getElementById('courseLink').value
-            };
-            const btn = document.getElementById('courseSubmitBtn');
-            btn.disabled = true;
-            try {
-                if (editId) {
-                    await window.adminUpdateCourse(editId, data);
-                } else {
-                    await window.adminAddCourse(data);
-                }
-                courseCancelBtn.click();
-            } catch (err) {
-                alert("Gagal simpan course: " + err.message);
-            } finally {
-                btn.disabled = false;
-            }
-        });
-
-        window.editCourse = (id, title, icon, desc, imageUrl, purchaseLink) => {
-            document.getElementById('courseEditId').value = id;
-            document.getElementById('courseTitle').value = title;
-            document.getElementById('courseIcon').value = icon;
-            document.getElementById('courseDesc').value = desc;
-            document.getElementById('courseImage').value = imageUrl;
-            document.getElementById('courseLink').value = purchaseLink;
-            document.getElementById('courseFormMode').innerText = 'Edit Course: ' + title;
-            document.getElementById('courseSubmitBtn').innerHTML = `<i class="ph ph-floppy-disk text-lg"></i> Kemaskini`;
-            courseCancelBtn.classList.remove('hidden');
-            document.getElementById('panel-courses').scrollIntoView({ behavior: 'smooth' });
-        };
-
-        window.removeCourse = async (id, title) => {
-            if (!confirm(`Padam course "${title}"? Tindakan ni tak boleh undo.`)) return;
-            await window.adminDeleteCourse(id);
-        };
-
-        function esc(str) {
-            const d = document.createElement('div');
-            d.innerText = str || '';
-            return d.innerHTML;
-        }
-
-        // Course asal yang dulu hardcode dalam profile.html — untuk butang "Import Course Asal"
-        const DEFAULT_COURSES = [
-            {
-                title: "Canva Ai", icon: "ph-palette",
-                desc: "Canva Ai akan diajar bagaimana membina sistem yang pelbagai menggunakan keupayaan Canva Ai secara efektif dan mudah.",
-                imageUrl: "https://i.postimg.cc/fT51QtGz/Chat-GPT-Image-Jul-10-2026-09-32-39-PM.png",
-                purchaseLink: "https://annurprosolutions1.bcl.my/form/canva-ai-sistem"
-            },
-            {
-                title: "Gemini Ai", icon: "ph-sparkle",
-                desc: "Gemini Ai akan di ajar bagaimana bina sistem yang pelbagai menggunakan keupayaan Gemini Ai yang termaju.",
-                imageUrl: "https://i.postimg.cc/SNy1NQ4d/Chat-GPT-Image-Jul-10-2026-09-37-27-PM.png",
-                purchaseLink: "https://annurprosolutions1.bcl.my/form/gemini-ai-sistem"
-            },
-            {
-                title: "Looker Studio", icon: "ph-chart-bar",
-                desc: "Pelajari teknik membina dashboard interaktif dan visualisasi data yang profesional menggunakan Looker Studio.",
-                imageUrl: "https://i.postimg.cc/pXhhjzP2/Chat-GPT-Image-Jul-10-2026-09-39-55-PM.png",
-                purchaseLink: "https://annurprosolutions1.bcl.my/form/looker-studio"
-            },
-            {
-                title: "Edu Content", icon: "ph-book-open",
-                desc: "Kuasai seni penghasilan kandungan pendidikan (Edu Content) yang berkualiti dan berimpak tinggi.",
-                imageUrl: "https://i.postimg.cc/D0WZq3kH/Chat-GPT-Image-Jul-10-2026-09-42-54-PM.png",
-                purchaseLink: "https://annurprosolutions1.bcl.my/form/educontent"
-            }
-        ];
-
-        let currentCourseList = [];
-
-        document.getElementById('seedCourseBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('seedCourseBtn');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Memasukkan...`;
-            try {
-                const existingTitles = currentCourseList.map(c => (c.title || '').toLowerCase());
-                for (const course of DEFAULT_COURSES) {
-                    if (!existingTitles.includes(course.title.toLowerCase())) {
-                        await window.adminAddCourse(course);
-                    }
-                }
-            } catch (err) {
-                alert("Gagal import: " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="ph ph-download-simple"></i> Import Course Asal`;
-            }
-        });
-
-        function renderCourseList(list) {
-            currentCourseList = list;
-            document.getElementById('courseLoading').classList.add('hidden');
-            document.getElementById('courseCount').innerText = `${list.length} Course`;
-            const container = document.getElementById('courseListContainer');
-            const seedBox = document.getElementById('seedCourseBox');
-            container.innerHTML = '';
-            if (list.length === 0) {
-                container.innerHTML = `<div class="text-center text-sm text-gray-500 py-6">Tiada course lagi. Tambah course pertama guna borang di atas.</div>`;
-                seedBox.classList.remove('hidden');
-                return;
-            }
-            seedBox.classList.add('hidden');
-            list.forEach(item => {
-                const row = document.createElement('div');
-                row.className = 'neu-inset rounded-xl p-4 flex items-center gap-4';
-                row.innerHTML = `
-                    <div class="w-12 h-12 rounded-full neu-card flex items-center justify-center flex-shrink-0">
-                        <i class="ph ${esc(item.icon)} text-xl text-blue-500"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="font-bold text-sm truncate">${esc(item.title)}</div>
-                        <div class="text-xs text-gray-500 truncate">${esc(item.desc)}</div>
-                    </div>
-                    <div class="flex gap-2 flex-shrink-0">
-                        <button onclick="window.editCourse('${item.id}', '${esc(item.title).replace(/'/g,"\\'")}', '${esc(item.icon)}', '${esc(item.desc).replace(/'/g,"\\'")}', '${item.imageUrl || ''}', '${item.purchaseLink || ''}')" class="bg-blue-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-blue-600"><i class="ph ph-pencil-simple"></i></button>
-                        <button onclick="window.removeCourse('${item.id}', '${esc(item.title).replace(/'/g,"\\'")}')" class="bg-red-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-red-600"><i class="ph ph-trash"></i></button>
-                    </div>`;
-                container.appendChild(row);
-            });
-        }
-
-        // ================= DEMO =================
-        const DEFAULT_DEMOS = [
-            {
-                title: "Prompt2Booking", icon: "ph-calendar-check", badge: "",
-                desc: "Sistem tempahan pintar (Booking System) yang mudah dan pantas untuk diintegrasi ke dalam perniagaan anda.",
-                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/booking-system",
-                purchaseLink: "", order: 1
-            },
-            {
-                title: "Prompt2OPR", icon: "ph-file-text", badge: "",
-                desc: "Sistem pengurusan rekod OPR (One Page Report) yang diautomasikan secara sistematik.",
-                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/opr",
-                purchaseLink: "", order: 2
-            },
-            {
-                title: "Prompt2Dashboard", icon: "ph-presentation-chart", badge: "RECORDING",
-                desc: "Paparan Dashboard analitik yang interaktif untuk pemantauan data perniagaan secara real-time.",
-                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/prompt2dashboard",
-                purchaseLink: "", order: 3
-            },
-            {
-                title: "Prompt2Website", icon: "ph-globe", badge: "",
-                desc: "Laman web profil dan perniagaan berprestasi tinggi yang dioptimumkan sepenuhnya (Website & SEO).",
-                thumbnailUrl: "", demoLink: "https://prompt2website.netlify.app/",
-                purchaseLink: "", order: 4
-            },
-            {
-                title: "Sistem Guru Ganti", icon: "ph-users-three", badge: "",
-                desc: "Sistem pengurusan guru ganti (Relief System) yang pantas dan efisien untuk pengurusan sekolah.",
-                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/relief-system",
-                purchaseLink: "", order: 5
-            }
-        ];
-
-        let currentDemoList = [];
-        const demoForm = document.getElementById('demoForm');
-        const demoCancelBtn = document.getElementById('demoCancelEditBtn');
-
-        demoCancelBtn.addEventListener('click', () => {
-            demoForm.reset();
-            document.getElementById('demoEditId').value = '';
-            document.getElementById('demoFormMode').innerText = 'Tambah Sistem Demo Baru';
-            document.getElementById('demoSubmitBtn').innerHTML = `<i class="ph ph-plus-circle text-lg"></i> Tambah Demo`;
-            demoCancelBtn.classList.add('hidden');
-        });
-
-        demoForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const editId = document.getElementById('demoEditId').value;
-            const data = {
-                title: document.getElementById('demoTitle').value,
-                badge: document.getElementById('demoBadge').value,
-                desc: document.getElementById('demoDesc').value,
-                thumbnailUrl: document.getElementById('demoThumb').value,
-                demoLink: document.getElementById('demoLink').value,
-                purchaseLink: document.getElementById('demoPurchase').value,
-                order: Number(document.getElementById('demoOrder').value) || 999
-            };
-            const btn = document.getElementById('demoSubmitBtn');
-            btn.disabled = true;
-            try {
-                if (editId) { await window.adminUpdateDemo(editId, data); }
-                else { await window.adminAddDemo(data); }
-                demoCancelBtn.click();
-            } catch (err) {
-                alert("Gagal simpan demo: " + err.message);
-            } finally {
-                btn.disabled = false;
-            }
-        });
-
-        document.getElementById('seedDemoBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('seedDemoBtn');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Memasukkan...`;
-            try {
-                const existingTitles = currentDemoList.map(d => (d.title || '').toLowerCase());
-                for (const demo of DEFAULT_DEMOS) {
-                    if (!existingTitles.includes(demo.title.toLowerCase())) {
-                        await window.adminAddDemo(demo);
-                    }
-                }
-            } catch (err) {
-                alert("Gagal import: " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="ph ph-download-simple"></i> Import Demo Asal`;
-            }
-        });
-
-        window.editDemo = (id) => {
-            const item = currentDemoList.find(d => d.id === id);
-            if (!item) return;
-            document.getElementById('demoEditId').value = id;
-            document.getElementById('demoTitle').value = item.title || '';
-            document.getElementById('demoBadge').value = item.badge || '';
-            document.getElementById('demoDesc').value = item.desc || '';
-            document.getElementById('demoThumb').value = item.thumbnailUrl || '';
-            document.getElementById('demoLink').value = item.demoLink || '';
-            document.getElementById('demoPurchase').value = item.purchaseLink || '';
-            document.getElementById('demoOrder').value = item.order || '';
-            document.getElementById('demoFormMode').innerText = 'Edit Demo: ' + (item.title || '');
-            document.getElementById('demoSubmitBtn').innerHTML = `<i class="ph ph-floppy-disk text-lg"></i> Kemaskini`;
-            demoCancelBtn.classList.remove('hidden');
-            document.getElementById('panel-demos').scrollIntoView({ behavior: 'smooth' });
-        };
-
-        window.removeDemo = async (id) => {
-            const item = currentDemoList.find(d => d.id === id);
-            if (!confirm(`Padam demo "${item ? item.title : ''}"? Tindakan ni tak boleh undo.`)) return;
-            await window.adminDeleteDemo(id);
-        };
-
-        function renderDemoList(list) {
-            currentDemoList = list;
-            document.getElementById('demoLoading').classList.add('hidden');
-            document.getElementById('demoCount').innerText = `${list.length} Demo`;
-            const container = document.getElementById('demoListContainer');
-            const seedBox = document.getElementById('seedDemoBox');
-            container.innerHTML = '';
-
-            if (list.length === 0) {
-                container.innerHTML = `<div class="text-center text-sm text-gray-500 py-6">Tiada demo lagi.</div>`;
-                seedBox.classList.remove('hidden');
-                return;
-            }
-            seedBox.classList.add('hidden');
-
-            list.forEach(item => {
-                const row = document.createElement('div');
-                row.className = 'neu-inset rounded-xl p-4 flex items-center gap-4';
-                const thumb = item.thumbnailUrl
-                    ? `<img src="${item.thumbnailUrl}" alt="" class="w-12 h-12 rounded-lg object-cover flex-shrink-0 bg-gray-200">`
-                    : `<div class="w-12 h-12 rounded-full neu-card flex items-center justify-center flex-shrink-0"><i class="ph ph-desktop text-xl text-blue-500"></i></div>`;
-                const badge = item.badge ? `<span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600">${esc(item.badge)}</span>` : '';
-                const priceTag = item.purchaseLink
-                    ? `<span class="text-[9px] text-green-600 font-bold">+ link individu</span>`
-                    : `<span class="text-[9px] text-gray-400">guna bundle</span>`;
-                row.innerHTML = `
-                    ${thumb}
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2"><span class="font-bold text-sm truncate">${esc(item.title)}</span>${badge}</div>
-                        <div class="text-xs text-gray-500 truncate">${esc(item.desc)}</div>
-                        <div class="mt-0.5">${priceTag}</div>
-                    </div>
-                    <div class="flex gap-2 flex-shrink-0">
-                        <button onclick="window.editDemo('${item.id}')" class="bg-blue-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-blue-600"><i class="ph ph-pencil-simple"></i></button>
-                        <button onclick="window.removeDemo('${item.id}')" class="bg-red-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-red-600"><i class="ph ph-trash"></i></button>
-                    </div>`;
-                container.appendChild(row);
-            });
-        }
-
-        // ================= REQUEST SYSTEM =================
-        let currentRequestList = [];
-
-        window.removeRequest = async (id) => {
-            const item = currentRequestList.find(r => r.id === id);
-            if (!confirm(`Padam permohonan dari "${item ? item.name : ''}"? Tindakan ni tak boleh undo.`)) return;
-            await window.adminDeleteRequest(id);
-        };
-
-        window.waRequest = (id) => {
-            const item = currentRequestList.find(r => r.id === id);
-            if (!item || !item.phone) return;
-            let n = String(item.phone).replace(/[^0-9]/g, '');
-            if (n.startsWith('0')) n = '60' + n.slice(1);
-            else if (!n.startsWith('60')) n = '60' + n;
-            const msg = `Salam ${item.name}, terima kasih atas permohonan sistem (${item.systemType}). Saya nak bincang lanjut tentang keperluan anda.`;
-            window.open(`https://wa.me/${n}?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        function renderRequestList(list) {
-            currentRequestList = list;
-            document.getElementById('requestLoading').classList.add('hidden');
-            document.getElementById('requestCount').innerText = `${list.length} Request`;
-
-            const badge = document.getElementById('requestBadge');
-            if (list.length > 0) {
-                badge.innerText = list.length;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-
-            const container = document.getElementById('requestListContainer');
-            container.innerHTML = '';
-
-            if (list.length === 0) {
-                container.innerHTML = `<div class="text-center text-sm text-gray-500 py-6">Tiada permohonan setakat ini.</div>`;
-                return;
-            }
-
-            list.forEach(item => {
-                const d = item.createdAt ? new Date(item.createdAt) : null;
-                const dShow = d ? `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}` : '-';
-                const row = document.createElement('div');
-                row.className = 'neu-inset rounded-xl p-4 flex flex-col gap-2';
-                row.innerHTML = `
-                    <div class="flex items-start justify-between gap-3">
-                        <div class="min-w-0">
-                            <div class="font-bold text-sm">${esc(item.name)} <span class="text-[10px] font-normal text-gray-400">· ${dShow}</span></div>
-                            <div class="text-[11px] text-gray-500">${esc(item.email)} · ${esc(item.phone)}</div>
-                            ${item.company && item.company !== '-' ? `<div class="text-[11px] text-gray-500">${esc(item.company)}</div>` : ''}
-                        </div>
-                        <div class="flex gap-2 flex-shrink-0">
-                            ${item.status === 'APPROVED'
-                                ? `<span class="bg-green-500/10 text-green-600 rounded-lg px-3 py-2 text-[10px] font-bold flex items-center" title="Dah masuk portfolio"><i class="ph ph-check-circle"></i></span>`
-                                : `<button onclick="window.approveRequest('${item.id}')" class="bg-blue-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-blue-600" title="Approve &amp; masuk Portfolio"><i class="ph ph-check-circle"></i></button>`}
-                            <button onclick="window.waRequest('${item.id}')" class="bg-green-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-green-600" title="WhatsApp pemohon"><i class="ph ph-whatsapp-logo"></i></button>
-                            <button onclick="window.removeRequest('${item.id}')" class="bg-red-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-red-600"><i class="ph ph-trash"></i></button>
-                        </div>
-                    </div>
-                    <div class="flex flex-wrap gap-2 text-[10px]">
-                        <span class="bg-blue-500/10 text-blue-600 px-2 py-1 rounded font-bold">${esc(item.systemType)}</span>
-                        ${item.budget && item.budget !== '-' ? `<span class="bg-amber-500/10 text-amber-600 px-2 py-1 rounded font-bold">RM ${esc(item.budget)}</span>` : ''}
-                        ${item.timeline && item.timeline !== '-' ? `<span class="bg-gray-500/10 text-gray-600 px-2 py-1 rounded font-bold">${esc(item.timeline)}</span>` : ''}
-                    </div>
-                    <div class="text-xs text-gray-600 whitespace-pre-wrap break-words bg-white/40 rounded-lg p-2">${esc(item.detail)}</div>`;
-                container.appendChild(row);
-            });
-        }
-
-        // ================= JAMBATAN KE APPS SCRIPT (JSONP) =================
-        // Apps Script tak handle CORS untuk POST biasa, jadi arahan admin dihantar
-        // melalui GET + JSONP. Dengan cara ni kita boleh BACA jawapan dia
-        // (tahu berjaya ke tidak), bukan hantar buta-buta.
-        window.appsScriptUrl = '';
-        window.promoteToken = '';
-
-        function callAppsScript(params) {
-            return new Promise((resolve, reject) => {
-                if (!window.appsScriptUrl) {
-                    reject(new Error('URL Apps Script belum diset dalam Site Config.'));
-                    return;
-                }
-                if (!window.promoteToken) {
-                    reject(new Error('Token Rahsia Apps Script belum diset dalam Site Config.'));
-                    return;
-                }
-
-                const cb = 'ruzcb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
-                const script = document.createElement('script');
-
-                const bersih = () => {
-                    try { delete window[cb]; } catch (e) { window[cb] = undefined; }
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                };
-
-                const timer = setTimeout(() => {
-                    bersih();
-                    reject(new Error('Tiada jawapan dari Apps Script (timeout). Semak URL dan deployment.'));
-                }, 20000);
-
-                window[cb] = (data) => {
-                    clearTimeout(timer);
-                    bersih();
-                    if (data && data.status === 'OK') resolve(data);
-                    else reject(new Error((data && data.message) || 'Apps Script pulangkan ralat.'));
-                };
-
-                const q = new URLSearchParams(Object.assign({}, params, {
-                    token: window.promoteToken,
-                    callback: cb
-                })).toString();
-
-                script.src = window.appsScriptUrl + '?' + q;
-                script.onerror = () => {
-                    clearTimeout(timer);
-                    bersih();
-                    reject(new Error('Gagal sambung ke Apps Script. Semak URL /exec dan akses "Anyone".'));
-                };
-                document.body.appendChild(script);
-            });
-        }
-
-        // ================= APPROVE: REQUEST -> PORTFOLIO =================
-        window.approveRequest = async (id) => {
-            const item = currentRequestList.find(r => r.id === id);
-            if (!item) return;
-
-            const namaSistem = prompt(
-                'Nama projek ni untuk portfolio?\n\n' +
-                'Pemohon: ' + item.name + '\nJenis: ' + item.systemType,
-                item.systemType || ''
-            );
-            if (namaSistem === null) return;
-            if (!namaSistem.trim()) { alert('Nama sistem tak boleh kosong.'); return; }
-
-            const teknologi = prompt('Teknologi? (boleh edit kemudian)', 'Web System');
-            if (teknologi === null) return;
-
-            try {
-                const hasil = await callAppsScript({
-                    action: 'promote',
-                    reqId: item.reqId || '',
-                    namaSistem: namaSistem.trim(),
-                    kategori: item.systemType || '',
-                    teknologi: teknologi.trim() || 'Web System',
-                    harga: (item.budget && item.budget !== '-') ? item.budget : ''
-                });
-
-                await window.adminUpdateRequest(id, {
-                    status: 'APPROVED',
-                    portfolioName: namaSistem.trim()
-                });
-
-                alert(hasil.message || 'Berjaya masuk portfolio.');
-            } catch (err) {
-                alert('Gagal: ' + err.message);
-            }
-        };
-
-        // ================= PANEL PORTFOLIO =================
-        const STATUS_PILIHAN = ['In Progress', 'Done', 'Hold'];
-
-        document.getElementById('portfolioRefreshBtn').addEventListener('click', muatPortfolio);
-
-        async function muatPortfolio() {
-            const msg = document.getElementById('portfolioMsg');
-            const container = document.getElementById('portfolioListContainer');
-            msg.classList.remove('hidden');
-            msg.innerHTML = '<i class="ph ph-spinner animate-spin"></i> Mengambil data dari Google Sheet...';
-            container.innerHTML = '';
-
-            try {
-                const hasil = await callAppsScript({ action: 'listPortfolio' });
-                const items = hasil.items || [];
-
-                if (items.length === 0) {
-                    msg.innerText = 'Tiada projek dalam Portfolio_Sistem.';
-                    return;
-                }
-                msg.classList.add('hidden');
-
-                items.forEach(item => {
-                    const warna = item.status === 'Done' ? 'text-green-600 bg-green-500/10'
-                                : item.status === 'In Progress' ? 'text-blue-600 bg-blue-500/10'
-                                : 'text-orange-600 bg-orange-500/10';
-                    const row = document.createElement('div');
-                    row.className = 'neu-inset rounded-xl p-4 flex items-center gap-3 flex-wrap';
-                    row.innerHTML = `
-                        <div class="flex-1 min-w-0">
-                            <div class="font-bold text-sm truncate">${esc(item.nama)}
-                                <span class="text-[10px] font-normal text-gray-400">· ${esc(String(item.tahun))}</span>
-                            </div>
-                            <div class="text-[11px] text-gray-500 truncate">${esc(item.kategori)} · ${esc(item.teknologi)}${item.harga ? ' · RM ' + esc(String(item.harga)) : ''}</div>
-                        </div>
-                        <span class="text-[10px] font-bold px-2 py-1 rounded ${warna}">${esc(item.status)}</span>
-                        <select class="neu-inset text-xs rounded-lg px-2 py-1.5" onchange="window.tukarStatusPortfolio(${item.row}, this.value, this)">
-                            ${STATUS_PILIHAN.map(st => `<option value="${st}" ${st === item.status ? 'selected' : ''}>${st}</option>`).join('')}
-                        </select>`;
-                    container.appendChild(row);
-                });
-            } catch (err) {
-                msg.classList.remove('hidden');
-                msg.innerHTML = '<span class="text-red-500">' + err.message + '</span>';
-            }
-        }
-
-        window.tukarStatusPortfolio = async (row, status, selectEl) => {
-            selectEl.disabled = true;
-            try {
-                await callAppsScript({ action: 'setStatus', row: row, status: status });
-                await muatPortfolio();
-            } catch (err) {
-                alert('Gagal tukar status: ' + err.message);
-                selectEl.disabled = false;
-            }
-        };
-
-        // ---- CONFIG FORM ----
-        document.getElementById('configForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = {
-                siteTitle: document.getElementById('cfgSiteTitle').value,
-                logoUrl: document.getElementById('cfgLogoUrl').value,
-                socialLinks: {
-                    facebook: document.getElementById('cfgFacebook').value,
-                    tiktok: document.getElementById('cfgTiktok').value,
-                    instagram: document.getElementById('cfgInstagram').value,
-                    threads: document.getElementById('cfgThreads').value,
-                    linkedin: document.getElementById('cfgLinkedin').value,
-                    whatsapp: document.getElementById('cfgWhatsapp').value
-                },
-                requestSheetUrl: document.getElementById('cfgRequestSheetUrl').value,
-                demoBundle: {
-                    title: document.getElementById('cfgBundleTitle').value,
-                    price: document.getElementById('cfgBundlePrice').value,
-                    desc: document.getElementById('cfgBundleDesc').value,
-                    link: document.getElementById('cfgBundleLink').value
-                }
-            };
-            const btn = document.getElementById('configSubmitBtn');
-            btn.disabled = true;
-            try {
-                await window.adminSaveConfig(data);
-                await window.adminSaveToken(document.getElementById('cfgPromoteToken').value);
-                window.appsScriptUrl = data.requestSheetUrl || '';
-                window.promoteToken = document.getElementById('cfgPromoteToken').value || '';
-                const msg = document.getElementById('configSavedMsg');
-                msg.classList.remove('hidden');
-                setTimeout(() => msg.classList.add('hidden'), 3000);
-            } catch (err) {
-                alert("Gagal simpan tetapan: " + err.message);
-            } finally {
-                btn.disabled = false;
-            }
-        });
-
-        function fillConfigForm(cfg) {
-            if (!cfg) return;
-            document.getElementById('cfgSiteTitle').value = cfg.siteTitle || '';
-            document.getElementById('cfgLogoUrl').value = cfg.logoUrl || '';
-            const s = cfg.socialLinks || {};
-            document.getElementById('cfgFacebook').value = s.facebook || '';
-            document.getElementById('cfgTiktok').value = s.tiktok || '';
-            document.getElementById('cfgInstagram').value = s.instagram || '';
-            document.getElementById('cfgThreads').value = s.threads || '';
-            document.getElementById('cfgLinkedin').value = s.linkedin || '';
-            document.getElementById('cfgWhatsapp').value = s.whatsapp || '';
-
-            document.getElementById('cfgRequestSheetUrl').value = cfg.requestSheetUrl || '';
-
-            const b = cfg.demoBundle || {};
-            document.getElementById('cfgBundleTitle').value = b.title || '';
-            document.getElementById('cfgBundlePrice').value = b.price || '';
-            document.getElementById('cfgBundleDesc').value = b.desc || '';
-            document.getElementById('cfgBundleLink').value = b.link || '';
-        }
-    </script>
-
-    <!-- FIREBASE + AUTH -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import {
-            getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, setDoc, getDoc, onSnapshot
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAZPFbRJHsWbONzykNHMktJNJUkixIpG1M",
-            authDomain: "ruzprompt-6ac7c.firebaseapp.com",
-            projectId: "ruzprompt-6ac7c",
-            storageBucket: "ruzprompt-6ac7c.firebasestorage.app",
-            messagingSenderId: "159437142126",
-            appId: "1:159437142126:web:83a78dd6f9ee394cb98e7f"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        const bookingsCollectionPath = collection(db, 'coaching_bookings');
-        const lockedSlotsPath = collection(db, 'locked_slots');
-        const coursesPath = collection(db, 'courses');
-        const demosPath = collection(db, 'demos');
-        const requestsPath = collection(db, 'system_requests');
-        const configDocRef = doc(db, 'site_config', 'main');
-        // Token rahsia Apps Script — doc berasingan, superadmin sahaja boleh baca/tulis
-        const secretsDocRef = doc(db, 'admin_secrets', 'main');
-
-        let unsubBookings = null, unsubCourses = null, unsubDemos = null, unsubRequests = null;
-
-        const loginScreen = document.getElementById('loginScreen');
-        const dashboard = document.getElementById('dashboard');
-        const loginError = document.getElementById('loginError');
-
-        document.getElementById('loginBtn').addEventListener('click', async () => {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            loginError.classList.add('hidden');
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (err) {
-                loginError.innerText = "Email atau kata laluan salah.";
-                loginError.classList.remove('hidden');
-            }
-        });
-
-        document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); });
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginScreen.classList.add('hidden');
-                dashboard.classList.remove('hidden');
-                startListening();
-            } else {
-                loginScreen.classList.remove('hidden');
-                dashboard.classList.add('hidden');
-                if (unsubBookings) { unsubBookings(); unsubBookings = null; }
-                if (unsubCourses) { unsubCourses(); unsubCourses = null; }
-                if (unsubDemos) { unsubDemos(); unsubDemos = null; }
-                if (unsubRequests) { unsubRequests(); unsubRequests = null; }
-            }
-        });
-
-        async function startListening() {
-            if (!unsubBookings) {
-                unsubBookings = onSnapshot(bookingsCollectionPath, (snapshot) => {
-                    renderTables(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-                }, (error) => console.error("Sync Error:", error));
-            }
-            if (!unsubCourses) {
-                unsubCourses = onSnapshot(coursesPath, (snapshot) => {
-                    renderCourseList(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-                }, (error) => console.error("Sync Error:", error));
-            }
-            if (!unsubDemos) {
-                unsubDemos = onSnapshot(demosPath, (snapshot) => {
-                    const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                    list.sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
-                    renderDemoList(list);
-                }, (error) => console.error("Sync Error:", error));
-            }
-            if (!unsubRequests) {
-                unsubRequests = onSnapshot(requestsPath, (snapshot) => {
-                    const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                    list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-                    renderRequestList(list);
-                }, (error) => console.error("Sync Error:", error));
-            }
-            try {
-                const cfgSnap = await getDoc(configDocRef);
-                if (cfgSnap.exists()) {
-                    const cfg = cfgSnap.data();
-                    fillConfigForm(cfg);
-                    window.appsScriptUrl = cfg.requestSheetUrl || '';
-                }
-            } catch (err) { console.error("Config load error:", err); }
-
-            try {
-                const secSnap = await getDoc(secretsDocRef);
-                if (secSnap.exists()) {
-                    const sec = secSnap.data();
-                    window.promoteToken = sec.promoteToken || '';
-                    const el = document.getElementById('cfgPromoteToken');
-                    if (el) el.value = sec.promoteToken || '';
-                }
-            } catch (err) { console.error("Secrets load error:", err); }
-        }
-
-        function slotDocId(date, time) {
-            return `${date}_${time}`.replace(/[^a-zA-Z0-9_-]/g, '');
-        }
-
-        window.adminAddLock = async (data) => {
-            await addDoc(bookingsCollectionPath, data);
-            await setDoc(doc(lockedSlotsPath, slotDocId(data.date, data.time)), { date: data.date, time: data.time });
-        };
-
-        window.adminApproveLock = async (docId, slotDate, slotTime) => {
-            try {
-                await updateDoc(doc(db, 'coaching_bookings', docId), { status: 'APPROVED' });
-                if (slotDate && slotTime) {
-                    await setDoc(doc(lockedSlotsPath, slotDocId(slotDate, slotTime)), { date: slotDate, time: slotTime });
-                }
-            } catch (err) { console.error("Approve failed:", err); alert("Gagal Approve: " + err.message); }
-        };
-
-        window.adminDeleteLock = async (docId, slotDate, slotTime) => {
-            try {
-                await deleteDoc(doc(db, 'coaching_bookings', docId));
-                if (slotDate && slotTime) await deleteDoc(doc(lockedSlotsPath, slotDocId(slotDate, slotTime))).catch(() => {});
-            } catch (err) { console.error("Delete failed:", err); alert("Gagal Delete: " + err.message); }
-        };
-
-        // ---- COURSES CRUD ----
-        window.adminAddCourse = async (data) => {
-            await addDoc(coursesPath, { ...data, createdAt: new Date().toISOString() });
-        };
-        window.adminUpdateCourse = async (id, data) => {
-            await updateDoc(doc(db, 'courses', id), data);
-        };
-        window.adminDeleteCourse = async (id) => {
-            await deleteDoc(doc(db, 'courses', id));
-        };
-
-        // ---- DEMOS CRUD ----
-        window.adminAddDemo = async (data) => {
-            await addDoc(demosPath, { ...data, createdAt: new Date().toISOString() });
-        };
-        window.adminUpdateDemo = async (id, data) => {
-            await updateDoc(doc(db, 'demos', id), data);
-        };
-        window.adminDeleteDemo = async (id) => {
-            await deleteDoc(doc(db, 'demos', id));
-        };
-
-        // ---- REQUEST SYSTEM ----
-        window.adminDeleteRequest = async (id) => {
-            await deleteDoc(doc(db, 'system_requests', id));
-        };
-        window.adminUpdateRequest = async (id, data) => {
-            await updateDoc(doc(db, 'system_requests', id), data);
-        };
-
-        // ---- TOKEN RAHSIA (superadmin sahaja) ----
-        window.adminSaveToken = async (token) => {
-            await setDoc(secretsDocRef, { promoteToken: token || '' }, { merge: true });
-        };
-
-        // ---- SITE CONFIG ----
-        window.adminSaveConfig = async (data) => {
-            await setDoc(configDocRef, data, { merge: true });
-        };
-    </script>
+    <!-- =================== SKRIN LOGIN =================== -->
+    <div id="loginScreen" class="w-full max-w-sm neu-card p-8 mt-16 flex flex-col gap-5">
+        <h1 class="text-lg font-bold uppercase tracking-wider text-center flex flex-col items-center gap-2">
+            <i class="ph ph-lock-key text-4xl text-blue-500"></i>
+            Log Masuk Superadmin
+        </h1>
+        <input type="email" id="loginEmail" placeholder="Email" class="neu-inset p-3 rounded-xl w-full text-sm" autocomplete="username">
+        <input type="password" id="loginPassword" placeholder="Kata Laluan" class="neu-inset p-3 rounded-xl w-full text-sm" autocomplete="current-password">
+        <button id="loginBtn" class="neu-btn text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm" style="background-color: #3b82f6;">
+            Log Masuk
+        </button>
+        <p id="loginError" class="text-xs text-red-500 text-center hidden"></p>
+    </div>
+
+    <!-- =================== DASHBOARD =================== -->
+    <div id="dashboard" class="w-full max-w-3xl flex flex-col gap-5 hidden">
+
+        <div class="neu-card p-4 sm:p-6 flex items-center justify-between">
+            <h1 class="text-lg sm:text-xl font-bold uppercase tracking-wider text-blue-500 flex items-center gap-3">
+                <i class="ph ph-shield-star text-2xl sm:text-3xl text-blue-500"></i> Superadmin Panel
+            </h1>
+            <button id="logoutBtn" class="neu-btn px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-1">
+                <i class="ph ph-sign-out"></i> Log Keluar
+            </button>
+        </div>
+
+        <!-- TAB SWITCHER -->
+        <div class="neu-card p-2 flex gap-2 overflow-x-auto">
+            <button class="tab-btn active neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="booking">
+                <i class="ph ph-calendar-check"></i> Booking
+            </button>
+            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="courses">
+                <i class="ph ph-graduation-cap"></i> Course
+            </button>
+            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="demos">
+                <i class="ph ph-desktop"></i> Demo
+            </button>
+            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="requests">
+                <i class="ph ph-wrench"></i> Request
+                <span id="requestBadge" class="bg-red-500 text-white rounded-full px-1.5 text-[9px] hidden">0</span>
+            </button>
+            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="portfolio">
+                <i class="ph ph-briefcase"></i> Portfolio
+            </button>
+            <button class="tab-btn neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase whitespace-nowrap flex items-center gap-1" data-tab="config">
+                <i class="ph ph-gear-six"></i> Site Config
+            </button>
+        </div>
+
+        <!-- ======================= PANEL: BOOKING ======================= -->
+        <div id="panel-booking" class="tab-panel neu-card p-6 sm:p-8">
+            <form id="adminForm" class="flex flex-col gap-5 mb-10">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Tarikh Untuk Di-Lock</label>
+                        <input type="date" id="lockDate" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Pilihan Masa / Slot</label>
+                        <select id="lockTime" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                            <option value="" disabled selected>Sila Pilih Tarikh Dahulu...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Nota Peribadi (Pelanggan/Sebab)</label>
+                    <input type="text" id="lockNote" placeholder="Cth: Tempahan dari Ali, 1 to 1 Coaching" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <button type="submit" class="neu-btn bg-blue-500 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2" style="background-color: #3b82f6; box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;">
+                    <i class="ph ph-plus-circle text-lg"></i> Lock Tarikh Ini
+                </button>
+            </form>
+
+            <div class="mb-8">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-orange-500 mb-4 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="ph ph-bell-ringing"></i> Permohonan Baru (Pending)</span>
+                    <span id="pendingCount" class="bg-orange-500/10 text-orange-600 px-3 py-1 rounded-full text-[10px]">0 Request</span>
+                </h2>
+                <div class="w-full overflow-x-auto neu-inset rounded-xl p-2 hidden" id="pendingContainer">
+                    <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[600px]">
+                        <thead class="text-gray-500 border-b border-gray-300">
+                            <tr><th class="p-3">Pelanggan</th><th class="p-3">Pakej</th><th class="p-3">Tarikh & Masa</th><th class="p-3 text-center">Tindakan</th></tr>
+                        </thead>
+                        <tbody id="pendingTableBody" class="text-gray-700 font-medium"></tbody>
+                    </table>
+                </div>
+                <div id="noPendingData" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-6">Tiada permohonan baru setakat ini.</div>
+            </div>
+
+            <div>
+                <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="ph ph-calendar-check"></i> Senarai Tarikh Di-Lock (Approved)</span>
+                    <span id="lockCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Aktif</span>
+                </h2>
+                <div class="w-full overflow-x-auto neu-inset rounded-xl p-2 hidden" id="tableContainer">
+                    <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[500px]">
+                        <thead class="text-gray-500 border-b border-gray-300">
+                            <tr><th class="p-3">Tarikh</th><th class="p-3">Masa</th><th class="p-3">Nota / Pelanggan</th><th class="p-3 text-center">Tindakan</th></tr>
+                        </thead>
+                        <tbody id="lockedTableBody" class="text-gray-700 font-medium"></tbody>
+                    </table>
+                </div>
+                <div id="loadingData" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
+                    <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan Database...
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= PANEL: COURSES ======================= -->
+        <div id="panel-courses" class="tab-panel neu-card p-6 sm:p-8 hidden">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">
+                <span id="courseFormMode">Tambah Course Baru</span>
+            </h2>
+            <form id="courseForm" class="flex flex-col gap-4 mb-8">
+                <input type="hidden" id="courseEditId" value="">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="courseTitle" placeholder="Tajuk Course (cth: Canva Ai)" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="text" id="courseIcon" placeholder="Nama Icon Phosphor (cth: ph-palette)" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <textarea id="courseDesc" rows="2" placeholder="Penerangan ringkas course" class="neu-inset p-3 rounded-xl w-full text-sm resize-none"></textarea>
+                <input type="url" id="courseImage" placeholder="Link Gambar Silibus (Google Drive share link)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <input type="url" id="courseLink" placeholder="Link Belian / Pendaftaran" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <div class="flex gap-3">
+                    <button type="submit" id="courseSubmitBtn" class="neu-btn flex-1 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-xs flex items-center justify-center gap-2" style="background-color: #3b82f6;">
+                        <i class="ph ph-plus-circle text-lg"></i> Tambah Course
+                    </button>
+                    <button type="button" id="courseCancelEditBtn" class="neu-btn px-4 py-3 rounded-xl uppercase text-xs font-bold hidden">Batal</button>
+                </div>
+                <p class="text-[10px] text-gray-500">
+                    Nota: untuk link gambar Google Drive, upload dulu ke Drive → klik "Get link" → tukar setting ke "Anyone with the link" → paste link tu di sini.
+                </p>
+            </form>
+
+            <div id="seedCourseBox" class="neu-inset rounded-xl p-4 mb-6 flex items-center justify-between gap-3 flex-wrap hidden">
+                <div class="text-xs text-gray-600">
+                    <span class="font-bold">Senarai course masih kosong.</span><br>
+                    Klik untuk masukkan balik 4 course asal (Canva Ai, Gemini Ai, Looker Studio, Edu Content) ke database.
+                </div>
+                <button type="button" id="seedCourseBtn" class="neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase flex items-center gap-2 flex-shrink-0" style="background-color:#3b82f6; color:white;">
+                    <i class="ph ph-download-simple"></i> Import Course Asal
+                </button>
+            </div>
+
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="ph ph-list-bullets"></i> Senarai Course</span>
+                <span id="courseCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Course</span>
+            </h2>
+            <div id="courseListContainer" class="flex flex-col gap-3"></div>
+            <div id="courseLoading" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
+                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan...
+            </div>
+        </div>
+
+        <!-- ======================= PANEL: DEMO ======================= -->
+        <div id="panel-demos" class="tab-panel neu-card p-6 sm:p-8 hidden">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">
+                <span id="demoFormMode">Tambah Sistem Demo Baru</span>
+            </h2>
+            <form id="demoForm" class="flex flex-col gap-4 mb-8">
+                <input type="hidden" id="demoEditId" value="">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="demoTitle" placeholder="Nama Sistem (cth: Prompt2Booking)" required class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="text" id="demoBadge" placeholder="Label kecil (optional: BARU / RECORDING)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <textarea id="demoDesc" rows="2" placeholder="Penerangan ringkas sistem" class="neu-inset p-3 rounded-xl w-full text-sm resize-none"></textarea>
+                <input type="url" id="demoThumb" placeholder="Link Gambar Thumbnail (Google Drive share link)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <input type="url" id="demoLink" placeholder="Link Demo (untuk orang tengok sistem)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="url" id="demoPurchase" placeholder="Link beli template ni je (optional)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="number" id="demoOrder" placeholder="Susunan (1, 2, 3...)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <div class="flex gap-3">
+                    <button type="submit" id="demoSubmitBtn" class="neu-btn flex-1 text-white font-bold py-3 rounded-xl uppercase tracking-widest text-xs flex items-center justify-center gap-2" style="background-color: #3b82f6;">
+                        <i class="ph ph-plus-circle text-lg"></i> Tambah Demo
+                    </button>
+                    <button type="button" id="demoCancelEditBtn" class="neu-btn px-4 py-3 rounded-xl uppercase text-xs font-bold hidden">Batal</button>
+                </div>
+                <p class="text-[10px] text-gray-500">
+                    Nota: kalau "Link beli template ni je" dikosongkan, butang belian akan guna bundle "Semua Template" yang diset dalam tab Site Config.
+                </p>
+            </form>
+
+            <div id="seedDemoBox" class="neu-inset rounded-xl p-4 mb-6 flex items-center justify-between gap-3 flex-wrap hidden">
+                <div class="text-xs text-gray-600">
+                    <span class="font-bold">Senarai demo masih kosong.</span><br>
+                    Klik untuk masukkan 5 sistem demo asal (Prompt2Booking, Prompt2OPR, Prompt2Dashboard, Prompt2Website, Sistem Guru Ganti).
+                </div>
+                <button type="button" id="seedDemoBtn" class="neu-btn px-4 py-2 rounded-xl text-xs font-bold uppercase flex items-center gap-2 flex-shrink-0" style="background-color:#3b82f6; color:white;">
+                    <i class="ph ph-download-simple"></i> Import Demo Asal
+                </button>
+            </div>
+
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="ph ph-list-bullets"></i> Senarai Demo</span>
+                <span id="demoCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Demo</span>
+            </h2>
+            <div id="demoListContainer" class="flex flex-col gap-3"></div>
+            <div id="demoLoading" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
+                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan...
+            </div>
+        </div>
+
+        <!-- ======================= PANEL: REQUEST SYSTEM ======================= -->
+        <div id="panel-requests" class="tab-panel neu-card p-6 sm:p-8 hidden">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="ph ph-wrench"></i> Permohonan Bina Sistem</span>
+                <span id="requestCount" class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-[10px]">0 Request</span>
+            </h2>
+            <p class="text-[10px] text-gray-500 mb-5">
+                Rekod ni disimpan dalam Firestore sebagai salinan utama. Kalau Apps Script (Google Sheet) diset, satu salinan lagi masuk Sheet awak.
+            </p>
+            <div id="requestListContainer" class="flex flex-col gap-3"></div>
+            <div id="requestLoading" class="flex items-center justify-center gap-2 text-sm text-gray-500 py-10">
+                <i class="ph ph-spinner animate-spin text-xl"></i> Sedang Memuatkan...
+            </div>
+        </div>
+
+        <!-- ======================= PANEL: PORTFOLIO ======================= -->
+        <div id="panel-portfolio" class="tab-panel neu-card p-6 sm:p-8 hidden">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="ph ph-briefcase"></i> Projek Portfolio</span>
+                <button type="button" id="portfolioRefreshBtn" class="neu-btn px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase flex items-center gap-1">
+                    <i class="ph ph-arrows-clockwise"></i> Muat Semula
+                </button>
+            </h2>
+            <p class="text-[10px] text-gray-500 mb-5">
+                Senarai ni datang terus dari tab <b>Portfolio_Sistem</b> dalam Google Sheet anda.
+                Tukar status di sini — Sheet dan jadual portfolio di website akan ikut.
+            </p>
+            <div id="portfolioListContainer" class="flex flex-col gap-3"></div>
+            <div id="portfolioMsg" class="text-xs text-center text-gray-500 py-8">
+                Klik "Muat Semula" untuk ambil senarai projek dari Google Sheet.
+            </div>
+        </div>
+
+        <!-- ======================= PANEL: SITE CONFIG ======================= -->
+        <div id="panel-config" class="tab-panel neu-card p-6 sm:p-8 hidden">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">Tetapan Umum Laman</h2>
+            <form id="configForm" class="flex flex-col gap-4">
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Tajuk Laman (Tab Browser)</label>
+                    <input type="text" id="cfgSiteTitle" placeholder="Profil Diri - Web App" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-500">Link Logo (Google Drive share link)</label>
+                    <input type="url" id="cfgLogoUrl" placeholder="https://lh3.googleusercontent.com/d/..." class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-2">Link Media Sosial</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="url" id="cfgFacebook" placeholder="Link Facebook" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="url" id="cfgTiktok" placeholder="Link TikTok" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="url" id="cfgInstagram" placeholder="Link Instagram" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="url" id="cfgThreads" placeholder="Link Threads" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="url" id="cfgLinkedin" placeholder="Link LinkedIn" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="url" id="cfgWhatsapp" placeholder="No. WhatsApp (cth: 601120879149)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-4">Request System → Google Sheet</h3>
+                <p class="text-[10px] text-gray-500 -mt-2">URL Apps Script Web App. Kalau kosong, permohonan tetap masuk Firestore dan WhatsApp — cuma tak masuk Sheet.</p>
+                <input type="url" id="cfgRequestSheetUrl" placeholder="https://script.google.com/macros/s/..../exec" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <input type="text" id="cfgPromoteToken" placeholder="Token Rahsia Apps Script (dari fail .gs)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <p class="text-[10px] text-gray-500 -mt-2">Token ni disimpan berasingan dan hanya anda boleh baca. Ia yang membenarkan admin panel tulis ke portfolio.</p>
+
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 mt-4">Bundle Template (Sistem Demo)</h3>
+                <p class="text-[10px] text-gray-500 -mt-2">Satu link belian untuk semua template sistem. Bila tambah demo baru, tak payah ubah link ni.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="cfgBundleTitle" placeholder="Tajuk butang (cth: Dapatkan Semua Template)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                    <input type="text" id="cfgBundlePrice" placeholder="Harga (cth: RM99)" class="neu-inset p-3 rounded-xl w-full text-sm">
+                </div>
+                <input type="text" id="cfgBundleDesc" placeholder="Penerangan ringkas bundle" class="neu-inset p-3 rounded-xl w-full text-sm">
+                <input type="url" id="cfgBundleLink" placeholder="Link belian bundle" class="neu-inset p-3 rounded-xl w-full text-sm">
+
+                <button type="submit" id="configSubmitBtn" class="neu-btn text-white font-bold py-3 rounded-xl uppercase tracking-widest text-sm flex items-center justify-center gap-2 mt-2" style="background-color: #3b82f6;">
+                    <i class="ph ph-floppy-disk text-lg"></i> Simpan Tetapan
+                </button>
+                <p id="configSavedMsg" class="text-xs text-green-600 text-center hidden">Tetapan disimpan. Website public akan update serta-merta.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOGIK UI (Booking) -->
+    <script>
+        const lockDateInput = document.getElementById('lockDate');
+        const lockTimeSelect = document.getElementById('lockTime');
+
+        lockDateInput.addEventListener('change', (e) => {
+            const dateVal = e.target.value;
+            lockTimeSelect.innerHTML = `
+                <option value="" disabled selected>Pilih Slot...</option>
+                <option value="ALL_DAY" class="font-bold text-red-500">🛑 LOCK SEPENUH HARI</option>
+            `;
+            if (!dateVal) return;
+            const selectedDate = new Date(dateVal);
+            const dayOfWeek = selectedDate.getDay();
+            let slots = [];
+            if (dayOfWeek === 0) { slots = ['08:00 AM - 10:00 AM', '11:00 AM - 01:00 PM', '02:00 PM - 04:00 PM', '05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM']; }
+            else if (dayOfWeek === 6) { slots = ['05:00 PM - 07:00 PM', '09:00 PM - 11:00 PM']; }
+            else { slots = ['09:00 PM - 11:00 PM']; }
+            slots.forEach(slot => {
+                const opt = document.createElement('option');
+                opt.value = slot; opt.innerText = slot;
+                lockTimeSelect.appendChild(opt);
+            });
+        });
+
+        document.getElementById('adminForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const dateVal = document.getElementById('lockDate').value;
+            const timeVal = document.getElementById('lockTime').value;
+            const noteVal = document.getElementById('lockNote').value || "-";
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> Menyimpan...`;
+            btn.disabled = true;
+            try {
+                if (window.adminAddLock) {
+                    await window.adminAddLock({ type: 'MANUAL_LOCK', date: dateVal, time: timeVal, status: 'APPROVED', name: 'Admin', remark: noteVal, createdAt: new Date().toISOString() });
+                }
+                e.target.reset();
+                lockTimeSelect.innerHTML = `<option value="" disabled selected>Sila Pilih Tarikh Dahulu...</option>`;
+            } catch (err) {
+                console.error("Save failed:", err);
+                alert("Gagal simpan: " + err.message);
+            } finally {
+                btn.innerHTML = `<i class="ph ph-plus-circle text-lg"></i> Lock Tarikh Ini`;
+                btn.disabled = false;
+            }
+        });
+
+        window.approveBooking = async (docId, date, time) => {
+            if(!confirm("Mengesahkan bayaran deposit dan LOCK slot ini secara rasmi?")) return;
+            if(window.adminApproveLock) await window.adminApproveLock(docId, date, time);
+        };
+
+        window.deleteLock = async (docId, isPending = false, date, time) => {
+            const msg = isPending
+                ? "Anda pasti mahu REJECT & PADAM permohonan ini?"
+                : "Anda pasti mahu UNLOCK / DELETE tarikh ini? Pelanggan lain akan boleh book semula slot ini.";
+            if(!confirm(msg)) return;
+            if(window.adminDeleteLock) await window.adminDeleteLock(docId, date, time);
+        };
+
+        function renderTables(list) {
+            document.getElementById('loadingData').classList.add('hidden');
+            const pendingList = list.filter(item => item.status === 'PENDING').sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const approvedList = list.filter(item => item.status === 'APPROVED').sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            const pendingContainer = document.getElementById('pendingContainer');
+            const pendingTbody = document.getElementById('pendingTableBody');
+            const noPendingData = document.getElementById('noPendingData');
+            document.getElementById('pendingCount').innerText = `${pendingList.length} Request`;
+
+            if (pendingList.length === 0) {
+                pendingContainer.classList.add('hidden');
+                noPendingData.classList.remove('hidden');
+            } else {
+                pendingContainer.classList.remove('hidden');
+                noPendingData.classList.add('hidden');
+                pendingTbody.innerHTML = '';
+                pendingList.forEach(item => {
+                    const dParts = item.date.split('-');
+                    const dShow = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.date;
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-gray-300 last:border-0 hover:bg-orange-500/5";
+                    tr.innerHTML = `
+                        <td class="p-3"><div class="font-bold text-gray-800">${item.name || 'Unknown'}</div><div class="text-[10px] text-gray-500"><i class="ph ph-phone"></i> ${item.phone || '-'}</div></td>
+                        <td class="p-3 text-xs font-semibold text-blue-500">${item.package || '-'}</td>
+                        <td class="p-3"><div class="font-bold">${dShow}</div><div class="text-[10px] text-orange-600 font-bold bg-orange-500/10 inline-block px-1 rounded">${item.time}</div></td>
+                        <td class="p-3 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <button onclick="window.approveBooking('${item.id}', '${item.date}', '${item.time}')" class="bg-green-500 text-white rounded-lg px-3 py-2 hover:bg-green-600 active:scale-90 transition-all cursor-pointer shadow-md text-xs font-bold" title="Terima Deposit & Lock"><i class="ph ph-check-circle"></i> Approve</button>
+                                <button onclick="window.deleteLock('${item.id}', true)" class="bg-red-500 text-white rounded-lg px-2 py-2 hover:bg-red-600 active:scale-90 transition-all cursor-pointer shadow-md" title="Reject & Padam"><i class="ph ph-x"></i></button>
+                            </div>
+                        </td>`;
+                    pendingTbody.appendChild(tr);
+                });
+            }
+
+            const tableContainer = document.getElementById('tableContainer');
+            const tbody = document.getElementById('lockedTableBody');
+            document.getElementById('lockCount').innerText = `${approvedList.length} Aktif`;
+
+            if (approvedList.length === 0) {
+                tableContainer.classList.add('hidden');
+                document.getElementById('loadingData').classList.remove('hidden');
+                document.getElementById('loadingData').innerHTML = "Tiada tarikh di-lock pada masa ini.";
+            } else {
+                tableContainer.classList.remove('hidden');
+                tbody.innerHTML = '';
+                approvedList.forEach(item => {
+                    const isAllDay = item.time === 'ALL_DAY';
+                    const timeBadge = isAllDay
+                        ? `<span class="bg-red-500/10 text-red-600 px-2 py-1 rounded-md text-[10px] uppercase font-bold">Sepenuh Hari</span>`
+                        : `<span class="bg-blue-500/10 text-blue-600 px-2 py-1 rounded-md text-[10px] uppercase font-bold">${item.time}</span>`;
+                    const dParts = item.date.split('-');
+                    const dShow = dParts.length === 3 ? `${dParts[2]}/${dParts[1]}/${dParts[0]}` : item.date;
+                    const infoDisplay = item.type === 'USER_BOOKING'
+                        ? `<span class="font-bold text-gray-800 block">${item.name}</span><span class="text-gray-500">${item.package}</span>`
+                        : `<span class="text-gray-500">${item.remark || '-'}</span>`;
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-gray-300 last:border-0 hover:bg-black/5";
+                    tr.innerHTML = `
+                        <td class="p-3 font-bold">${dShow}</td>
+                        <td class="p-3">${timeBadge}</td>
+                        <td class="p-3 text-[10px] whitespace-normal break-words max-w-[200px]">${infoDisplay}</td>
+                        <td class="p-3 text-center"><button onclick="window.deleteLock('${item.id}', false, '${item.date}', '${item.time}')" class="bg-red-500 text-white rounded-lg p-2 hover:bg-red-600 active:scale-90 transition-all cursor-pointer shadow-md" title="Unlock Slot Ini"><i class="ph ph-trash"></i></button></td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+    </script>
+
+    <!-- LOGIK UI (Tabs, Course form, Config form) -->
+    <script>
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+                document.getElementById('panel-' + btn.dataset.tab).classList.remove('hidden');
+            });
+        });
+
+        // ---- COURSE FORM ----
+        const courseForm = document.getElementById('courseForm');
+        const courseCancelBtn = document.getElementById('courseCancelEditBtn');
+
+        courseCancelBtn.addEventListener('click', () => {
+            courseForm.reset();
+            document.getElementById('courseEditId').value = '';
+            document.getElementById('courseFormMode').innerText = 'Tambah Course Baru';
+            document.getElementById('courseSubmitBtn').innerHTML = `<i class="ph ph-plus-circle text-lg"></i> Tambah Course`;
+            courseCancelBtn.classList.add('hidden');
+        });
+
+        courseForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('courseEditId').value;
+            const data = {
+                title: document.getElementById('courseTitle').value,
+                icon: document.getElementById('courseIcon').value || 'ph-book-open',
+                desc: document.getElementById('courseDesc').value,
+                imageUrl: document.getElementById('courseImage').value,
+                purchaseLink: document.getElementById('courseLink').value
+            };
+            const btn = document.getElementById('courseSubmitBtn');
+            btn.disabled = true;
+            try {
+                if (editId) {
+                    await window.adminUpdateCourse(editId, data);
+                } else {
+                    await window.adminAddCourse(data);
+                }
+                courseCancelBtn.click();
+            } catch (err) {
+                alert("Gagal simpan course: " + err.message);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        window.editCourse = (id, title, icon, desc, imageUrl, purchaseLink) => {
+            document.getElementById('courseEditId').value = id;
+            document.getElementById('courseTitle').value = title;
+            document.getElementById('courseIcon').value = icon;
+            document.getElementById('courseDesc').value = desc;
+            document.getElementById('courseImage').value = imageUrl;
+            document.getElementById('courseLink').value = purchaseLink;
+            document.getElementById('courseFormMode').innerText = 'Edit Course: ' + title;
+            document.getElementById('courseSubmitBtn').innerHTML = `<i class="ph ph-floppy-disk text-lg"></i> Kemaskini`;
+            courseCancelBtn.classList.remove('hidden');
+            document.getElementById('panel-courses').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.removeCourse = async (id, title) => {
+            if (!confirm(`Padam course "${title}"? Tindakan ni tak boleh undo.`)) return;
+            await window.adminDeleteCourse(id);
+        };
+
+        function esc(str) {
+            const d = document.createElement('div');
+            d.innerText = str || '';
+            return d.innerHTML;
+        }
+
+        // Course asal yang dulu hardcode dalam profile.html — untuk butang "Import Course Asal"
+        const DEFAULT_COURSES = [
+            {
+                title: "Canva Ai", icon: "ph-palette",
+                desc: "Canva Ai akan diajar bagaimana membina sistem yang pelbagai menggunakan keupayaan Canva Ai secara efektif dan mudah.",
+                imageUrl: "https://i.postimg.cc/fT51QtGz/Chat-GPT-Image-Jul-10-2026-09-32-39-PM.png",
+                purchaseLink: "https://annurprosolutions1.bcl.my/form/canva-ai-sistem"
+            },
+            {
+                title: "Gemini Ai", icon: "ph-sparkle",
+                desc: "Gemini Ai akan di ajar bagaimana bina sistem yang pelbagai menggunakan keupayaan Gemini Ai yang termaju.",
+                imageUrl: "https://i.postimg.cc/SNy1NQ4d/Chat-GPT-Image-Jul-10-2026-09-37-27-PM.png",
+                purchaseLink: "https://annurprosolutions1.bcl.my/form/gemini-ai-sistem"
+            },
+            {
+                title: "Looker Studio", icon: "ph-chart-bar",
+                desc: "Pelajari teknik membina dashboard interaktif dan visualisasi data yang profesional menggunakan Looker Studio.",
+                imageUrl: "https://i.postimg.cc/pXhhjzP2/Chat-GPT-Image-Jul-10-2026-09-39-55-PM.png",
+                purchaseLink: "https://annurprosolutions1.bcl.my/form/looker-studio"
+            },
+            {
+                title: "Edu Content", icon: "ph-book-open",
+                desc: "Kuasai seni penghasilan kandungan pendidikan (Edu Content) yang berkualiti dan berimpak tinggi.",
+                imageUrl: "https://i.postimg.cc/D0WZq3kH/Chat-GPT-Image-Jul-10-2026-09-42-54-PM.png",
+                purchaseLink: "https://annurprosolutions1.bcl.my/form/educontent"
+            }
+        ];
+
+        let currentCourseList = [];
+
+        document.getElementById('seedCourseBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('seedCourseBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Memasukkan...`;
+            try {
+                const existingTitles = currentCourseList.map(c => (c.title || '').toLowerCase());
+                for (const course of DEFAULT_COURSES) {
+                    if (!existingTitles.includes(course.title.toLowerCase())) {
+                        await window.adminAddCourse(course);
+                    }
+                }
+            } catch (err) {
+                alert("Gagal import: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="ph ph-download-simple"></i> Import Course Asal`;
+            }
+        });
+
+        function renderCourseList(list) {
+            currentCourseList = list;
+            document.getElementById('courseLoading').classList.add('hidden');
+            document.getElementById('courseCount').innerText = `${list.length} Course`;
+            const container = document.getElementById('courseListContainer');
+            const seedBox = document.getElementById('seedCourseBox');
+            container.innerHTML = '';
+            if (list.length === 0) {
+                container.innerHTML = `<div class="text-center text-sm text-gray-500 py-6">Tiada course lagi. Tambah course pertama guna borang di atas.</div>`;
+                seedBox.classList.remove('hidden');
+                return;
+            }
+            seedBox.classList.add('hidden');
+            list.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'neu-inset rounded-xl p-4 flex items-center gap-4';
+                row.innerHTML = `
+                    <div class="w-12 h-12 rounded-full neu-card flex items-center justify-center flex-shrink-0">
+                        <i class="ph ${esc(item.icon)} text-xl text-blue-500"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-sm truncate">${esc(item.title)}</div>
+                        <div class="text-xs text-gray-500 truncate">${esc(item.desc)}</div>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0">
+                        <button onclick="window.editCourse('${item.id}', '${esc(item.title).replace(/'/g,"\\'")}', '${esc(item.icon)}', '${esc(item.desc).replace(/'/g,"\\'")}', '${item.imageUrl || ''}', '${item.purchaseLink || ''}')" class="bg-blue-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-blue-600"><i class="ph ph-pencil-simple"></i></button>
+                        <button onclick="window.removeCourse('${item.id}', '${esc(item.title).replace(/'/g,"\\'")}')" class="bg-red-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-red-600"><i class="ph ph-trash"></i></button>
+                    </div>`;
+                container.appendChild(row);
+            });
+        }
+
+        // ================= DEMO =================
+        const DEFAULT_DEMOS = [
+            {
+                title: "Prompt2Booking", icon: "ph-calendar-check", badge: "",
+                desc: "Sistem tempahan pintar (Booking System) yang mudah dan pantas untuk diintegrasi ke dalam perniagaan anda.",
+                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/booking-system",
+                purchaseLink: "", order: 1
+            },
+            {
+                title: "Prompt2OPR", icon: "ph-file-text", badge: "",
+                desc: "Sistem pengurusan rekod OPR (One Page Report) yang diautomasikan secara sistematik.",
+                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/opr",
+                purchaseLink: "", order: 2
+            },
+            {
+                title: "Prompt2Dashboard", icon: "ph-presentation-chart", badge: "RECORDING",
+                desc: "Paparan Dashboard analitik yang interaktif untuk pemantauan data perniagaan secara real-time.",
+                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/prompt2dashboard",
+                purchaseLink: "", order: 3
+            },
+            {
+                title: "Prompt2Website", icon: "ph-globe", badge: "",
+                desc: "Laman web profil dan perniagaan berprestasi tinggi yang dioptimumkan sepenuhnya (Website & SEO).",
+                thumbnailUrl: "", demoLink: "https://prompt2website.netlify.app/",
+                purchaseLink: "", order: 4
+            },
+            {
+                title: "Sistem Guru Ganti", icon: "ph-users-three", badge: "",
+                desc: "Sistem pengurusan guru ganti (Relief System) yang pantas dan efisien untuk pengurusan sekolah.",
+                thumbnailUrl: "", demoLink: "https://annurprosolutions1.bcl.my/form/relief-system",
+                purchaseLink: "", order: 5
+            }
+        ];
+
+        let currentDemoList = [];
+        const demoForm = document.getElementById('demoForm');
+        const demoCancelBtn = document.getElementById('demoCancelEditBtn');
+
+        demoCancelBtn.addEventListener('click', () => {
+            demoForm.reset();
+            document.getElementById('demoEditId').value = '';
+            document.getElementById('demoFormMode').innerText = 'Tambah Sistem Demo Baru';
+            document.getElementById('demoSubmitBtn').innerHTML = `<i class="ph ph-plus-circle text-lg"></i> Tambah Demo`;
+            demoCancelBtn.classList.add('hidden');
+        });
+
+        demoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('demoEditId').value;
+            const data = {
+                title: document.getElementById('demoTitle').value,
+                badge: document.getElementById('demoBadge').value,
+                desc: document.getElementById('demoDesc').value,
+                thumbnailUrl: document.getElementById('demoThumb').value,
+                demoLink: document.getElementById('demoLink').value,
+                purchaseLink: document.getElementById('demoPurchase').value,
+                order: Number(document.getElementById('demoOrder').value) || 999
+            };
+            const btn = document.getElementById('demoSubmitBtn');
+            btn.disabled = true;
+            try {
+                if (editId) { await window.adminUpdateDemo(editId, data); }
+                else { await window.adminAddDemo(data); }
+                demoCancelBtn.click();
+            } catch (err) {
+                alert("Gagal simpan demo: " + err.message);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('seedDemoBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('seedDemoBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="ph ph-spinner animate-spin"></i> Memasukkan...`;
+            try {
+                const existingTitles = currentDemoList.map(d => (d.title || '').toLowerCase());
+                for (const demo of DEFAULT_DEMOS) {
+                    if (!existingTitles.includes(demo.title.toLowerCase())) {
+                        await window.adminAddDemo(demo);
+                    }
+                }
+            } catch (err) {
+                alert("Gagal import: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="ph ph-download-simple"></i> Import Demo Asal`;
+            }
+        });
+
+        window.editDemo = (id) => {
+            const item = currentDemoList.find(d => d.id === id);
+            if (!item) return;
+            document.getElementById('demoEditId').value = id;
+            document.getElementById('demoTitle').value = item.title || '';
+            document.getElementById('demoBadge').value = item.badge || '';
+            document.getElementById('demoDesc').value = item.desc || '';
+            document.getElementById('demoThumb').value = item.thumbnailUrl || '';
+            document.getElementById('demoLink').value = item.demoLink || '';
+            document.getElementById('demoPurchase').value = item.purchaseLink || '';
+            document.getElementById('demoOrder').value = item.order || '';
+            document.getElementById('demoFormMode').innerText = 'Edit Demo: ' + (item.title || '');
+            document.getElementById('demoSubmitBtn').innerHTML = `<i class="ph ph-floppy-disk text-lg"></i> Kemaskini`;
+            demoCancelBtn.classList.remove('hidden');
+            document.getElementById('panel-demos').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.removeDemo = async (id) => {
+            const item = currentDemoList.find(d => d.id === id);
+            if (!confirm(`Padam demo "${item ? item.title : ''}"? Tindakan ni tak boleh undo.`)) return;
+            await window.adminDeleteDemo(id);
+        };
+
+        function renderDemoList(list) {
+            currentDemoList = list;
+            document.getElementById('demoLoading').classList.add('hidden');
+            document.getElementById('demoCount').innerText = `${list.length} Demo`;
+            const container = document.getElementById('demoListContainer');
+            const seedBox = document.getElementById('seedDemoBox');
+            container.innerHTML = '';
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="text-center text-sm text-gray-500 py-6">Tiada demo lagi.</div>`;
+                seedBox.classList.remove('hidden');
+                return;
+            }
+            seedBox.classList.add('hidden');
+
+            list.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'neu-inset rounded-xl p-4 flex items-center gap-4';
+                const thumb = item.thumbnailUrl
+                    ? `<img src="${item.thumbnailUrl}" alt="" class="w-12 h-12 rounded-lg object-cover flex-shrink-0 bg-gray-200">`
+                    : `<div class="w-12 h-12 rounded-full neu-card flex items-center justify-center flex-shrink-0"><i class="ph ph-desktop text-xl text-blue-500"></i></div>`;
+                const badge = item.badge ? `<span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600">${esc(item.badge)}</span>` : '';
+                const priceTag = item.purchaseLink
+                    ? `<span class="text-[9px] text-green-600 font-bold">+ link individu</span>`
+                    : `<span class="text-[9px] text-gray-400">guna bundle</span>`;
+                row.innerHTML = `
+                    ${thumb}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2"><span class="font-bold text-sm truncate">${esc(item.title)}</span>${badge}</div>
+                        <div class="text-xs text-gray-500 truncate">${esc(item.desc)}</div>
+                        <div class="mt-0.5">${priceTag}</div>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0">
+                        <button onclick="window.editDemo('${item.id}')" class="bg-blue-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-blue-600"><i class="ph ph-pencil-simple"></i></button>
+                        <button onclick="window.removeDemo('${item.id}')" class="bg-red-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-red-600"><i class="ph ph-trash"></i></button>
+                    </div>`;
+                container.appendChild(row);
+            });
+        }
+
+        // ================= REQUEST SYSTEM =================
+        let currentRequestList = [];
+
+        window.removeRequest = async (id) => {
+            const item = currentRequestList.find(r => r.id === id);
+            if (!confirm(`Padam permohonan dari "${item ? item.name : ''}"? Tindakan ni tak boleh undo.`)) return;
+            await window.adminDeleteRequest(id);
+        };
+
+        window.waRequest = (id) => {
+            const item = currentRequestList.find(r => r.id === id);
+            if (!item || !item.phone) return;
+            let n = String(item.phone).replace(/[^0-9]/g, '');
+            if (n.startsWith('0')) n = '60' + n.slice(1);
+            else if (!n.startsWith('60')) n = '60' + n;
+            const msg = `Salam ${item.name}, terima kasih atas permohonan sistem (${item.systemType}). Saya nak bincang lanjut tentang keperluan anda.`;
+            window.open(`https://wa.me/${n}?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        function renderRequestList(list) {
+            currentRequestList = list;
+            document.getElementById('requestLoading').classList.add('hidden');
+            document.getElementById('requestCount').innerText = `${list.length} Request`;
+
+            const badge = document.getElementById('requestBadge');
+            if (list.length > 0) {
+                badge.innerText = list.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            const container = document.getElementById('requestListContainer');
+            container.innerHTML = '';
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="text-center text-sm text-gray-500 py-6">Tiada permohonan setakat ini.</div>`;
+                return;
+            }
+
+            list.forEach(item => {
+                const d = item.createdAt ? new Date(item.createdAt) : null;
+                const dShow = d ? `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}` : '-';
+                const row = document.createElement('div');
+                row.className = 'neu-inset rounded-xl p-4 flex flex-col gap-2';
+                row.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="font-bold text-sm">${esc(item.name)} <span class="text-[10px] font-normal text-gray-400">· ${dShow}</span></div>
+                            <div class="text-[11px] text-gray-500">${esc(item.email)} · ${esc(item.phone)}</div>
+                            ${item.company && item.company !== '-' ? `<div class="text-[11px] text-gray-500">${esc(item.company)}</div>` : ''}
+                        </div>
+                        <div class="flex gap-2 flex-shrink-0">
+                            ${item.status === 'APPROVED'
+                                ? `<span class="bg-green-500/10 text-green-600 rounded-lg px-3 py-2 text-[10px] font-bold flex items-center" title="Dah masuk portfolio"><i class="ph ph-check-circle"></i></span>`
+                                : `<button onclick="window.approveRequest('${item.id}')" class="bg-blue-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-blue-600" title="Approve &amp; masuk Portfolio"><i class="ph ph-check-circle"></i></button>`}
+                            <button onclick="window.waRequest('${item.id}')" class="bg-green-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-green-600" title="WhatsApp pemohon"><i class="ph ph-whatsapp-logo"></i></button>
+                            <button onclick="window.removeRequest('${item.id}')" class="bg-red-500 text-white rounded-lg px-3 py-2 text-xs font-bold hover:bg-red-600"><i class="ph ph-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-[10px]">
+                        <span class="bg-blue-500/10 text-blue-600 px-2 py-1 rounded font-bold">${esc(item.systemType)}</span>
+                        ${item.budget && item.budget !== '-' ? `<span class="bg-amber-500/10 text-amber-600 px-2 py-1 rounded font-bold">RM ${esc(item.budget)}</span>` : ''}
+                        ${item.timeline && item.timeline !== '-' ? `<span class="bg-gray-500/10 text-gray-600 px-2 py-1 rounded font-bold">${esc(item.timeline)}</span>` : ''}
+                    </div>
+                    <div class="text-xs text-gray-600 whitespace-pre-wrap break-words bg-white/40 rounded-lg p-2">${esc(item.detail)}</div>`;
+                container.appendChild(row);
+            });
+        }
+
+        // ================= JAMBATAN KE APPS SCRIPT (JSONP) =================
+        // Apps Script tak handle CORS untuk POST biasa, jadi arahan admin dihantar
+        // melalui GET + JSONP. Dengan cara ni kita boleh BACA jawapan dia
+        // (tahu berjaya ke tidak), bukan hantar buta-buta.
+        window.appsScriptUrl = 'https://script.google.com/macros/s/AKfycbzDg2__b-C65OZ79tin-E-e7tLDtR6FocrudZEJ3vO9VDBBE3oSy0G4ceBImWtBBon5rQ/exec';
+        window.promoteToken = 'RUZ-2QzlSK63hW5FBIQDdLmrg54q6rMd';
+
+        function callAppsScript(params) {
+            return new Promise((resolve, reject) => {
+                if (!window.appsScriptUrl) {
+                    reject(new Error('URL Apps Script belum diset dalam Site Config.'));
+                    return;
+                }
+                if (!window.promoteToken) {
+                    reject(new Error('Token Rahsia Apps Script belum diset dalam Site Config.'));
+                    return;
+                }
+
+                const cb = 'ruzcb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+                const script = document.createElement('script');
+
+                const bersih = () => {
+                    try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                };
+
+                const timer = setTimeout(() => {
+                    bersih();
+                    reject(new Error('Tiada jawapan dari Apps Script (timeout). Semak URL dan deployment.'));
+                }, 20000);
+
+                window[cb] = (data) => {
+                    clearTimeout(timer);
+                    bersih();
+                    if (data && data.status === 'OK') resolve(data);
+                    else reject(new Error((data && data.message) || 'Apps Script pulangkan ralat.'));
+                };
+
+                const q = new URLSearchParams(Object.assign({}, params, {
+                    token: window.promoteToken,
+                    callback: cb
+                })).toString();
+
+                script.src = window.appsScriptUrl + '?' + q;
+                script.onerror = () => {
+                    clearTimeout(timer);
+                    bersih();
+                    reject(new Error('Gagal sambung ke Apps Script. Semak URL /exec dan akses "Anyone".'));
+                };
+                document.body.appendChild(script);
+            });
+        }
+
+        // ================= APPROVE: REQUEST -> PORTFOLIO =================
+        window.approveRequest = async (id) => {
+            const item = currentRequestList.find(r => r.id === id);
+            if (!item) return;
+
+            const namaSistem = prompt(
+                'Nama projek ni untuk portfolio?\n\n' +
+                'Pemohon: ' + item.name + '\nJenis: ' + item.systemType,
+                item.systemType || ''
+            );
+            if (namaSistem === null) return;
+            if (!namaSistem.trim()) { alert('Nama sistem tak boleh kosong.'); return; }
+
+            const teknologi = prompt('Teknologi? (boleh edit kemudian)', 'Web System');
+            if (teknologi === null) return;
+
+            try {
+                const hasil = await callAppsScript({
+                    action: 'promote',
+                    reqId: item.reqId || '',
+                    namaSistem: namaSistem.trim(),
+                    kategori: item.systemType || '',
+                    teknologi: teknologi.trim() || 'Web System',
+                    harga: (item.budget && item.budget !== '-') ? item.budget : ''
+                });
+
+                await window.adminUpdateRequest(id, {
+                    status: 'APPROVED',
+                    portfolioName: namaSistem.trim()
+                });
+
+                alert(hasil.message || 'Berjaya masuk portfolio.');
+            } catch (err) {
+                alert('Gagal: ' + err.message);
+            }
+        };
+
+        // ================= PANEL PORTFOLIO =================
+        const STATUS_PILIHAN = ['In Progress', 'Done', 'Hold'];
+
+        document.getElementById('portfolioRefreshBtn').addEventListener('click', muatPortfolio);
+
+        async function muatPortfolio() {
+            const msg = document.getElementById('portfolioMsg');
+            const container = document.getElementById('portfolioListContainer');
+            msg.classList.remove('hidden');
+            msg.innerHTML = '<i class="ph ph-spinner animate-spin"></i> Mengambil data dari Google Sheet...';
+            container.innerHTML = '';
+
+            try {
+                const hasil = await callAppsScript({ action: 'listPortfolio' });
+                const items = hasil.items || [];
+
+                if (items.length === 0) {
+                    msg.innerText = 'Tiada projek dalam Portfolio_Sistem.';
+                    return;
+                }
+                msg.classList.add('hidden');
+
+                items.forEach(item => {
+                    const warna = item.status === 'Done' ? 'text-green-600 bg-green-500/10'
+                                : item.status === 'In Progress' ? 'text-blue-600 bg-blue-500/10'
+                                : 'text-orange-600 bg-orange-500/10';
+                    const row = document.createElement('div');
+                    row.className = 'neu-inset rounded-xl p-4 flex items-center gap-3 flex-wrap';
+                    row.innerHTML = `
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-sm truncate">${esc(item.nama)}
+                                <span class="text-[10px] font-normal text-gray-400">· ${esc(String(item.tahun))}</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500 truncate">${esc(item.kategori)} · ${esc(item.teknologi)}${item.harga ? ' · RM ' + esc(String(item.harga)) : ''}</div>
+                        </div>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded ${warna}">${esc(item.status)}</span>
+                        <select class="neu-inset text-xs rounded-lg px-2 py-1.5" onchange="window.tukarStatusPortfolio(${item.row}, this.value, this)">
+                            ${STATUS_PILIHAN.map(st => `<option value="${st}" ${st === item.status ? 'selected' : ''}>${st}</option>`).join('')}
+                        </select>`;
+                    container.appendChild(row);
+                });
+            } catch (err) {
+                msg.classList.remove('hidden');
+                msg.innerHTML = '<span class="text-red-500">' + err.message + '</span>';
+            }
+        }
+
+        window.tukarStatusPortfolio = async (row, status, selectEl) => {
+            selectEl.disabled = true;
+            try {
+                await callAppsScript({ action: 'setStatus', row: row, status: status });
+                await muatPortfolio();
+            } catch (err) {
+                alert('Gagal tukar status: ' + err.message);
+                selectEl.disabled = false;
+            }
+        };
+
+        // ---- CONFIG FORM ----
+        document.getElementById('configForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                siteTitle: document.getElementById('cfgSiteTitle').value,
+                logoUrl: document.getElementById('cfgLogoUrl').value,
+                socialLinks: {
+                    facebook: document.getElementById('cfgFacebook').value,
+                    tiktok: document.getElementById('cfgTiktok').value,
+                    instagram: document.getElementById('cfgInstagram').value,
+                    threads: document.getElementById('cfgThreads').value,
+                    linkedin: document.getElementById('cfgLinkedin').value,
+                    whatsapp: document.getElementById('cfgWhatsapp').value
+                },
+                requestSheetUrl: document.getElementById('cfgRequestSheetUrl').value,
+                demoBundle: {
+                    title: document.getElementById('cfgBundleTitle').value,
+                    price: document.getElementById('cfgBundlePrice').value,
+                    desc: document.getElementById('cfgBundleDesc').value,
+                    link: document.getElementById('cfgBundleLink').value
+                }
+            };
+            const btn = document.getElementById('configSubmitBtn');
+            btn.disabled = true;
+            try {
+                await window.adminSaveConfig(data);
+                await window.adminSaveToken(document.getElementById('cfgPromoteToken').value);
+                window.appsScriptUrl = data.requestSheetUrl || '';
+                window.promoteToken = document.getElementById('cfgPromoteToken').value || '';
+                const msg = document.getElementById('configSavedMsg');
+                msg.classList.remove('hidden');
+                setTimeout(() => msg.classList.add('hidden'), 3000);
+            } catch (err) {
+                alert("Gagal simpan tetapan: " + err.message);
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        function fillConfigForm(cfg) {
+            if (!cfg) return;
+            document.getElementById('cfgSiteTitle').value = cfg.siteTitle || '';
+            document.getElementById('cfgLogoUrl').value = cfg.logoUrl || '';
+            const s = cfg.socialLinks || {};
+            document.getElementById('cfgFacebook').value = s.facebook || '';
+            document.getElementById('cfgTiktok').value = s.tiktok || '';
+            document.getElementById('cfgInstagram').value = s.instagram || '';
+            document.getElementById('cfgThreads').value = s.threads || '';
+            document.getElementById('cfgLinkedin').value = s.linkedin || '';
+            document.getElementById('cfgWhatsapp').value = s.whatsapp || '';
+
+            document.getElementById('cfgRequestSheetUrl').value = cfg.requestSheetUrl || '';
+
+            const b = cfg.demoBundle || {};
+            document.getElementById('cfgBundleTitle').value = b.title || '';
+            document.getElementById('cfgBundlePrice').value = b.price || '';
+            document.getElementById('cfgBundleDesc').value = b.desc || '';
+            document.getElementById('cfgBundleLink').value = b.link || '';
+        }
+    </script>
+
+    <!-- FIREBASE + AUTH -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import {
+            getFirestore, collection, addDoc, deleteDoc, updateDoc, doc, setDoc, getDoc, onSnapshot
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZPFbRJHsWbONzykNHMktJNJUkixIpG1M",
+            authDomain: "ruzprompt-6ac7c.firebaseapp.com",
+            projectId: "ruzprompt-6ac7c",
+            storageBucket: "ruzprompt-6ac7c.firebasestorage.app",
+            messagingSenderId: "159437142126",
+            appId: "1:159437142126:web:83a78dd6f9ee394cb98e7f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const bookingsCollectionPath = collection(db, 'coaching_bookings');
+        const lockedSlotsPath = collection(db, 'locked_slots');
+        const coursesPath = collection(db, 'courses');
+        const demosPath = collection(db, 'demos');
+        const requestsPath = collection(db, 'system_requests');
+        const configDocRef = doc(db, 'site_config', 'main');
+        // Token rahsia Apps Script — doc berasingan, superadmin sahaja boleh baca/tulis
+        const secretsDocRef = doc(db, 'admin_secrets', 'main');
+
+        let unsubBookings = null, unsubCourses = null, unsubDemos = null, unsubRequests = null;
+
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const loginError = document.getElementById('loginError');
+
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            loginError.classList.add('hidden');
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (err) {
+                loginError.innerText = "Email atau kata laluan salah.";
+                loginError.classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginScreen.classList.add('hidden');
+                dashboard.classList.remove('hidden');
+                startListening();
+            } else {
+                loginScreen.classList.remove('hidden');
+                dashboard.classList.add('hidden');
+                if (unsubBookings) { unsubBookings(); unsubBookings = null; }
+                if (unsubCourses) { unsubCourses(); unsubCourses = null; }
+                if (unsubDemos) { unsubDemos(); unsubDemos = null; }
+                if (unsubRequests) { unsubRequests(); unsubRequests = null; }
+            }
+        });
+
+        async function startListening() {
+            if (!unsubBookings) {
+                unsubBookings = onSnapshot(bookingsCollectionPath, (snapshot) => {
+                    renderTables(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+                }, (error) => console.error("Sync Error:", error));
+            }
+            if (!unsubCourses) {
+                unsubCourses = onSnapshot(coursesPath, (snapshot) => {
+                    renderCourseList(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+                }, (error) => console.error("Sync Error:", error));
+            }
+            if (!unsubDemos) {
+                unsubDemos = onSnapshot(demosPath, (snapshot) => {
+                    const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                    list.sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+                    renderDemoList(list);
+                }, (error) => console.error("Sync Error:", error));
+            }
+            if (!unsubRequests) {
+                unsubRequests = onSnapshot(requestsPath, (snapshot) => {
+                    const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                    list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                    renderRequestList(list);
+                }, (error) => console.error("Sync Error:", error));
+            }
+            try {
+                const cfgSnap = await getDoc(configDocRef);
+                if (cfgSnap.exists()) {
+                    const cfg = cfgSnap.data();
+                    fillConfigForm(cfg);
+                    // Hardcoded, jadi abaikan yang di-load dari config
+                    window.appsScriptUrl = 'https://script.google.com/macros/s/AKfycbzDg2__b-C65OZ79tin-E-e7tLDtR6FocrudZEJ3vO9VDBBE3oSy0G4ceBImWtBBon5rQ/exec';
+                }
+            } catch (err) { console.error("Config load error:", err); }
+
+            try {
+                const secSnap = await getDoc(secretsDocRef);
+                if (secSnap.exists()) {
+                    const sec = secSnap.data();
+                    // Hardcoded token
+                    window.promoteToken = 'RUZ-2QzlSK63hW5FBIQDdLmrg54q6rMd';
+                    const el = document.getElementById('cfgPromoteToken');
+                    if (el) el.value = window.promoteToken;
+                }
+            } catch (err) { console.error("Secrets load error:", err); }
+        }
+
+        function slotDocId(date, time) {
+            return `${date}_${time}`.replace(/[^a-zA-Z0-9_-]/g, '');
+        }
+
+        window.adminAddLock = async (data) => {
+            await addDoc(bookingsCollectionPath, data);
+            await setDoc(doc(lockedSlotsPath, slotDocId(data.date, data.time)), { date: data.date, time: data.time });
+        };
+
+        window.adminApproveLock = async (docId, slotDate, slotTime) => {
+            try {
+                await updateDoc(doc(db, 'coaching_bookings', docId), { status: 'APPROVED' });
+                if (slotDate && slotTime) {
+                    await setDoc(doc(lockedSlotsPath, slotDocId(slotDate, slotTime)), { date: slotDate, time: slotTime });
+                }
+            } catch (err) { console.error("Approve failed:", err); alert("Gagal Approve: " + err.message); }
+        };
+
+        window.adminDeleteLock = async (docId, slotDate, slotTime) => {
+            try {
+                await deleteDoc(doc(db, 'coaching_bookings', docId));
+                if (slotDate && slotTime) await deleteDoc(doc(lockedSlotsPath, slotDocId(slotDate, slotTime))).catch(() => {});
+            } catch (err) { console.error("Delete failed:", err); alert("Gagal Delete: " + err.message); }
+        };
+
+        // ---- COURSES CRUD ----
+        window.adminAddCourse = async (data) => {
+            await addDoc(coursesPath, { ...data, createdAt: new Date().toISOString() });
+        };
+        window.adminUpdateCourse = async (id, data) => {
+            await updateDoc(doc(db, 'courses', id), data);
+        };
+        window.adminDeleteCourse = async (id) => {
+            await deleteDoc(doc(db, 'courses', id));
+        };
+
+        // ---- DEMOS CRUD ----
+        window.adminAddDemo = async (data) => {
+            await addDoc(demosPath, { ...data, createdAt: new Date().toISOString() });
+        };
+        window.adminUpdateDemo = async (id, data) => {
+            await updateDoc(doc(db, 'demos', id), data);
+        };
+        window.adminDeleteDemo = async (id) => {
+            await deleteDoc(doc(db, 'demos', id));
+        };
+
+        // ---- REQUEST SYSTEM ----
+        window.adminDeleteRequest = async (id) => {
+            await deleteDoc(doc(db, 'system_requests', id));
+        };
+        window.adminUpdateRequest = async (id, data) => {
+            await updateDoc(doc(db, 'system_requests', id), data);
+        };
+
+        // ---- TOKEN RAHSIA (superadmin sahaja) ----
+        window.adminSaveToken = async (token) => {
+            await setDoc(secretsDocRef, { promoteToken: token || '' }, { merge: true });
+        };
+
+        // ---- SITE CONFIG ----
+        window.adminSaveConfig = async (data) => {
+            await setDoc(configDocRef, data, { merge: true });
+        };
+    </script>
+
+    <!-- PWA SETUP -->
+    <script>
+        const setupPWA = () => {
+            const manifest = {
+                "name": "Superadmin Panel RuzPrompt",
+                "short_name": "Admin Ruz",
+                "description": "Panel Kawalan Sistem RuzPrompt",
+                "start_url": "./admin.html",
+                "display": "standalone",
+                "background_color": "#e0e5ec",
+                "theme_color": "#3b82f6",
+                "icons": [
+                    { "src": "https://lh3.googleusercontent.com/d/1z1xkqatduSlFhGoihLfxXjt1ArJOP726", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+                    { "src": "https://lh3.googleusercontent.com/d/1z1xkqatduSlFhGoihLfxXjt1ArJOP726", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+                ]
+            };
+            const manifestString = JSON.stringify(manifest);
+            const blobManifest = new Blob([manifestString], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(blobManifest);
+            document.getElementById('pwa-manifest').setAttribute('href', manifestURL);
+        };
+        setupPWA();
+    </script>
 </body>
 </html>
